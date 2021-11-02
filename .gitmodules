@@ -1,0 +1,15 @@
+[submodule "ThirdParty/SDL"]
+	path = ThirdParty/SDL
+	url = git@github.com:libsdl-org/SDL.git
+[submodule "ThirdParty/imgui"]
+	path = ThirdParty/imgui
+	url = git@github.com:ocornut/imgui.git
+[submodule "ThirdParty/soloud"]
+	path = ThirdParty/soloud.cmake/soloud
+	url = git@github.com:jarikomppa/soloud.git
+[submodule "ThirdParty/bgfx.cmake"]
+	path = ThirdParty/bgfx.cmake
+	url = git@github.com:bkaradzic/bgfx.cmake.git
+[submodule "ThirdParty/zlib"]
+	path = ThirdParty/zlib
+	url = git@github.com:madler/zlib.git
