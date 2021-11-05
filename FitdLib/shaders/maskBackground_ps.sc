@@ -2,9 +2,9 @@ $input v_texcoord0
 
 #include "bgfx_shader.sh"
 
-highp USAMPLER2D(s_backgroundTexture, 0);
+highp USAMPLER2D(s_maskPaletteTexture, 0);
 highp USAMPLER2D(s_paletteTexture, 1);
-highp USAMPLER2D(s_maskPaletteTexture, 2);
+highp USAMPLER2D(s_backgroundTexture, 2);
 
 void main()
 {

@@ -641,6 +641,14 @@ void osystem_flushPendingPrimitives()
             | BGFX_STATE_MSAA
         );
 
+		static bgfx::UniformHandle paletteTextureUniform = BGFX_INVALID_HANDLE;
+		if (!bgfx::isValid(paletteTextureUniform))
+		{
+			paletteTextureUniform = bgfx::createUniform("s_paletteTexture", bgfx::UniformType::Sampler);
+		}
+
+		bgfx::setTexture(1, paletteTextureUniform, g_paletteTexture);
+
         bgfx::setVertexBuffer(0, &transientBuffer);
         bgfx::submit(gameViewId, getFlatShader());
     }
@@ -666,6 +674,14 @@ void osystem_flushPendingPrimitives()
             | BGFX_STATE_DEPTH_TEST_LEQUAL
             | BGFX_STATE_MSAA
         );
+
+		static bgfx::UniformHandle paletteTextureUniform = BGFX_INVALID_HANDLE;
+		if (!bgfx::isValid(paletteTextureUniform))
+		{
+			paletteTextureUniform = bgfx::createUniform("s_paletteTexture", bgfx::UniformType::Sampler);
+		}
+
+		bgfx::setTexture(1, paletteTextureUniform, g_paletteTexture);
 
         bgfx::setVertexBuffer(0, &transientBuffer);
         bgfx::submit(gameViewId, getNoiseShader());
@@ -1315,8 +1331,8 @@ void osystem_drawMask(int roomId, int maskId)
 
     bgfx::setVertexBuffer(0, maskTextures[roomId][maskId].vertexBuffer);
 
-    bgfx::setTexture(0, backgroundTextureUniform, g_backgroundTexture);
+    bgfx::setTexture(2, backgroundTextureUniform, g_backgroundTexture);
     bgfx::setTexture(1, paletteTextureUniform, g_paletteTexture);
-    bgfx::setTexture(2, maskTextureUniform, maskTextures[roomId][maskId].maskTexture);
+    bgfx::setTexture(0, maskTextureUniform, maskTextures[roomId][maskId].maskTexture);
     bgfx::submit(gameViewId, getMaskBackgroundShader());
 }
