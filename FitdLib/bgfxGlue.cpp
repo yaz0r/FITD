@@ -151,8 +151,8 @@ int initBgfxGlue(int argc, char* argv[])
     initparam.platformData.nwh = wmi.info.vivante.window;
 #endif // BX_PLATFORM_
 
-    //initparam.type = bgfx::RendererType::OpenGL;
-    initparam.type = bgfx::RendererType::Vulkan;
+    initparam.type = bgfx::RendererType::OpenGL;
+    //initparam.type = bgfx::RendererType::Vulkan;
     bgfx::init(initparam);
 
     imguiCreate();

@@ -19,58 +19,11 @@ email                : yaz0r@yaz0r.net
 
 #include "osystem.h"
 #include <bgfx/bgfx.h>
+#include <bx/platform.h>
+#include "shaders/embeddedShaders.h"
 #include "imguiBGFX.h"
 #include <array>
 #include <string>
-
-#include "shaders/generated/background_vs_spirv.h"
-#include "shaders/generated/background_ps_spirv.h"
-#include "shaders/generated/maskBackground_vs_spirv.h"
-#include "shaders/generated/maskBackground_ps_spirv.h"
-#include "shaders/generated/ramp_vs_spirv.h"
-#include "shaders/generated/ramp_ps_spirv.h"
-#include "shaders/generated/noise_vs_spirv.h"
-#include "shaders/generated/noise_ps_spirv.h"
-#include "shaders/generated/flat_vs_spirv.h"
-#include "shaders/generated/flat_ps_spirv.h"
-
-#include "shaders/generated/background_vs_glsl.h"
-#include "shaders/generated/background_ps_glsl.h"
-#include "shaders/generated/maskBackground_vs_glsl.h"
-#include "shaders/generated/maskBackground_ps_glsl.h"
-#include "shaders/generated/ramp_vs_glsl.h"
-#include "shaders/generated/ramp_ps_glsl.h"
-#include "shaders/generated/noise_vs_glsl.h"
-#include "shaders/generated/noise_ps_glsl.h"
-#include "shaders/generated/flat_vs_glsl.h"
-#include "shaders/generated/flat_ps_glsl.h"
-
-#ifdef WIN32
-#include "shaders/generated/background_vs_dx11.h"
-#include "shaders/generated/background_vs_dx11_debug.h"
-#include "shaders/generated/background_ps_dx11.h"
-#include "shaders/generated/background_ps_dx11_debug.h"
-
-#include "shaders/generated/maskBackground_vs_dx11.h"
-#include "shaders/generated/maskBackground_vs_dx11_debug.h"
-#include "shaders/generated/maskBackground_ps_dx11.h"
-#include "shaders/generated/maskBackground_ps_dx11_debug.h"
-
-#include "shaders/generated/ramp_vs_dx11.h"
-#include "shaders/generated/ramp_vs_dx11_debug.h"
-#include "shaders/generated/ramp_ps_dx11.h"
-#include "shaders/generated/ramp_ps_dx11_debug.h"
-
-#include "shaders/generated/noise_vs_dx11.h"
-#include "shaders/generated/noise_vs_dx11_debug.h"
-#include "shaders/generated/noise_ps_dx11.h"
-#include "shaders/generated/noise_ps_dx11_debug.h"
-
-#include "shaders/generated/flat_vs_dx11.h"
-#include "shaders/generated/flat_vs_dx11_debug.h"
-#include "shaders/generated/flat_ps_dx11.h"
-#include "shaders/generated/flat_ps_dx11_debug.h"
-#endif
 
 unsigned int gameViewId = 1;
 bgfx::TextureHandle g_backgroundTexture = BGFX_INVALID_HANDLE;
@@ -297,64 +250,6 @@ bgfx::ShaderHandle loadBgfxShader(const std::string& filename)
     return handle;
 }
 
-struct shaderEntry
-{
-    bgfx::RendererType::Enum m_renderer;
-    std::string m_name;
-    const u8* m_byteCode;
-    u32 m_byteCodeSize;
-};
-
-#define STRINGIFY(x) #x
-
-#ifdef WIN32
-#define DECLARE_SHADER(name) \
-{bgfx::RendererType::Direct3D11, STRINGIFY(name ## _vs), name ## _vs_dx11, sizeof(name ## _vs_dx11)}, \
-{bgfx::RendererType::Direct3D11, STRINGIFY(name ## _ps), name ## _ps_dx11, sizeof(name ## _ps_dx11)}, \
-{bgfx::RendererType::Direct3D12, STRINGIFY(name ## _vs), name ## _vs_dx11, sizeof(name ## _vs_dx11)}, \
-{bgfx::RendererType::Direct3D12, STRINGIFY(name ## _ps), name ## _ps_dx11, sizeof(name ## _ps_dx11)}, \
-{bgfx::RendererType::Vulkan, STRINGIFY(name ## _vs), name ## _vs_spirv, sizeof(name ## _vs_spirv)}, \
-{bgfx::RendererType::Vulkan, STRINGIFY(name ## _ps), name ## _ps_spirv, sizeof(name ## _ps_spirv)}, \
-{bgfx::RendererType::OpenGL, STRINGIFY(name ## _vs), name ## _vs_glsl, sizeof(name ## _vs_glsl)}, \
-{bgfx::RendererType::OpenGL, STRINGIFY(name ## _ps), name ## _ps_glsl, sizeof(name ## _ps_glsl)}
-#endif
-
-const std::vector<shaderEntry> shaderLibrary = {
-    DECLARE_SHADER(background),
-    DECLARE_SHADER(maskBackground),
-    DECLARE_SHADER(flat),
-    DECLARE_SHADER(noise),
-    DECLARE_SHADER(ramp),
-};
-
-bgfx::ShaderHandle loadBgfxProgramFromLibrary(const std::string& ShaderFileName)
-{
-    for (int i = 0; i < shaderLibrary.size(); i++)
-    {
-        if ((shaderLibrary[i].m_renderer == bgfx::getRendererType()) && (shaderLibrary[i].m_name == ShaderFileName))
-        {
-            bgfx::ShaderHandle handle = bgfx::createShader(bgfx::makeRef(shaderLibrary[i].m_byteCode, shaderLibrary[i].m_byteCodeSize));
-            bgfx::setName(handle, ShaderFileName.c_str());
-            return handle;
-        }
-    }
-
-    return BGFX_INVALID_HANDLE;
-}
-
-bgfx::ProgramHandle loadBgfxProgram(const std::string& VSFile, const std::string& PSFile)
-{
-    bgfx::ShaderHandle vsh = loadBgfxProgramFromLibrary(VSFile);
-    bgfx::ShaderHandle psh = loadBgfxProgramFromLibrary(PSFile);
-
-    assert(bgfx::isValid(vsh));
-    assert(bgfx::isValid(psh));
-
-    bgfx::ProgramHandle ProgramHandle = bgfx::createProgram(vsh, psh, true /* destroy shaders when program is destroyed */);
-    assert(bgfx::isValid(ProgramHandle));
-    return ProgramHandle;
-}
-
 bgfx::ProgramHandle getBackgroundShader()
 {
     static bgfx::ProgramHandle programHandle = BGFX_INVALID_HANDLE;
@@ -497,7 +392,6 @@ void osystem_drawBackground()
 
 
         bgfx::setState(0 | BGFX_STATE_WRITE_RGB
-            | BGFX_STATE_CULL_CW
             | BGFX_STATE_MSAA
         );
 
@@ -530,7 +424,14 @@ void renderGameWindow()
 {
     if (ImGui::Begin("Game"))
     {
-        ImGui::Image(fieldModelInspector_Texture, gameResolution);
+        if (bgfx::getCaps()->originBottomLeft)
+        {
+            ImGui::Image(fieldModelInspector_Texture, gameResolution, ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
+        }
+        else
+        {
+            ImGui::Image(fieldModelInspector_Texture, gameResolution, ImVec2(0.0f, 0.0f), ImVec2(1.0f, 1.0f));
+        }
     }
     ImGui::End();
 }
@@ -904,9 +805,11 @@ void osystem_fillPoly(float* buffer, int numPoint, unsigned char color, u8 polyT
             pVertex->Y = buffer[i * 3 + 1];
             pVertex->Z = buffer[i * 3 + 2];
 
-            pVertex->R = RGB_Pal[color * 3];
-            pVertex->G = RGB_Pal[color * 3 + 1];
-            pVertex->B = RGB_Pal[color * 3 + 2];
+			int bank = (color & 0xF0) >> 4;
+			int startColor = color & 0xF;
+			float colorf = startColor;
+			pVertex->U = colorf / 15.f;
+			pVertex->V = bank / 15.f;
             pVertex++;
         }
         break;
@@ -934,10 +837,12 @@ void osystem_fillPoly(float* buffer, int numPoint, unsigned char color, u8 polyT
             pVertex->U = (pVertex->X / 320.f)*50.f + polyMinX * 1.2f + polyMaxX;
             pVertex->V = (pVertex->Y / 200.f)*50.f + polyMinY * 0.7f + polyMaxY;
 
-            pVertex->R = RGB_Pal[color * 3];
-            pVertex->G = RGB_Pal[color * 3 + 1];
-            pVertex->B = RGB_Pal[color * 3 + 2];
-            pVertex++;
+			int bank = (color & 0xF0) >> 4;
+			int startColor = color & 0xF;
+			float colorf = startColor;
+			pVertex->U = colorf / 15.f;
+			pVertex->V = bank / 15.f;
+			pVertex++;
         }
         break;
     }
