@@ -129,7 +129,7 @@ typedef signed long S32;
 #include "version.h"
 #include "cosTable.h"
 #include "hqr.h"
-#include "time.h"
+#include "gameTime.h"
 #include "font.h"
 #include "aitdBox.h"
 #include "save.h"

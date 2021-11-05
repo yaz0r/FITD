@@ -7,10 +7,13 @@ include_directories(
     "${THIRD_PARTY}/soloud.cmake/soloud/include"
     "${THIRD_PARTY}/bgfx.cmake/bgfx/include"
     "${THIRD_PARTY}/bgfx.cmake/bx/include"
-    "${THIRD_PARTY}/bgfx.cmake/bx/include/compat/msvc"
     "${THIRD_PARTY}/bgfx.cmake/bgfx/3rdparty"
     "${THIRD_PARTY}/bgfx.cmake/bimg/include"
 )
+
+IF(${MSVC})
+    include_directories("${THIRD_PARTY}/bgfx.cmake/bx/include/compat/msvc")
+endif()
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
