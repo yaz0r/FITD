@@ -14,6 +14,19 @@
 #include "shaders/generated/flat_ps_spv.h"
 #endif
 
+#if BGFX_PLATFORM_SUPPORTS_METAL
+#include "shaders/generated/background_vs_mtl.h"
+#include "shaders/generated/background_ps_mtl.h"
+#include "shaders/generated/maskBackground_vs_mtl.h"
+#include "shaders/generated/maskBackground_ps_mtl.h"
+#include "shaders/generated/ramp_vs_mtl.h"
+#include "shaders/generated/ramp_ps_mtl.h"
+#include "shaders/generated/noise_vs_mtl.h"
+#include "shaders/generated/noise_ps_mtl.h"
+#include "shaders/generated/flat_vs_mtl.h"
+#include "shaders/generated/flat_ps_mtl.h"
+#endif
+
 #if BGFX_PLATFORM_SUPPORTS_GLSL
 #include "shaders/generated/background_vs_glsl.h"
 #include "shaders/generated/background_ps_glsl.h"

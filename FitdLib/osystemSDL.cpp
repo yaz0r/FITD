@@ -22,7 +22,9 @@ email                : yaz0r@yaz0r.net
 #include <SDL_thread.h>
 #include "osystem.h"
 #include "osystemAL.h"
+#include <backends/imgui_impl_sdl.h>
 
+void detectGame(void);
 void renderGameWindow();
 
 int osystem_mouseRight;
@@ -91,6 +93,33 @@ int FitdInit(int argc, char* argv[])
 
     osystem_init();
 
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_JOYSTICK) != 0)
+    {
+        assert(false);
+    }
+
+    unsigned int flags = 0;
+    flags |= SDL_WINDOW_RESIZABLE;
+    flags |= SDL_WINDOW_ALLOW_HIGHDPI;
+
+#ifdef __IPHONEOS__
+    flags |= SDL_WINDOW_FULLSCREEN;
+#endif
+
+    int resolution[2] = { 1280, 960 };
+
+    gWindowBGFX = SDL_CreateWindow("FITD", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, resolution[0], resolution[1], flags);
+    
+    char version[256];
+
+    getVersion(version);
+
+    printf(version);
+
+    detectGame();
+    
+    createBgfxInitParams();
+    
     SDL_CreateThread(FitdMain, "FitdMainThread", NULL);
 
     unsigned long int t_start = SDL_GetTicks();
@@ -134,9 +163,26 @@ int FitdInit(int argc, char* argv[])
 
         SDL_GL_MakeCurrent(NULL, NULL);
 
+        SDL_Event event;
+        while (SDL_PollEvent(&event))
+        {
+            ImGui_ImplSDL2_ProcessEvent(&event);
+
+            switch (event.type)
+            {
+            case SDL_QUIT:
+                gCloseApp = true;
+                break;
+            default:
+                break;
+            }
+        }
+        
         SDL_SemPost(startOfRender);
 
         SDL_SemWait(endOfRender);
+        
+        //SDL_RenderPresent(SDL_GetRenderer(gWindowBGFX));
     }
 
     return 0;

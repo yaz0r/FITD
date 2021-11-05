@@ -78,7 +78,7 @@ endif()
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES Darwin)
     addShaderProgramPermutation(${vsname} ${psname} ${varyingname} OSX glsl 430 430)
-    addShaderProgramPermutation(${vsname} ${psname} ${varyingname} OSX metal metal metal)
+    addShaderProgramPermutation(${vsname} ${psname} ${varyingname} OSX mtl metal metal)
 endif()
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES Windows)
@@ -89,7 +89,7 @@ endif()
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES Linux)
     addShaderProgramPermutation(${vsname} ${psname} ${varyingname} WINDOWS glsl 430 430)
-    addShaderProgramPermutation(${vsname} ${psname} ${varyingname} WINDOWS spirv spirv spirv)
+    addShaderProgramPermutation(${vsname} ${psname} ${varyingname} WINDOWS spv spirv spirv)
 endif()
 
 endmacro()

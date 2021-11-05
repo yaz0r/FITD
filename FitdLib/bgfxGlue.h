@@ -2,6 +2,7 @@
 
 #include <SDL.h>
 
+void createBgfxInitParams();
 int initBgfxGlue(int argc, char* argv[]);
 void deleteBgfxGlue();
 

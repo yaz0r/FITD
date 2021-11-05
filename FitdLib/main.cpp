@@ -4666,13 +4666,6 @@ int FitdMain(int argc, char* argv[])
 	osystem_startOfFrame();
 
 	//  int protectionToBeDone = 1;
-	char version[256];
-
-	getVersion(version);
-
-	printf(version);
-
-	detectGame();
 
 	sysInit();
 

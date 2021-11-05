@@ -60,21 +60,6 @@ void StartFrame()
         bgfx::reset(outputResolution[0], outputResolution[1]);
     }
 
-    SDL_Event event;
-    while (SDL_PollEvent(&event))
-    {
-        ImGui_ImplSDL2_ProcessEvent(&event);
-
-        switch (event.type)
-        {
-        case SDL_QUIT:
-            gCloseApp = true;
-            break;
-        default:
-            break;
-        }
-    }
-
     // Pull the input from SDL2 instead
     ImGui_ImplSDL2_NewFrame(gWindowBGFX);
     imguiBeginFrame(0, 0, 0, 0, outputResolution[0], outputResolution[1], -1);
@@ -118,32 +103,16 @@ void EndFrame()
     }
 }
 
-int initBgfxGlue(int argc, char* argv[])
+bgfx::Init initparam;
+
+void createBgfxInitParams()
 {
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_JOYSTICK) != 0)
-    {
-        assert(false);
-    }
-
-    unsigned int flags = 0;
-    flags |= SDL_WINDOW_RESIZABLE;
-    flags |= SDL_WINDOW_ALLOW_HIGHDPI;
-
-#ifdef __IPHONEOS__
-    flags |= SDL_WINDOW_FULLSCREEN;
-#endif
-
-    int resolution[2] = { 1280, 960 };
-
-    gWindowBGFX = SDL_CreateWindow("FITD", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, resolution[0], resolution[1], flags);
-
     SDL_SysWMinfo wmi;
     SDL_VERSION(&wmi.version);
     if (!SDL_GetWindowWMInfo(gWindowBGFX, &wmi)) {
-        return false;
+        return;
     }
-
-    bgfx::Init initparam;
+    
 #if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
     initparam.platformData.ndt = wmi.info.x11.display;
     initparam.platformData.nwh = (void*)(uintptr_t)wmi.info.x11.window;
@@ -157,7 +126,10 @@ int initBgfxGlue(int argc, char* argv[])
     initparam.platformData.ndt = wmi.info.vivante.display;
     initparam.platformData.nwh = wmi.info.vivante.window;
 #endif // BX_PLATFORM_
+}
 
+int initBgfxGlue(int argc, char* argv[])
+{
     //initparam.type = bgfx::RendererType::OpenGL;
     //initparam.type = bgfx::RendererType::Vulkan;
     bgfx::init(initparam);
@@ -167,7 +139,13 @@ int initBgfxGlue(int argc, char* argv[])
     ImGuiIO& io = ImGui::GetIO();
     //io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
+#if BX_PLATFORM_WINDOWS
     ImGui_ImplSDL2_InitForD3D(gWindowBGFX);
+#elif BX_PLATFORM_OSX
+    ImGui_ImplSDL2_InitForMetal(gWindowBGFX);
+#else
+    ImGui_ImplSDL2_InitForVulkan(gWindowBGFX);
+#endif
 
     return true;
 }

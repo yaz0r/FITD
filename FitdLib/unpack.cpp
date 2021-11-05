@@ -108,7 +108,7 @@ static unsigned short cpdist8[] = {
 }
 
 void PAK_huft_free(PAK_stream * pG, PAK_huft * t) {
-  register PAK_huft *p, *q;
+  PAK_huft *p, *q;
   p = t;
   while(p != (PAK_huft *)NULL) {
     q = (--p)->v.t;
@@ -124,17 +124,17 @@ int PAK_huft_build(PAK_stream * pG, unsigned * b, unsigned n, unsigned s, unsign
   unsigned f;                   /* i repeats in table every f entries */
   int g;                        /* maximum code length */
   int h;                        /* table level */
-  register unsigned i;          /* counter, current code */
-  register unsigned j;          /* counter */
-  register int k;               /* number of bits in current code */
+  unsigned i;          /* counter, current code */
+  unsigned j;          /* counter */
+  int k;               /* number of bits in current code */
   int lx[PAK_BMAX+1];           /* memory for l[-1..PAK_BMAX-1] */
   int *l = lx+1;                /* stack of bits per table */
-  register unsigned *p;         /* pointer into c[], b[], or v[] */
-  register PAK_huft *q;         /* points to current table */
+  unsigned *p;         /* pointer into c[], b[], or v[] */
+  PAK_huft *q;         /* points to current table */
   PAK_huft r;                   /* table entry for structure assignment */
   PAK_huft *u[PAK_BMAX];        /* table stack */
   unsigned v[PAK_N_MAX];        /* values in order of bit length */
-  register int w;               /* bits before this table == (l * h) */
+  int w;               /* bits before this table == (l * h) */
   unsigned x[PAK_BMAX+1];       /* bit offsets, then code stack */
   unsigned *xp;                 /* pointer into x */
   int y;                        /* number of dummy codes added */
@@ -304,14 +304,14 @@ int PAK_get_tree(PAK_stream * pG, unsigned * l, unsigned n) {
 /* Decompress the imploded data using coded literals and a sliding window (of size 2^(6+bdl) bytes). */
 int PAK_explode_lit(PAK_stream * pG, PAK_huft * tb, PAK_huft * tl, PAK_huft * td, unsigned bb, unsigned bl, unsigned bd, unsigned bdl) {
   unsigned long s;      /* bytes to decompress */
-  register unsigned e;  /* table entry flag/number of extra bits */
+  unsigned e;  /* table entry flag/number of extra bits */
   unsigned n, d;        /* length and index for copy */
   unsigned w;           /* current window position */
   PAK_huft *t;          /* pointer to table entry */
   unsigned mb, ml, md;  /* masks for bb, bl, and bd bits */
   unsigned mdl;         /* mask for bdl (distance lower) bits */
-  register unsigned long b; /* bit buffer */
-  register unsigned k;  /* number of bits in bit buffer */
+  unsigned long b; /* bit buffer */
+  unsigned k;  /* number of bits in bit buffer */
   unsigned u;           /* true if unPAK_FLUSHed */
 
   /* explode the coded data */
@@ -381,14 +381,14 @@ int PAK_explode_lit(PAK_stream * pG, PAK_huft * tb, PAK_huft * tl, PAK_huft * td
 /* Decompress the imploded data using uncoded literals and a sliding window (of size 2^(6+bdl) bytes). */
 int PAK_explode_nolit(PAK_stream * pG, PAK_huft * tl, PAK_huft * td, unsigned bl, unsigned bd, unsigned bdl) {
   unsigned long s;      /* unsigned chars to decompress */
-  register unsigned e;  /* table entry flag/number of PAK_extra bits */
+  unsigned e;  /* table entry flag/number of PAK_extra bits */
   unsigned n, d;        /* length and index for copy */
   unsigned w;           /* current window position */
   PAK_huft *t;          /* pointer to table entry */
   unsigned ml, md;      /* masks for bl and bd bits */
   unsigned mdl;         /* mask for bdl (distance lower) bits */
-  register unsigned long b; /* bit buffer */
-  register unsigned k;  /* number of bits in bit buffer */
+  unsigned long b; /* bit buffer */
+  unsigned k;  /* number of bits in bit buffer */
   unsigned u;           /* true if unPAK_FLUSHed */
 
   /* explode the coded data */
