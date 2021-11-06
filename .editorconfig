@@ -1,0 +1,14 @@
+# http://editorconfig.org
+
+root = true
+
+[*]
+tab_width = 4
+
+[*.{c,h,cpp,hpp,cc,hh,inl,m,mm,rc}]
+indent_style = space
+indent_size = 4
+
+[{CMakeLists.txt,*.cmake}]
+indent_style = space
+indent_size = 4
