@@ -80,10 +80,22 @@ void StartFrame()
     bgfx::touch(0);
 }
 
+extern bool debuggerVar_debugMenuDisplayed;
 void EndFrame()
 {
-    imguiEndFrame();
+    if (ImGui::GetIO().KeysDown[SDL_SCANCODE_GRAVE] && (ImGui::GetIO().KeysDownDuration[SDL_SCANCODE_GRAVE] == 0.f))
+    {
+        debuggerVar_debugMenuDisplayed = !debuggerVar_debugMenuDisplayed;
+    }
 
+    if (debuggerVar_debugMenuDisplayed)
+    {
+        imguiEndFrame();
+    }
+    else
+    {
+        ImGui::Render();
+    }
     bgfx::frame();
 
     {

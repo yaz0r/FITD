@@ -86,7 +86,7 @@ bool bFirst = true;
 int FitdInit(int argc, char* argv[])
 {
 #ifdef WIN32
-    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF | _CRTDBG_CHECK_ALWAYS_DF);
+    //_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF | _CRTDBG_CHECK_ALWAYS_DF);
 #endif
     startOfRender = SDL_CreateSemaphore(0);
     endOfRender = SDL_CreateSemaphore(0);

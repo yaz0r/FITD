@@ -29,6 +29,8 @@ unsigned int gameViewId = 1;
 bgfx::TextureHandle g_backgroundTexture = BGFX_INVALID_HANDLE;
 bgfx::TextureHandle g_paletteTexture = BGFX_INVALID_HANDLE;
 
+extern bool debuggerVar_debugMenuDisplayed;
+
 #define _USE_MATH_DEFINES
 #include <math.h>
 
@@ -211,7 +213,7 @@ void osystem_initGL(int screenWidth, int screenHeight)
 #endif
 }
 
-void osystem_setPalette(u8 * palette)
+void osystem_setPalette(u8* palette)
 {
     memcpy(RGB_Pal, palette, 256 * 3);
 
@@ -446,51 +448,58 @@ void osystem_startFrame()
 
     static ImVec2 oldWindowSize = { -1,-1 };
 
-    if (ImGui::Begin("Game"))
+    if (debuggerVar_debugMenuDisplayed)
     {
-        ImVec2 currentWindowSize = ImGui::GetContentRegionAvail();
+        gameViewId = 1;
+        if (ImGui::Begin("Game"))
+        {
+            ImVec2 currentWindowSize = ImGui::GetContentRegionAvail();
 
-        currentWindowSize[0] = std::max<int>(currentWindowSize[0], 1);
-        currentWindowSize[1] = std::max<int>(currentWindowSize[1], 1);
+            currentWindowSize[0] = std::max<int>(currentWindowSize[0], 1);
+            currentWindowSize[1] = std::max<int>(currentWindowSize[1], 1);
 
-        gameResolution = currentWindowSize;
+            gameResolution = currentWindowSize;
+        }
+        else
+        {
+            gameResolution = { 320, 200 };
+        }
+        ImGui::End();
+
+        if ((gameResolution[0] != oldWindowSize[0]) || (gameResolution[1] != oldWindowSize[1]))
+        {
+            oldWindowSize = gameResolution;
+
+            if (bgfx::isValid(fieldModelInspector_FB))
+            {
+                bgfx::destroy(fieldModelInspector_FB);
+            }
+
+            const uint64_t tsFlags = 0
+                //| BGFX_SAMPLER_MIN_POINT
+                //| BGFX_SAMPLER_MAG_POINT
+                //| BGFX_SAMPLER_MIP_POINT
+                | BGFX_SAMPLER_U_CLAMP
+                | BGFX_SAMPLER_V_CLAMP
+                ;
+
+            fieldModelInspector_Texture = bgfx::createTexture2D(gameResolution[0], gameResolution[1], false, 0, bgfx::TextureFormat::BGRA8, BGFX_TEXTURE_RT | tsFlags);
+            fieldModelInspector_Depth = bgfx::createTexture2D(gameResolution[0], gameResolution[1], false, 0, bgfx::TextureFormat::D24S8, BGFX_TEXTURE_RT | tsFlags);
+            std::array<bgfx::Attachment, 2> attachements;
+            attachements[0].init(fieldModelInspector_Texture);
+            attachements[1].init(fieldModelInspector_Depth);
+            fieldModelInspector_FB = bgfx::createFrameBuffer(2, &attachements[0], true);
+        }
+        bgfx::setViewFrameBuffer(gameViewId, fieldModelInspector_FB);
+        bgfx::setViewRect(gameViewId, 0, 0, gameResolution[0], gameResolution[1]);
     }
     else
     {
-        gameResolution = { 320, 200 };
-    }
-    ImGui::End();
-
-    if ((gameResolution[0] != oldWindowSize[0]) || (gameResolution[1] != oldWindowSize[1]))
-    {
-        oldWindowSize = gameResolution;
-
-        if (bgfx::isValid(fieldModelInspector_FB))
-        {
-            bgfx::destroy(fieldModelInspector_FB);
-        }
-
-        const uint64_t tsFlags = 0
-            //| BGFX_SAMPLER_MIN_POINT
-            //| BGFX_SAMPLER_MAG_POINT
-            //| BGFX_SAMPLER_MIP_POINT
-            | BGFX_SAMPLER_U_CLAMP
-            | BGFX_SAMPLER_V_CLAMP
-            ;
-
-        fieldModelInspector_Texture = bgfx::createTexture2D(gameResolution[0], gameResolution[1], false, 0, bgfx::TextureFormat::BGRA8, BGFX_TEXTURE_RT | tsFlags);
-        fieldModelInspector_Depth = bgfx::createTexture2D(gameResolution[0], gameResolution[1], false, 0, bgfx::TextureFormat::D24S8, BGFX_TEXTURE_RT | tsFlags);
-        std::array<bgfx::Attachment, 2> attachements;
-        attachements[0].init(fieldModelInspector_Texture);
-        attachements[1].init(fieldModelInspector_Depth);
-        fieldModelInspector_FB = bgfx::createFrameBuffer(2, &attachements[0], true);
+        gameViewId = 0;
+        bgfx::setViewFrameBuffer(gameViewId, BGFX_INVALID_HANDLE); //bind the backbuffer
     }
 
-
     {
-        bgfx::setViewFrameBuffer(gameViewId, fieldModelInspector_FB);
-        bgfx::setViewRect(gameViewId, 0, 0, gameResolution[0], gameResolution[1]);
-
         bgfx::setViewClear(gameViewId, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 255);
 
         bgfx::setViewName(gameViewId, "Game");
@@ -506,7 +515,7 @@ unsigned char frontBuffer[320 * 200];
 unsigned char physicalScreen[320 * 200];
 unsigned char physicalScreenRGB[320 * 200 * 3];
 
-void osystem_CopyBlockPhys(unsigned char *videoBuffer, int left, int top, int right, int bottom)
+void osystem_CopyBlockPhys(unsigned char* videoBuffer, int left, int top, int right, int bottom)
 {
     unsigned char* out = physicalScreenRGB;
     unsigned char* in = (unsigned char*)videoBuffer + left + top * 320;
@@ -641,13 +650,13 @@ void osystem_flushPendingPrimitives()
             | BGFX_STATE_MSAA
         );
 
-		static bgfx::UniformHandle paletteTextureUniform = BGFX_INVALID_HANDLE;
-		if (!bgfx::isValid(paletteTextureUniform))
-		{
-			paletteTextureUniform = bgfx::createUniform("s_paletteTexture", bgfx::UniformType::Sampler);
-		}
+        static bgfx::UniformHandle paletteTextureUniform = BGFX_INVALID_HANDLE;
+        if (!bgfx::isValid(paletteTextureUniform))
+        {
+            paletteTextureUniform = bgfx::createUniform("s_paletteTexture", bgfx::UniformType::Sampler);
+        }
 
-		bgfx::setTexture(1, paletteTextureUniform, g_paletteTexture);
+        bgfx::setTexture(1, paletteTextureUniform, g_paletteTexture);
 
         bgfx::setVertexBuffer(0, &transientBuffer);
         bgfx::submit(gameViewId, getFlatShader());
@@ -675,13 +684,13 @@ void osystem_flushPendingPrimitives()
             | BGFX_STATE_MSAA
         );
 
-		static bgfx::UniformHandle paletteTextureUniform = BGFX_INVALID_HANDLE;
-		if (!bgfx::isValid(paletteTextureUniform))
-		{
-			paletteTextureUniform = bgfx::createUniform("s_paletteTexture", bgfx::UniformType::Sampler);
-		}
+        static bgfx::UniformHandle paletteTextureUniform = BGFX_INVALID_HANDLE;
+        if (!bgfx::isValid(paletteTextureUniform))
+        {
+            paletteTextureUniform = bgfx::createUniform("s_paletteTexture", bgfx::UniformType::Sampler);
+        }
 
-		bgfx::setTexture(1, paletteTextureUniform, g_paletteTexture);
+        bgfx::setTexture(1, paletteTextureUniform, g_paletteTexture);
 
         bgfx::setVertexBuffer(0, &transientBuffer);
         bgfx::submit(gameViewId, getNoiseShader());
@@ -821,11 +830,11 @@ void osystem_fillPoly(float* buffer, int numPoint, unsigned char color, u8 polyT
             pVertex->Y = buffer[i * 3 + 1];
             pVertex->Z = buffer[i * 3 + 2];
 
-			int bank = (color & 0xF0) >> 4;
-			int startColor = color & 0xF;
-			float colorf = startColor;
-			pVertex->U = colorf / 15.f;
-			pVertex->V = bank / 15.f;
+            int bank = (color & 0xF0) >> 4;
+            int startColor = color & 0xF;
+            float colorf = startColor;
+            pVertex->U = colorf / 15.f;
+            pVertex->V = bank / 15.f;
             pVertex++;
         }
         break;
@@ -850,15 +859,15 @@ void osystem_fillPoly(float* buffer, int numPoint, unsigned char color, u8 polyT
             pVertex->Y = buffer[i * 3 + 1];
             pVertex->Z = buffer[i * 3 + 2];
 
-            pVertex->U = (pVertex->X / 320.f)*50.f + polyMinX * 1.2f + polyMaxX;
-            pVertex->V = (pVertex->Y / 200.f)*50.f + polyMinY * 0.7f + polyMaxY;
+            pVertex->U = (pVertex->X / 320.f) * 50.f + polyMinX * 1.2f + polyMaxX;
+            pVertex->V = (pVertex->Y / 200.f) * 50.f + polyMinY * 0.7f + polyMaxY;
 
-			int bank = (color & 0xF0) >> 4;
-			int startColor = color & 0xF;
-			float colorf = startColor;
-			pVertex->U = colorf / 15.f;
-			pVertex->V = bank / 15.f;
-			pVertex++;
+            int bank = (color & 0xF0) >> 4;
+            int startColor = color & 0xF;
+            float colorf = startColor;
+            pVertex->U = colorf / 15.f;
+            pVertex->V = bank / 15.f;
+            pVertex++;
         }
         break;
     }
@@ -1027,8 +1036,8 @@ void osystem_draw3dLine(float x1, float y1, float z1, float x2, float y2, float 
     if (shaderprogram == 0)
     {
         shaderprogram = compileShader(flatQuadVS, flatQuadPS);
-        vertexp = glGetAttribLocation(shaderprogram, (const GLchar *)"in_Position");
-        colorp = glGetAttribLocation(shaderprogram, (const GLchar *)"in_Color");
+        vertexp = glGetAttribLocation(shaderprogram, (const GLchar*)"in_Position");
+        colorp = glGetAttribLocation(shaderprogram, (const GLchar*)"in_Color");
     }
 
     glUseProgram(shaderprogram);
@@ -1131,7 +1140,7 @@ void osystem_draw3dQuad(float x1, float y1, float z1, float x2, float y2, float 
 
 void osystem_drawSphere(float X, float Y, float Z, u8 color, float size)
 {
-    osystem_drawPoint(X, Y, Z, color, size*3.14f);
+    osystem_drawPoint(X, Y, Z, color, size * 3.14f);
 }
 
 void osystem_drawPoint(float X, float Y, float Z, u8 color, float size)
@@ -1178,10 +1187,10 @@ void osystem_drawDebugText(const u32 X, const u32 Y, const u8* string)
         lineNumber = string[i] >> 4;
         colNumber = string[i] & 0xF;
 
-        textX1 = ((256.f / 16.f)*colNumber) / 256.f;
-        textY1 = ((256.f / 16.f)*lineNumber) / 256.f;
-        textX2 = ((256.f / 16.f)*(colNumber + 1)) / 256.f;
-        textY2 = ((256.f / 16.f)*(lineNumber + 1)) / 256.f;
+        textX1 = ((256.f / 16.f) * colNumber) / 256.f;
+        textY1 = ((256.f / 16.f) * lineNumber) / 256.f;
+        textX2 = ((256.f / 16.f) * (colNumber + 1)) / 256.f;
+        textY2 = ((256.f / 16.f) * (lineNumber + 1)) / 256.f;
 
         glBegin(GL_QUADS);
 
@@ -1207,7 +1216,7 @@ void osystem_drawDebugText(const u32 X, const u32 Y, const u8* string)
 }
 #endif
 
-void osystem_flip(unsigned char *videoBuffer)
+void osystem_flip(unsigned char* videoBuffer)
 {
     osystem_flushPendingPrimitives();
 }
