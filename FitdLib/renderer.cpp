@@ -1236,6 +1236,7 @@ int AffObjet(int x,int y,int z,int alpha,int beta,int gamma,void* modelPtr)
         }*/
         //
 
+        osystem_flushPendingPrimitives();
         return(0);
 }
 

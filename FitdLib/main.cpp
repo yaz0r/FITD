@@ -1467,6 +1467,11 @@ void createAITD1Mask()
 
 			int numMaskZone = *(s16*)(data);
 
+            int minX = 319;
+            int maxX = 0;
+            int minY = 199;
+            int maxY = 0;
+
 			/*if(isBgOverlayRequired( actorPtr->zv.ZVX1 / 10, actorPtr->zv.ZVX2 / 10,
 			actorPtr->zv.ZVZ1 / 10, actorPtr->zv.ZVZ2 / 10,
 			data+4,
@@ -1484,6 +1489,17 @@ void createAITD1Mask()
 
 					fillpoly((short*)src, numPoints, 0xFF);
 
+                    for (int verticeId = 0; verticeId <numPoints; verticeId++)
+                    {
+                        short verticeX = *(short*)(src + verticeId * 4 + 0);
+                        short verticeY = *(short*)(src + verticeId * 4 + 2);
+
+                        minX = std::min<int>(minX, verticeX);
+                        minY = std::min<int>(minY, verticeY);
+                        maxX = std::max<int>(maxX, verticeX);
+                        maxY = std::max<int>(maxY, verticeY);
+                    }
+
 					src+=numPoints*4;
 					//drawBgOverlaySub2(param);
 				}
@@ -1494,7 +1510,7 @@ void createAITD1Mask()
 
 			}
 
-			osystem_createMask(pDestMask->mask, viewedRoomIdx, maskIdx, (unsigned char*)aux, 0, 0, 319, 199);
+			osystem_createMask(pDestMask->mask, viewedRoomIdx, maskIdx, (unsigned char*)aux, minX-1, minY-1, maxX+1, maxY+1);
 
 			int numOverlay = *(s16*)(data);
 			data+=2;

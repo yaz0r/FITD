@@ -28,7 +28,7 @@ email                : yaz0r@yaz0r.net
 unsigned int gameViewId = 1;
 bgfx::TextureHandle g_backgroundTexture = BGFX_INVALID_HANDLE;
 bgfx::TextureHandle g_paletteTexture = BGFX_INVALID_HANDLE;
-
+extern int outputResolution[2];
 extern bool debuggerVar_debugMenuDisplayed;
 
 #define _USE_MATH_DEFINES
@@ -496,6 +496,8 @@ void osystem_startFrame()
     else
     {
         gameViewId = 0;
+        gameResolution[0] = outputResolution[0];
+        gameResolution[1] = outputResolution[1];
         bgfx::setViewFrameBuffer(gameViewId, BGFX_INVALID_HANDLE); //bind the backbuffer
     }
 
@@ -597,18 +599,24 @@ void osystem_setClip(float left, float top, float right, float bottom)
     float width = x2 - x1;
     float height = y2 - y1;
 
-#if 0
-    glScissor(x1, y1, width, height);
-#endif
+    float currentScissor[4];
+    currentScissor[0] = ((left - 1) / 320.f) * gameResolution[0];
+    currentScissor[1] = ((top - 1) / 200.f) * gameResolution[1];
+    currentScissor[2] = ((right - left + 2) / 320.f) * gameResolution[0];
+    currentScissor[3] = ((bottom - top + 2) / 200.f) * gameResolution[1];
+
+    currentScissor[0] = std::max<float>(currentScissor[0], 0);
+    currentScissor[1] = std::max<float>(currentScissor[1], 0);
+
+    bgfx::setScissor(currentScissor[0], currentScissor[1], currentScissor[2], currentScissor[3]);
 
     checkGL();
 }
 
 void osystem_clearClip()
 {
-#if 0
-    glDisable(GL_SCISSOR_TEST);
-#endif
+    bgfx::setScissor(0, 0, gameResolution[0], gameResolution[1]);
+
     checkGL();
 }
 
@@ -1314,8 +1322,6 @@ void osystem_drawMask(int roomId, int maskId)
     if (backgroundMode != backgroundModeEnum_2D)
         return;
 #endif
-
-    osystem_flushPendingPrimitives();
 
     static bgfx::UniformHandle backgroundTextureUniform = BGFX_INVALID_HANDLE;
     if (!bgfx::isValid(backgroundTextureUniform))
