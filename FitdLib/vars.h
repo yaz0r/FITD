@@ -510,8 +510,6 @@ typedef enum backgroundModeEnum backgroundModeEnum;
 extern backgroundModeEnum backgroundMode;
 #endif
 
-typedef std::vector<u8> tBuffer;
-
 struct sGroupState
 {
     s16 m_type; // 8

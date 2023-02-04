@@ -45,7 +45,7 @@ int make3dTatou(void)
     copyToScreen(tatou2d+770,frontBuffer);
     copyToScreen(frontBuffer,aux2);
 
-    osystem_CopyBlockPhys((unsigned char*)frontBuffer,0,0,320,200);
+    osystem_CopyBlockPhys(frontBuffer,0,0,320,200);
 
     FadeInPhys(8,0);
 

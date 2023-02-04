@@ -8,8 +8,12 @@
 
 #include "common.h"
 #include <time.h>
+
+#ifndef AITD_UE4
 #include "bgfxGlue.h"
 #include <bgfx/bgfx.h>
+#endif
+
 #include <array>
 
 extern "C" {
@@ -4622,7 +4626,9 @@ void detectGame(void)
 		currentCVarTable = AITD1KnownCVars;
 
 		printf("Detected Alone in the Dark\n");
+#ifndef AITD_UE4
         SDL_SetWindowTitle(gWindowBGFX, "Alone in the Dark");
+#endif
 		return;
 	}
 	if(fileExists("PERE.PAK"))
@@ -4632,7 +4638,9 @@ void detectGame(void)
 		currentCVarTable = AITD2KnownCVars;
 
 		printf("Detected Jack in the Dark\n");
+#ifndef AITD_UE4
         SDL_SetWindowTitle(gWindowBGFX, "Jack in the Dark");
+#endif
 		return;
 	}
 	if(fileExists("MER.PAK"))
@@ -4642,7 +4650,9 @@ void detectGame(void)
 		currentCVarTable = AITD2KnownCVars;
 
 		printf("Detected Alone in the Dark 2\n");
+#ifndef AITD_UE4
         SDL_SetWindowTitle(gWindowBGFX, "Alone in the Dark 2");
+#endif
 		return;
 	}
 	if(fileExists("AN1.PAK"))
@@ -4652,7 +4662,9 @@ void detectGame(void)
 		currentCVarTable = AITD2KnownCVars;
 
 		printf("Detected Alone in the Dark 3\n");
+#ifndef AITD_UE4
         SDL_SetWindowTitle(gWindowBGFX, "Alone in the Dark 3");
+#endif
 		return;
 	}
 	if(fileExists("PURSUIT.PAK"))
@@ -4662,7 +4674,9 @@ void detectGame(void)
 		currentCVarTable = AITD2KnownCVars; // TODO: figure this
 
 		printf("Detected Time Gate\n");
+#ifndef AITD_UE4
         SDL_SetWindowTitle(gWindowBGFX, "Time Gate");
+#endif
 		return;
 	}
 
@@ -4677,7 +4691,9 @@ extern "C" {
 
 int FitdMain(int argc, char* argv[])
 {
+#ifndef AITD_UE4
     initBgfxGlue(argc, argv);
+#endif
 
 	osystem_startOfFrame();
 

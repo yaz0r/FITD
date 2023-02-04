@@ -542,7 +542,7 @@ void HQR_Free(hqrEntryStruct* hqrPtr)
         {
             delete vBodies[i];
         }
-        vBodies.empty();
+        vBodies.clear();
     }
 
     for(i=0;i<hqrPtr->numMaxEntry;i++)

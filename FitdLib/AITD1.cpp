@@ -125,7 +125,7 @@ int makeIntroScreens(void)
 
     data = loadPak("ITD_RESS", AITD1_TITRE);
     copyToScreen(data + 770, frontBuffer);
-    osystem_CopyBlockPhys((unsigned char*)frontBuffer, 0, 0, 320, 200);
+    osystem_CopyBlockPhys(frontBuffer, 0, 0, 320, 200);
     FadeInPhys(8, 0);
     memcpy(logicalScreen, frontBuffer, 320 * 200);
     osystem_flip(NULL);
@@ -202,7 +202,7 @@ int selectHero(void)
         }
 
         copyToScreen(logicalScreen, frontBuffer);
-        osystem_CopyBlockPhys((unsigned char*)frontBuffer, 0, 0, 320, 200);
+        osystem_CopyBlockPhys(frontBuffer, 0, 0, 320, 200);
 
         if (var_4 != 0)
         {
@@ -306,15 +306,20 @@ void startAITD1()
     g_gameUseCDA = true;
     setPalette(currentGamePalette);
 
+#ifndef AITD_UE4
     if (!make3dTatou())
     {
         makeIntroScreens();
     }
+#endif
 
     while (1)
     {
+#ifndef AITD_UE4
         int startupMenuResult = processStartupMenu();
-
+#else
+        int startupMenuResult = 0;
+#endif
         switch (startupMenuResult)
         {
         case -1: // timeout

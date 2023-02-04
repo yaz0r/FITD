@@ -52,7 +52,7 @@ extern "C"{
 	void osystem_setPalette320x200(byte * palette);
 	void osystem_flip(unsigned char *videoBuffer);
 	void osystem_draw320x200BufferToScreen(unsigned char *videoBuffer);
-	void osystem_CopyBlockPhys(unsigned char *videoBuffer, int left, int top, int right, int bottom);
+	void osystem_CopyBlockPhys(unsigned char* videoBuffer, int left, int top, int right, int bottom);
 	void osystem_refreshFrontTextureBuffer();
 	void osystem_drawText(int X, int Y, char *text);
 	void osystem_drawTextColor(int X, int Y, char *string, unsigned char R, unsigned char G, unsigned char B);

@@ -520,7 +520,7 @@ unsigned char physicalScreenRGB[320 * 200 * 3];
 void osystem_CopyBlockPhys(unsigned char* videoBuffer, int left, int top, int right, int bottom)
 {
     unsigned char* out = physicalScreenRGB;
-    unsigned char* in = (unsigned char*)videoBuffer + left + top * 320;
+    unsigned char* in = (unsigned char*)&videoBuffer[0] + left + top * 320;
 
     int i;
     int j;
@@ -537,7 +537,7 @@ void osystem_CopyBlockPhys(unsigned char* videoBuffer, int left, int top, int ri
 
     for (i = top; i < bottom; i++)
     {
-        in = (unsigned char*)videoBuffer + left + i * 320;
+        in = (unsigned char*)&videoBuffer[0] + left + i * 320;
         unsigned char* out2 = physicalScreen + left + i * 320;
         for (j = left; j < right; j++)
         {
