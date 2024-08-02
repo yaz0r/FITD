@@ -916,10 +916,10 @@ void osystem_fillPoly(float* buffer, int numPoint, unsigned char color, u8 polyT
 
         int bank = (color & 0xF0) >> 4;
         int startColor = color & 0xF;
-        float colorStep = 1;
+        float colorStep = 1; // TODO: this should be the scanline ratio for the current resolution to original resolution
         if (polyType == 5)
         {
-            colorStep = 0.5; // to stretch the ramp by 2 for copper2
+            colorStep *= 0.5; // to stretch the ramp by 2 for copper2
         }
 
         for (int i = 0; i < numPoint; i++)
