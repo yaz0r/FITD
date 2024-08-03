@@ -32,7 +32,7 @@ struct rendererPointStruct
 
 struct primEntryStruct
 {
-	u8 polyType;
+	u8 material;
 	u8 color;
 	u16 size;
 	u16 numOfVertices;
@@ -741,28 +741,18 @@ void processPrim_Line(int primType, sPrimitive* ptr, char** out)
 
 void processPrim_Poly(int primType, sPrimitive* ptr, char** out)
 {
-    int i;
-    int numOfPointInPoly;
-    u8 polyColor;
-    u8 polyType;
-    float depth = 32000.f;
-
     primEntryStruct* pCurrentPrimEntry = &primTable[positionInPrimEntry];
 
     ASSERT(positionInPrimEntry < NUM_MAX_PRIM_ENTRY);
 
-    numOfPointInPoly = ptr->m_points.size();
-    polyType = ptr->m_subType;
-    polyColor = ptr->m_color;
-
     pCurrentPrimEntry->type = primTypeEnum_Poly;
-    pCurrentPrimEntry->numOfVertices = numOfPointInPoly;
-    pCurrentPrimEntry->color = polyColor;
-    pCurrentPrimEntry->polyType = polyType;
+    pCurrentPrimEntry->numOfVertices = ptr->m_points.size();
+    pCurrentPrimEntry->color = ptr->m_color;
+    pCurrentPrimEntry->material = ptr->m_material;
 
-    ASSERT(numOfPointInPoly < NUM_MAX_VERTEX_IN_PRIM);
-
-    for (i = 0; i < numOfPointInPoly; i++)
+    float depth = 32000.f;
+    ASSERT(pCurrentPrimEntry->numOfVertices < NUM_MAX_VERTEX_IN_PRIM);
+    for (int i = 0; i < pCurrentPrimEntry->numOfVertices; i++)
     {
         u16 pointIndex;
 
@@ -792,67 +782,70 @@ void processPrim_Poly(int primType, sPrimitive* ptr, char** out)
 
 void processPrim_Point(int primType, sPrimitive* ptr, char** out)
 {
-}
-
-void processPrim_Sphere(int primType, sPrimitive* ptr, char** out)
-{
-}
-
-
-void processPrim_Poly(int primType, char** ptr, char** out) // poly
-{
-    int i;
-    int numOfPointInPoly;
-    u8 polyColor;
-    u8 polyType;
-    float depth = 32000.f;
-
     primEntryStruct* pCurrentPrimEntry = &primTable[positionInPrimEntry];
 
     ASSERT(positionInPrimEntry < NUM_MAX_PRIM_ENTRY);
 
-    numOfPointInPoly = **ptr;
-    (*ptr)++;
+    pCurrentPrimEntry->type = primTypeEnum_Point;
+    pCurrentPrimEntry->numOfVertices = 1;
+    pCurrentPrimEntry->color = ptr->m_color;
+    pCurrentPrimEntry->material = ptr->m_material;
 
-    polyType = **ptr;
-    (*ptr)++;
-
-    polyColor = **ptr;
-    (*ptr)++;
-
-    pCurrentPrimEntry->type = primTypeEnum_Poly;
-    pCurrentPrimEntry->numOfVertices = numOfPointInPoly;
-    pCurrentPrimEntry->color = polyColor;
-    pCurrentPrimEntry->polyType = polyType;
-
-	ASSERT(numOfPointInPoly < NUM_MAX_VERTEX_IN_PRIM);
-
-    for(i=0;i<numOfPointInPoly;i++)
+    float depth = 32000.f;
     {
         u16 pointIndex;
+        pointIndex = ptr->m_points[0] * 6;
+        ASSERT((pointIndex % 2) == 0);
+        pCurrentPrimEntry->vertices[0].X = renderPointList[pointIndex / 2];
+        pCurrentPrimEntry->vertices[0].Y = renderPointList[(pointIndex / 2) + 1];
+        pCurrentPrimEntry->vertices[0].Z = renderPointList[(pointIndex / 2) + 2];
 
-        pointIndex = *(u16*)(*ptr);
-        (*ptr)+=2;
-
-        ASSERT((pointIndex%2) == 0);
-
-        pCurrentPrimEntry->vertices[i].X = renderPointList[pointIndex/2];
-        pCurrentPrimEntry->vertices[i].Y = renderPointList[(pointIndex/2)+1];
-        pCurrentPrimEntry->vertices[i].Z = renderPointList[(pointIndex/2)+2];
-
-        if(pCurrentPrimEntry->vertices[i].Z < depth)
-            depth = pCurrentPrimEntry->vertices[i].Z;
-
+        depth = pCurrentPrimEntry->vertices[0].Z;
     }
 
 #if !defined(AITD_UE4)
-    if(depth > 100)
+    if (depth > 100)
 #endif
     {
         positionInPrimEntry++;
 
         numOfPrimitiveToRender++;
-		ASSERT(positionInPrimEntry < NUM_MAX_PRIM_ENTRY);
+        ASSERT(positionInPrimEntry < NUM_MAX_PRIM_ENTRY);
+    }
+}
+
+void processPrim_Sphere(int primType, sPrimitive* ptr, char** out)
+{
+    primEntryStruct* pCurrentPrimEntry = &primTable[positionInPrimEntry];
+
+    ASSERT(positionInPrimEntry < NUM_MAX_PRIM_ENTRY);
+
+    pCurrentPrimEntry->type = primTypeEnum_Sphere;
+    pCurrentPrimEntry->numOfVertices = 1;
+    pCurrentPrimEntry->color = ptr->m_color;
+    pCurrentPrimEntry->material = ptr->m_material;
+    pCurrentPrimEntry->size = ptr->m_size;
+
+    float depth = 32000.f;
+    {
+        u16 pointIndex;
+        pointIndex = ptr->m_points[0] * 6;
+        ASSERT((pointIndex % 2) == 0);
+        pCurrentPrimEntry->vertices[0].X = renderPointList[pointIndex / 2];
+        pCurrentPrimEntry->vertices[0].Y = renderPointList[(pointIndex / 2) + 1];
+        pCurrentPrimEntry->vertices[0].Z = renderPointList[(pointIndex / 2) + 2];
+
+        depth = pCurrentPrimEntry->vertices[0].Z;
+    }
+
+#if !defined(AITD_UE4)
+    if (depth > 100)
+#endif
+    {
+        positionInPrimEntry++;
+
+        numOfPrimitiveToRender++;
+        ASSERT(positionInPrimEntry < NUM_MAX_PRIM_ENTRY);
     }
 }
 
@@ -885,42 +878,6 @@ void processPrim_Point(int primType, char** ptr, char** out) // point
 	}
     pCurrentPrimEntry->type = primTypeEnum_Point;
     pCurrentPrimEntry->color = pointColor;
-
-    pointIndex = *(u16*)(*ptr);
-    (*ptr)+=2;
-
-    ASSERT((pointIndex%2) == 0);
-
-    pCurrentPrimEntry->vertices[0].X = renderPointList[pointIndex/2];
-    pCurrentPrimEntry->vertices[0].Y = renderPointList[(pointIndex/2)+1];
-    depth = pCurrentPrimEntry->vertices[0].Z = renderPointList[(pointIndex/2)+2];
-
-    if(depth > 0)
-    {
-        positionInPrimEntry++;
-        numOfPrimitiveToRender++;
-		ASSERT(positionInPrimEntry < NUM_MAX_PRIM_ENTRY);
-    }
-}
-
-void processPrim_Sphere(int primType, char** ptr, char** out) // sphere
-{
-    u8 discColor;
-    u16 discSize;
-    u16 pointIndex;
-    float depth = 32000.f;
-    primEntryStruct* pCurrentPrimEntry = &primTable[positionInPrimEntry];
-
-    (*ptr)++;
-    discColor = **ptr;
-    (*ptr)++;
-    (*ptr)++;
-    discSize = *(u16*)(*ptr);
-    (*ptr)+=2;
-
-    pCurrentPrimEntry->type = primTypeEnum_Sphere;
-    pCurrentPrimEntry->color = discColor;
-    pCurrentPrimEntry->size = discSize;
 
     pointIndex = *(u16*)(*ptr);
     (*ptr)+=2;
@@ -999,7 +956,7 @@ void renderLine(primEntryStruct* pEntry) // line
 
 void renderPoly(primEntryStruct* pEntry) // poly
 {
-    osystem_fillPoly((float*)pEntry->vertices,pEntry->numOfVertices, pEntry->color, pEntry->polyType);
+    osystem_fillPoly((float*)pEntry->vertices,pEntry->numOfVertices, pEntry->color, pEntry->material);
 }
 
 void renderZixel(primEntryStruct* pEntry) // point
@@ -1015,18 +972,18 @@ void renderPoint(primEntryStruct* pEntry) // point
 {
     float transformedSize;
 	
-    transformedSize = ((5.f * (float)cameraFovX) / (float)(pEntry->vertices[0].Z+cameraPerspective));
+    transformedSize = ((1.f * (float)cameraFovX) / (float)(pEntry->vertices[0].Z+cameraPerspective));
 	
-    osystem_drawPoint(pEntry->vertices[0].X,pEntry->vertices[0].Y,pEntry->vertices[0].Z,pEntry->color,1);
+    osystem_drawPoint(pEntry->vertices[0].X,pEntry->vertices[0].Y,pEntry->vertices[0].Z,pEntry->color, transformedSize);
 }
 
 void renderBigPoint(primEntryStruct* pEntry) // point
 {
     float transformedSize;
 	
-    transformedSize = ((5.f * (float)cameraFovX) / (float)(pEntry->vertices[0].Z+cameraPerspective));
+    transformedSize = ((2.f * (float)cameraFovX) / (float)(pEntry->vertices[0].Z+cameraPerspective));
 	
-    osystem_drawPoint(pEntry->vertices[0].X,pEntry->vertices[0].Y,pEntry->vertices[0].Z,pEntry->color,4);
+    osystem_drawPoint(pEntry->vertices[0].X,pEntry->vertices[0].Y,pEntry->vertices[0].Z,pEntry->color, transformedSize);
 }
 
 void renderSphere(primEntryStruct* pEntry) // sphere
@@ -1035,7 +992,7 @@ void renderSphere(primEntryStruct* pEntry) // sphere
 
     transformedSize = (((float)pEntry->size * (float)cameraFovX) / (float)(pEntry->vertices[0].Z+cameraPerspective));
 
-    osystem_drawSphere(pEntry->vertices[0].X,pEntry->vertices[0].Y,pEntry->vertices[0].Z,pEntry->color,transformedSize*2);
+    osystem_drawSphere(pEntry->vertices[0].X,pEntry->vertices[0].Y,pEntry->vertices[0].Z,pEntry->color, transformedSize);
 }
 
 

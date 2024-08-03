@@ -127,9 +127,6 @@ void readKeyboard(void)
             case SDL_SCANCODE_C:
                 debuggerVar_noHardClip = !debuggerVar_noHardClip;
                 break;
-            case SDL_SCANCODE_D:
-                debugger_enterMainDebug();
-                break;
             case SDL_SCANCODE_B:
                 backgroundMode = backgroundModeEnum_3D;
                 break;

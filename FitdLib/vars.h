@@ -545,7 +545,7 @@ enum primTypeEnum
 struct sPrimitive
 {
     primTypeEnum m_type;
-    u8 m_subType;
+    u8 m_material;
     u8 m_color;
     u8 m_even;
     u16 m_size;

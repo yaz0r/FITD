@@ -12,6 +12,8 @@
 #include "shaders/generated/noise_ps_spv.h"
 #include "shaders/generated/flat_vs_spv.h"
 #include "shaders/generated/flat_ps_spv.h"
+#include "shaders/generated/sphere_vs_spv.h"
+#include "shaders/generated/sphere_ps_spv.h"
 #endif
 
 #if BGFX_PLATFORM_SUPPORTS_METAL
@@ -25,6 +27,8 @@
 #include "shaders/generated/noise_ps_mtl.h"
 #include "shaders/generated/flat_vs_mtl.h"
 #include "shaders/generated/flat_ps_mtl.h"
+#include "shaders/generated/sphere_vs_mtl.h"
+#include "shaders/generated/sphere_ps_mtl.h"
 #endif
 
 #if BGFX_PLATFORM_SUPPORTS_GLSL
@@ -38,6 +42,8 @@
 #include "shaders/generated/noise_ps_glsl.h"
 #include "shaders/generated/flat_vs_glsl.h"
 #include "shaders/generated/flat_ps_glsl.h"
+#include "shaders/generated/sphere_vs_glsl.h"
+#include "shaders/generated/sphere_ps_glsl.h"
 #endif
 
 #if BGFX_PLATFORM_SUPPORTS_DXBC
@@ -52,6 +58,8 @@
 #include "shaders/generated/noise_ps_dx11.h"
 #include "shaders/generated/flat_vs_dx11.h"
 #include "shaders/generated/flat_ps_dx11.h"
+#include "shaders/generated/sphere_vs_dx11.h"
+#include "shaders/generated/sphere_ps_dx11.h"
 #endif
 
 static const bgfx::EmbeddedShader s_embeddedShaders[] =
@@ -66,6 +74,8 @@ static const bgfx::EmbeddedShader s_embeddedShaders[] =
 	BGFX_EMBEDDED_SHADER(noise_ps),
 	BGFX_EMBEDDED_SHADER(ramp_vs),
 	BGFX_EMBEDDED_SHADER(ramp_ps),
+    BGFX_EMBEDDED_SHADER(sphere_vs),
+    BGFX_EMBEDDED_SHADER(sphere_ps),
 
 	BGFX_EMBEDDED_SHADER_END()
 };

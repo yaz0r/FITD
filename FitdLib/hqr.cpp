@@ -264,7 +264,7 @@ sBody* createBodyFromPtr(void* ptr)
         switch (newBody->m_primitives[i].m_type)
         {
         case primTypeEnum_Line:
-            newBody->m_primitives[i].m_subType = READ_LE_U8(bodyBuffer); bodyBuffer += 1;
+            newBody->m_primitives[i].m_material = READ_LE_U8(bodyBuffer); bodyBuffer += 1;
             newBody->m_primitives[i].m_color = READ_LE_U8(bodyBuffer); bodyBuffer += 1;
             newBody->m_primitives[i].m_even = READ_LE_U8(bodyBuffer); bodyBuffer += 1;
             newBody->m_primitives[i].m_points.resize(2);
@@ -275,7 +275,7 @@ sBody* createBodyFromPtr(void* ptr)
             break;
         case primTypeEnum_Poly:
             newBody->m_primitives[i].m_points.resize(READ_LE_U8(bodyBuffer)); bodyBuffer += 1;
-            newBody->m_primitives[i].m_subType = READ_LE_U8(bodyBuffer); bodyBuffer += 1;
+            newBody->m_primitives[i].m_material = READ_LE_U8(bodyBuffer); bodyBuffer += 1;
             newBody->m_primitives[i].m_color = READ_LE_U8(bodyBuffer); bodyBuffer += 1;
             for (int j = 0; j < newBody->m_primitives[i].m_points.size(); j++)
             {
@@ -285,7 +285,7 @@ sBody* createBodyFromPtr(void* ptr)
         case primTypeEnum_Point:
         case primTypeEnum_BigPoint:
         case primTypeEnum_Zixel:
-            newBody->m_primitives[i].m_subType = READ_LE_U8(bodyBuffer); bodyBuffer += 1;
+            newBody->m_primitives[i].m_material = READ_LE_U8(bodyBuffer); bodyBuffer += 1;
             newBody->m_primitives[i].m_color = READ_LE_U8(bodyBuffer); bodyBuffer += 1;
             newBody->m_primitives[i].m_even = READ_LE_U8(bodyBuffer); bodyBuffer += 1;
             newBody->m_primitives[i].m_points.resize(1);
@@ -295,7 +295,7 @@ sBody* createBodyFromPtr(void* ptr)
             }
             break;
         case primTypeEnum_Sphere:
-            newBody->m_primitives[i].m_subType = READ_LE_U8(bodyBuffer); bodyBuffer += 1;
+            newBody->m_primitives[i].m_material = READ_LE_U8(bodyBuffer); bodyBuffer += 1;
             newBody->m_primitives[i].m_color = READ_LE_U8(bodyBuffer); bodyBuffer += 1;
             newBody->m_primitives[i].m_even = READ_LE_U8(bodyBuffer); bodyBuffer += 1;
             newBody->m_primitives[i].m_size = READ_LE_U16(bodyBuffer); bodyBuffer += 2;
@@ -307,7 +307,7 @@ sBody* createBodyFromPtr(void* ptr)
             break;
         case processPrim_PolyTexture8:
             newBody->m_primitives[i].m_points.resize(READ_LE_U8(bodyBuffer)); bodyBuffer += 1;
-            newBody->m_primitives[i].m_subType = READ_LE_U8(bodyBuffer); bodyBuffer += 1;
+            newBody->m_primitives[i].m_material = READ_LE_U8(bodyBuffer); bodyBuffer += 1;
             newBody->m_primitives[i].m_color = READ_LE_U8(bodyBuffer); bodyBuffer += 1;
             for (int j = 0; j < newBody->m_primitives[i].m_points.size(); j++)
             {
@@ -317,7 +317,7 @@ sBody* createBodyFromPtr(void* ptr)
         case processPrim_PolyTexture9:
         case processPrim_PolyTexture10:
             newBody->m_primitives[i].m_points.resize(READ_LE_U8(bodyBuffer)); bodyBuffer += 1;
-            newBody->m_primitives[i].m_subType = READ_LE_U8(bodyBuffer); bodyBuffer += 1;
+            newBody->m_primitives[i].m_material = READ_LE_U8(bodyBuffer); bodyBuffer += 1;
             newBody->m_primitives[i].m_color = READ_LE_U8(bodyBuffer); bodyBuffer += 1;
             for (int j = 0; j < newBody->m_primitives[i].m_points.size(); j++)
             {

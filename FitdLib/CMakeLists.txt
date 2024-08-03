@@ -99,6 +99,7 @@ addShaderProgram(maskBackground_vs maskBackground_ps maskBackground.varying.def)
 addShaderProgram(flat_vs flat_ps flat.varying.def)
 addShaderProgram(noise_vs noise_ps noise.varying.def)
 addShaderProgram(ramp_vs ramp_ps ramp.varying.def)
+addShaderProgram(sphere_vs sphere_ps sphere.varying.def)
 
 assign_source_group(${SOURCES})
 

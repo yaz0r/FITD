@@ -69,37 +69,42 @@ struct polyVertex
     unsigned char A;
 };
 
-struct pointSpriteVertex
+struct sphereVertex
 {
     float X;
     float Y;
     float Z;
 
-    float size;
+    float U;
+    float V;
 
     unsigned char R;
     unsigned char G;
     unsigned char B;
     unsigned char A;
+
+    float centerX;
+    float centerY;
+    float size;
 };
 
 #define NUM_MAX_FLAT_VERTICES 5000*3
 #define NUM_MAX_NOISE_VERTICES 2000*3
 #define NUM_MAX_TRANSPARENT_VERTICES 1000*2
 #define NUM_MAX_RAMP_VERTICES 3000*3
-#define NUM_MAX_POINT_SPRITES 1000
+#define NUM_MAX_SPHERES 1000
 
 std::array<polyVertex, NUM_MAX_FLAT_VERTICES> flatVertices;
 std::array<polyVertex, NUM_MAX_NOISE_VERTICES> noiseVertices;
 std::array<polyVertex, NUM_MAX_TRANSPARENT_VERTICES> transparentVertices;
 std::array<polyVertex, NUM_MAX_RAMP_VERTICES> rampVertices;
-std::array<pointSpriteVertex, NUM_MAX_POINT_SPRITES> pointSprites;
+std::array<sphereVertex, NUM_MAX_SPHERES> sphereVertices;
 
 int numUsedFlatVertices = 0;
 int numUsedNoiseVertices = 0;
 int numUsedTransparentVertices = 0;
 int numUsedRampVertices = 0;
-int numUsedPointSprites = 0;
+int numUsedSpheres = 0;
 
 //static unsigned long int zoom = 0;
 
@@ -111,19 +116,6 @@ float fov = 0;
 char RGB_Pal[256 * 4];
 
 unsigned int    backTexture;
-
-//
-void checkGL()
-{
-#ifdef DEBUG
-    volatile GLenum error = glGetError();
-
-    //while (error != GL_NO_ERROR)
-    {
-        //assert(0);
-    }
-#endif
-}
 
 int g_screenWidth = 0;
 int g_screenHeight = 0;
@@ -302,6 +294,17 @@ bgfx::ProgramHandle getRampShader()
     if (!bgfx::isValid(programHandle))
     {
         programHandle = loadBgfxProgram("ramp_vs", "ramp_ps");
+    }
+
+    return programHandle;
+}
+
+bgfx::ProgramHandle getSphereShader()
+{
+    static bgfx::ProgramHandle programHandle = BGFX_INVALID_HANDLE;
+    if (!bgfx::isValid(programHandle))
+    {
+        programHandle = loadBgfxProgram("sphere_vs", "sphere_ps");
     }
 
     return programHandle;
@@ -609,15 +612,11 @@ void osystem_setClip(float left, float top, float right, float bottom)
     currentScissor[1] = std::max<float>(currentScissor[1], 0);
 
     bgfx::setScissor(currentScissor[0], currentScissor[1], currentScissor[2], currentScissor[3]);
-
-    checkGL();
 }
 
 void osystem_clearClip()
 {
     bgfx::setScissor(0, 0, gameResolution[0], gameResolution[1]);
-
-    checkGL();
 }
 
 void osystem_stopFrame()
@@ -736,21 +735,41 @@ void osystem_flushPendingPrimitives()
         bgfx::setVertexBuffer(0, &transientBuffer);
         bgfx::submit(gameViewId, getRampShader());
     }
-#if 0
-    if (numUsedPointSprites)
+
+    if(numUsedSpheres)
     {
-        /*
-        for (int i = 0; i < numUsedPointSprites; i++)
+        bgfx::VertexLayout layout;
+        layout
+            .begin()
+            .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
+            .add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
+            .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8)
+            .add(bgfx::Attrib::TexCoord1, 3, bgfx::AttribType::Float)
+            .end();
+
+        bgfx::TransientVertexBuffer transientBuffer;
+        bgfx::allocTransientVertexBuffer(&transientBuffer, numUsedSpheres, layout);
+
+        memcpy(transientBuffer.data, &sphereVertices[0], sizeof(sphereVertex)* numUsedSpheres);
+
+        bgfx::setState(0 | BGFX_STATE_WRITE_RGB
+            | BGFX_STATE_WRITE_A
+            | BGFX_STATE_WRITE_Z
+            | BGFX_STATE_DEPTH_TEST_LEQUAL
+            | BGFX_STATE_MSAA
+        );
+
+        static bgfx::UniformHandle paletteTextureUniform = BGFX_INVALID_HANDLE;
+        if (!bgfx::isValid(paletteTextureUniform))
         {
-            glPointSize(pointSprites[i].size); checkGL();
-            glBegin(GL_POINTS); checkGL();
-            glColor3ub(pointSprites[i].R, pointSprites[i].G, pointSprites[i].B); checkGL();
-            glVertex3f(pointSprites[i].X, pointSprites[i].Y, pointSprites[i].Z); checkGL();
-            glEnd(); checkGL();
+            paletteTextureUniform = bgfx::createUniform("s_paletteTexture", bgfx::UniformType::Sampler);
         }
-        */
-        checkGL();
+
+        bgfx::setTexture(1, paletteTextureUniform, g_paletteTexture);
+        bgfx::setVertexBuffer(0, &transientBuffer);
+        bgfx::submit(gameViewId, getSphereShader());
     }
+#if 0
     if (numUsedTransparentVertices)
     {
         /*
@@ -760,15 +779,12 @@ void osystem_flushPendingPrimitives()
         glDrawArrays(GL_TRIANGLES, 0, numUsedTransparentVertices); checkGL();
         glDisable(GL_BLEND); checkGL();
         */
-        checkGL();
     }
-
-    glDisable(GL_CULL_FACE);
 #endif
     numUsedFlatVertices = 0;
     numUsedNoiseVertices = 0;
     numUsedRampVertices = 0;
-    numUsedPointSprites = 0;
+    numUsedSpheres = 0;
     numUsedTransparentVertices = 0;
 }
 
@@ -779,13 +795,7 @@ void osystem_fillPoly(float* buffer, int numPoint, unsigned char color, u8 polyT
 
     assert(numPoint < MAX_POINTS_PER_POLY);
 
-    checkGL();
-
-    // default state:
-    // GL_VERTEX_ARRAY
-    // GL_COLOR_ARRAY
-
-    // compute the polygon bouding box
+    // compute the polygon bounding box
     float polyMinX = 320.f;
     float polyMaxX = 0.f;
     float polyMinY = 200.f;
@@ -1015,7 +1025,6 @@ void osystem_fillPoly(float* buffer, int numPoint, unsigned char color, u8 polyT
         break;
     }
     }
-    checkGL();
 }
 
 void osystem_draw3dLine(float x1, float y1, float z1, float x2, float y2, float z2, unsigned char color)
@@ -1148,81 +1157,53 @@ void osystem_draw3dQuad(float x1, float y1, float z1, float x2, float y2, float 
 
 void osystem_drawSphere(float X, float Y, float Z, u8 color, float size)
 {
-    osystem_drawPoint(X, Y, Z, color, size * 3.14f);
+    osystem_drawPoint(X, Y, Z, color, size);
 }
 
 void osystem_drawPoint(float X, float Y, float Z, u8 color, float size)
 {
-    pointSpriteVertex* pVertex = &pointSprites[numUsedPointSprites];
-    numUsedPointSprites++;
-    assert(numUsedPointSprites < NUM_MAX_POINT_SPRITES);
+    std::array<sphereVertex, 4> corners;
+    corners[0].X = X + size;
+    corners[0].Y = Y + size;
+    corners[0].Z = Z;
 
-    pVertex->X = X;
-    pVertex->Y = Y;
-    pVertex->Z = Z;
-    pVertex->size = size;
-    pVertex->R = RGB_Pal[color * 3];
-    pVertex->G = RGB_Pal[color * 3 + 1];
-    pVertex->B = RGB_Pal[color * 3 + 2];
-    pVertex->A = 128;
-}
+    corners[1].X = X + size;
+    corners[1].Y = Y - size;
+    corners[1].Z = Z;
 
-#ifdef FITD_DEBUGGER
-void osystem_drawDebugText(const u32 X, const u32 Y, const u8* string)
-{
-#if 0
-    u32 currentX = X;
-    u32 i;
-    u32 stringLength;
+    corners[2].X = X - size;
+    corners[2].Y = Y - size;
+    corners[2].Z = Z;
 
-    glBindTexture(GL_TEXTURE_2D, debugFontTexture);
-    glDisable(GL_DEPTH_TEST);
-    glEnable(GL_TEXTURE_2D);
-    glColor4ub(255, 255, 255, 255);
+    corners[3].X = X - size;
+    corners[3].Y = Y + size;
+    corners[3].Z = Z;
 
-    stringLength = strlen(string);
+    std::array<int, 2 * 3> mapping = { {
+            0,1,2,
+            0,2,3
+    } };
 
-    for (i = 0; i < stringLength; i++)
+    for(int i=0; i< mapping.size(); i++)
     {
-        float textX1;
-        float textY1;
-        float textX2;
-        float textY2;
+        sphereVertex* pVertex = &sphereVertices[numUsedSpheres];
+        numUsedSpheres++;
+        assert(numUsedSpheres < NUM_MAX_SPHERES);
 
-        u8 lineNumber;
-        u8 colNumber;
-
-        lineNumber = string[i] >> 4;
-        colNumber = string[i] & 0xF;
-
-        textX1 = ((256.f / 16.f) * colNumber) / 256.f;
-        textY1 = ((256.f / 16.f) * lineNumber) / 256.f;
-        textX2 = ((256.f / 16.f) * (colNumber + 1)) / 256.f;
-        textY2 = ((256.f / 16.f) * (lineNumber + 1)) / 256.f;
-
-        glBegin(GL_QUADS);
-
-        glTexCoord2f(textX1, textY1);
-        glVertex2d(currentX, Y);
-
-        glTexCoord2f(textX2, textY1);
-        glVertex2d(currentX + 8, Y);
-
-        glTexCoord2f(textX2, textY2);
-        glVertex2d(currentX + 8, Y + 8);
-
-        glTexCoord2f(textX1, textY2);
-        glVertex2d(currentX, Y + 8);
-
-        glEnd();
-
-        currentX += 4;
+        pVertex->X = corners[mapping[i]].X;
+        pVertex->Y = corners[mapping[i]].Y;
+        pVertex->Z = corners[mapping[i]].Z;
+        pVertex->U = (color & 0xF) / 15.f;
+        pVertex->V = ((color & 0xF0) >> 4) / 15.f;
+        pVertex->R = RGB_Pal[color * 3];
+        pVertex->G = RGB_Pal[color * 3 + 1];
+        pVertex->B = RGB_Pal[color * 3 + 2];
+        pVertex->A = 128;
+        pVertex->size = size;
+        pVertex->centerX = X;
+        pVertex->centerY = Y;
     }
-
-    glEnable(GL_DEPTH_TEST);
-#endif
 }
-#endif
 
 void osystem_flip(unsigned char* videoBuffer)
 {

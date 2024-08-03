@@ -90,10 +90,6 @@ extern "C"{
 	int osystem_playTrack(int trackId);
 	void osystem_playAdlib();
 
-#if defined(FITD_DEBUGGER ) && !defined(AITD_UE4)
-	void osystem_drawDebugText(const u32 X, const u32 Y, const u8* string);
-#endif
-
 #ifdef __cplusplus
 }
 #endif

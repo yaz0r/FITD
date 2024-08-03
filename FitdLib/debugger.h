@@ -14,8 +14,6 @@ extern bool debuggerVar_useBlackBG;
 extern bool debuggerVar_fastForward;
 ///////////////////////////////
 
-void debugger_enterMainDebug(void);
-void debugger_processDebugMenu(void);
 void debugger_draw(void);
 #endif // INTERNAL_DEBUGGER
 
