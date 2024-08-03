@@ -14,7 +14,7 @@ int musicEnabled;
 
 char* aux;
 char* aux2;
-std::vector<std::vector<s16>> bufferAnim;
+std::vector<std::vector<s16>> BufferAnim;
 
 char* logicalScreen;
 
@@ -23,11 +23,11 @@ int unkScreenVar2;
 
 std::vector<s16> CVars;
 
-char* priority;
+char* PtrPrioritySample;
 
-char* fontData;
+char* PtrFont;
 
-char* aitdBoxGfx;
+char* PtrCadre;
 
 unsigned char currentGamePalette[256*3];
 
@@ -47,7 +47,7 @@ textEntryStruct* tabTextes;
 u8* systemTextes;
 
 char JoyD = 0;
-char click = 0;
+char Click = 0;
 char key = 0;
 char localKey;
 char localJoyD;
@@ -114,8 +114,8 @@ s16 currentCameraTargetActor;
 s16 giveUp;
 s16 lightOff;
 int lightVar2;
-int soundVar1;
-int soundVar2;
+int LastPriority;
+int LastSample;
 s16 statusScreenAllowed;
 
 char* g_currentFloorRoomRawData = NULL;

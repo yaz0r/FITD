@@ -70,7 +70,7 @@ void startAITD3()
 
 					//          freeScene();
 
-					fadeOut(8,0);
+					FadeOutPhys(8,0);
 				}
 
 				break;
@@ -91,13 +91,13 @@ void drawInventoryAITD3()
 	switch (CVars[getCVarsIdx(TYPE_INVENTAIRE)])
 	{
 	case 0:
-		loadPakToPtr("ITD_RESS", AITD3_INVENTAIRE_CAVERNE, logicalScreen);
+		LoadPak("ITD_RESS", AITD3_INVENTAIRE_CAVERNE, logicalScreen);
 		break;
 	case 1:
-		loadPakToPtr("ITD_RESS", AITD3_INVENTAIRE_COWBOY, logicalScreen);
+		LoadPak("ITD_RESS", AITD3_INVENTAIRE_COWBOY, logicalScreen);
 		break;
 	case 2:
-		loadPakToPtr("ITD_RESS", AITD3_INVENTAIRE_COUGUAR, logicalScreen);
+		LoadPak("ITD_RESS", AITD3_INVENTAIRE_COUGUAR, logicalScreen);
 		break;
 	default:
 		assert(0);

@@ -560,7 +560,7 @@ int makeSaveFile(int entry)
 			if(objectTable[i].ANIM == 4 )
 			{
 				CVars[getCVarsIdx(FOG_FLAG)] = 0;
-				HQ_Free(HQ_Memory,objectTable[i].FRAME);
+				HQ_Free_Malloc(HQ_Memory,objectTable[i].FRAME);
 			}
 		}
 	}

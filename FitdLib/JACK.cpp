@@ -26,7 +26,7 @@ void JACK_ReadBook(int index, int type)
 			setPalette(lpalette);
 			free(pImage);
 			turnPageFlag = 1;
-			printText(index, 60, 10, 245, 190, 0, 124, 124);
+			Lire(index, 60, 10, 245, 190, 0, 124, 124);
 			break;
 		}
 	default:

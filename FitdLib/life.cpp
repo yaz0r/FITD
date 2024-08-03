@@ -1596,13 +1596,13 @@ void processLife(int lifeNum, bool callFoundLife)
                     currentLifePtr += 2;// AITD1 CD has an extra digit, related to the VOC files to play for the text?
                 }
 
-                fadeOut(0x20, 0);
+                FadeOutPhys(0x20, 0);
 
                 readBook(lifeTempVar2 + 1, lifeTempVar1);
 
                 if (g_gameId == AITD1)
                 {
-                    fadeOut(4, 0);
+                    FadeOutPhys(4, 0);
                 }
 
                 flagInitView = 2;
@@ -1631,15 +1631,15 @@ void processLife(int lifeNum, bool callFoundLife)
 
                 freezeTime();
 
-                fadeOut(32, 0);
-                loadPakToPtr("ITD_RESS", lifeTempVar1, aux);
+                FadeOutPhys(32, 0);
+                LoadPak("ITD_RESS", lifeTempVar1, aux);
                 unsigned char lpalette[0x300];
                 copyPalette((unsigned char*)aux + 64000, lpalette);
                 convertPaletteIfRequired(lpalette);
                 copyPalette(lpalette, currentGamePalette);
                 setPalette(lpalette);
                 turnPageFlag = false;
-                printText(lifeTempVar2 + 1, lifeTempVar3, lifeTempVar4, lifeTempVar5, lifeTempVar6, 0, lifeTempVar7, lifeTempVar8);
+                Lire(lifeTempVar2 + 1, lifeTempVar3, lifeTempVar4, lifeTempVar5, lifeTempVar6, 0, lifeTempVar7, lifeTempVar8);
 
                 flagInitView = 2;
 
@@ -1989,11 +1989,11 @@ void processLife(int lifeNum, bool callFoundLife)
 
                 freezeTime();
 
-                loadPakToPtr("ITD_RESS", pictureIndex, aux);
+                LoadPak("ITD_RESS", pictureIndex, aux);
 
                 if (g_gameId > AITD1)
                 {
-                    fadeOut(0x10, 0);
+                    FadeOutPhys(0x10, 0);
                     unsigned char lpalette[0x300];
                     copyPalette((unsigned char*)aux + 64000, lpalette);
                     convertPaletteIfRequired(lpalette);
@@ -2001,7 +2001,7 @@ void processLife(int lifeNum, bool callFoundLife)
                     setPalette(lpalette);
                 }
 
-                copyToScreen(aux, frontBuffer);
+                FastCopyScreen(aux, frontBuffer);
                 osystem_CopyBlockPhys((unsigned char*)frontBuffer, 0, 0, 320, 200);
                 osystem_drawBackground();
 
@@ -2022,7 +2022,7 @@ void processLife(int lifeNum, bool callFoundLife)
 
                     if (time > (unsigned int)delay)
                         break;
-                } while (!key && !click);
+                } while (!key && !Click);
 
                 unfreezeTime();
 
@@ -2030,7 +2030,7 @@ void processLife(int lifeNum, bool callFoundLife)
 
                 if (g_gameId > AITD1)
                 {
-                    fadeOut(0x10, 0);
+                    FadeOutPhys(0x10, 0);
                 }
                 break;
             }
@@ -2418,11 +2418,11 @@ void processLife(int lifeNum, bool callFoundLife)
             case LM_WAIT_GAME_OVER:
             {
                 appendFormated("LM_WAIT_GAME_OVER ");
-                while (key || JoyD || click)
+                while (key || JoyD || Click)
                 {
                     process_events();
                 }
-                while (!key && !JoyD && click)
+                while (!key && !JoyD && Click)
                 {
                     process_events();
                 }

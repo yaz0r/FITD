@@ -15,9 +15,15 @@
 #endif
 
 #include <array>
+#include <filesystem>
 
 extern "C" {
 	extern char homePath[512];
+}
+
+FILE* Open(const char* filename, const char* mode) {
+    std::filesystem::path path = std::filesystem::path(homePath) / filename;
+    return fopen(path.string().c_str(), mode);
 }
 
 int input5;
@@ -243,7 +249,7 @@ void executeFoundLife(int objIdx)
 	}
 }
 
-void sysInitSub1(char* var0, char* var1)
+void InitCopyBox(char* var0, char* var1)
 {
 	screenSm1 = var0;
 	screenSm2 = var0;
@@ -299,7 +305,7 @@ void allocTextes(void)
 		assert(0);
 	}
 
-	systemTextes = (u8*)loadPakSafe(languageNameString, 0); // todo: use real language name
+	systemTextes = (u8*)CheckLoadMallocPak(languageNameString, 0); // todo: use real language name
 	textLength = getPakSize(languageNameString, 0);
 
 	for(currentIndex=0;currentIndex<NUM_MAX_TEXT_ENTRY;currentIndex++)
@@ -342,7 +348,7 @@ void allocTextes(void)
 
 				tabTextes[textCounter].index = stringIndex;
 				tabTextes[textCounter].textPtr = stringPtr;
-				tabTextes[textCounter].width = computeStringWidth(stringPtr);
+				tabTextes[textCounter].width = ExtGetSizeFont(stringPtr);
 
 				textCounter++;
 			}
@@ -355,10 +361,8 @@ void allocTextes(void)
 	}
 }
 
-void sysInit(void)
+void OpenProgram(void)
 {
-	int i;
-
 	//time_t ltime;
 	FILE* fHandle;
 
@@ -394,14 +398,14 @@ void sysInit(void)
 		fatalError(1,"Aux2");
 	}
 
-	sysInitSub1(aux2,logicalScreen);
-	/*  sysInitSub2(aux2);
-	sysInitSub3(aux2); */
+	InitCopyBox(aux2,logicalScreen);
+	/*  InitCopyPlot(aux2);
+	InitSpecialCopyPoly(aux2); */
 
-    bufferAnim.resize(NB_BUFFER_ANIM);
+    BufferAnim.resize(NB_BUFFER_ANIM);
     for (int i = 0; i < NB_BUFFER_ANIM; i++)
     {
-        bufferAnim[i].resize(SIZE_BUFFER_ANIM);
+        BufferAnim[i].resize(SIZE_BUFFER_ANIM);
     }
 
 	switch(g_gameId)
@@ -409,14 +413,14 @@ void sysInit(void)
 	case AITD3:
 		{
 #ifdef TARGET_OS_IPHONE
-			fontData = loadPakSafe("ITD_RESS",1);
+			PtrFont = CheckLoadMallocPak("ITD_RESS",1);
 #else
 			FILE* fHandle = fopen("font.bin", "rb");
 			fseek(fHandle, 0, SEEK_END);
 			int fontSize = ftell(fHandle);
-			fontData = (char*)malloc(fontSize);
+			PtrFont = (char*)malloc(fontSize);
 			fseek(fHandle, 0, SEEK_SET);
-			fread(fontData, fontSize, 1, fHandle);
+			fread(PtrFont, fontSize, 1, fHandle);
 			fclose(fHandle);
 #endif
 			break;
@@ -424,7 +428,7 @@ void sysInit(void)
 	case JACK:
 	case AITD2:
 		{
-			fontData = loadPakSafe("ITD_RESS",1);
+			PtrFont = CheckLoadMallocPak("ITD_RESS",1);
 			/*
 			int fontSize = getPakSize("ITD_RESS",1);
 			FILE* fhandle = fopen("font.bin", "wb+");
@@ -434,25 +438,25 @@ void sysInit(void)
 		}
 	case AITD1:
 		{
-			fontData = loadPakSafe("ITD_RESS",5);
+			PtrFont = CheckLoadMallocPak("ITD_RESS",5);
 			break;
 		}
     case TIMEGATE:
-        fontData = loadPakSafe("ITD_RESS", 2);
+        PtrFont = CheckLoadMallocPak("ITD_RESS", 2);
         break;
 	default:
 		assert(0);
 	}
 
-	initFont(fontData, 14);
+	ExtSetFont(PtrFont, 14);
 
 	if(g_gameId == AITD1)
 	{
-		setFontSpace(2,0);
+		SetFontSpace(2,0);
 	}
 	else
 	{
-		setFontSpace(2,1);
+		SetFontSpace(2,1);
 	}
 
 	switch(g_gameId)
@@ -461,39 +465,32 @@ void sysInit(void)
 	case AITD2:
 	case AITD3:
 		{
-			aitdBoxGfx = loadPakSafe("ITD_RESS",0);
+			PtrCadre = CheckLoadMallocPak("ITD_RESS",0);
 			break;
 		}
 	case AITD1:
 		{
-			aitdBoxGfx = loadPakSafe("ITD_RESS",4);
+			PtrCadre = CheckLoadMallocPak("ITD_RESS",4);
 			break;
 		}
 	}
 
-	priority = loadFromItd("PRIORITY.ITD");
+	PtrPrioritySample = loadFromItd("PRIORITY.ITD");
 
-	char definesPath[512];
-	strcpy(definesPath, homePath);
-	strcat(definesPath, "DEFINES.ITD");
-
-	fHandle = fopen(definesPath,"rb");
-	if(!fHandle)
-	{
-		fatalError(0,"DEFINES.ITD");
-	}
-
-	///////////////////////////////////////////////
-	{
-		fread(&CVars[0], CVars.size(),2,fHandle);
-		fclose(fHandle);
-
-		for(i=0;i< CVars.size();i++)
-		{
-			CVars[i] = ((CVars[i]&0xFF)<<8) | ((CVars[i]&0xFF00)>>8);
-		}
-	}
-	//////////////////////////////////////////////
+    // read cvars definitions
+    {
+        fHandle = Open("DEFINES.ITD", "rb");
+        if (!fHandle)
+        {
+            fatalError(0, "DEFINES.ITD");
+        }
+        for (int i = 0; i < CVars.size(); i++) {
+            s16 cvarValue = 0;
+            fread(&cvarValue, 2, 1, fHandle);
+            CVars[i] = READ_BE_S16(&cvarValue);
+        }
+        fclose(fHandle);
+    }
 
 	allocTextes();
 
@@ -593,7 +590,7 @@ void loadPalette(void)
 	}
 	else
 	{
-		loadPakToPtr("ITD_RESS",3,aux);
+		LoadPak("ITD_RESS",3,aux);
 	}
 	copyPalette((unsigned char*)aux,currentGamePalette);
 
@@ -603,7 +600,7 @@ void loadPalette(void)
 	// to finish
 }
 
-void HQ_Free(hqrEntryStruct* hqrPtr, int index)
+void HQ_Free_Malloc(hqrEntryStruct* hqrPtr, int index)
 {
 }
 
@@ -638,47 +635,47 @@ void readBook(int index, int type)
 	unfreezeTime();
 }
 
-int printText(int index, int left, int top, int right, int bottom, int demoMode, int color, int shadow)
+int Lire(int index, int startx, int top, int endx, int bottom, int demoMode, int color, int shadow)
 {
 	bool lastPageReached = false;
 	u8 tabString[] = "    ";
-	int isFirstPage = 1;
-	int currentPage = 0;
+	int firstpage = 1;
+	int page = 0;
 	int quit = 0;
 	int previousPage = -1;
 	int var_1C3;
-	std::array<u8*, 100> localTextTable;
+	std::array<u8*, 100> ptrpage;
 	int currentTextIdx;
 	int maxStringWidth;
 	u8* textPtr;
 
-	initFont(fontData, color);
+	ExtSetFont(PtrFont, color);
 
-	maxStringWidth = right - left + 4;
+	maxStringWidth = endx - startx + 4;
 
 	int textIndexMalloc = HQ_Malloc(HQ_Memory,getPakSize(languageNameString,index)+300);
 	textPtr = (u8*)HQ_PtrMalloc(HQ_Memory, textIndexMalloc);
 
-	if(!loadPakToPtr( languageNameString, index, (char*)textPtr))
+	if(!LoadPak( languageNameString, index, (char*)textPtr))
 	{
 		fatalError(1, languageNameString );
 	}
 
-    localTextTable.fill(nullptr);
-	localTextTable[0] = textPtr;
+    ptrpage.fill(nullptr);
+	ptrpage[0] = textPtr;
 
-	//  soundVar2 = -1;
-	//  soundVar1 = -1;
+	//  LastSample = -1;
+	//  LastPriority = -1;
 
 	while(!quit)
 	{
 		u8* ptrt;
 		int currentTextY;
-		copyToScreen(aux,logicalScreen);
+		FastCopyScreen(aux,logicalScreen);
 		process_events();
-		setClip(left,top,right,bottom);
+		SetClip(startx,top,endx,bottom);
 
-		ptrt = localTextTable[currentPage];
+		ptrt = ptrpage[page];
 
 		currentTextY = top;
 		lastPageReached = false;
@@ -696,249 +693,205 @@ int printText(int index, int left, int top, int right, int bottom, int demoMode,
 
 			int interWordSpace = 0;
 
-parseSpe: while(*ptrt == '#')
-		  {
-			  //char* var_1BE = var_1C2;
-			  ptrt++;
+            while (true) {
+                while (*ptrt == '#')
+                {
+                    //char* var_1BE = var_1C2;
+                    ptrt++;
 
-			  switch(*(ptrt++))
-			  {
-			  case 'P': // page change
-				  {
-					  if(currentTextY>top) // Hu ?
-						  goto pageChange;
-					  break;
-				  }
-			  case 'T': // tab
-				  {
-					  currentText->textPtr = tabString;
-					  currentText->width = computeStringWidth(currentText->textPtr)+3;
-					  var_1BA+=currentText->width;
-					  numWordInLine++;
-					  currentText++;
-					  break;
-				  }
-			  case 'C': // center
-				  {
-					  line_type &= 0xFFFE;
-					  line_type |= 8;
-					  break;
-				  }
-			  case 'G': // print number
-				  {
-					  currentTextIdx = 0;
+                    switch (*(ptrt++))
+                    {
+                    case 'P': // page change
+                    {
+                        if (currentTextY > top) // Hu ?
+                            goto pageChange;
+                        break;
+                    }
+                    case 'T': // tab
+                    {
+                        currentText->textPtr = tabString;
+                        currentText->width = ExtGetSizeFont(currentText->textPtr) + 3;
+                        var_1BA += currentText->width;
+                        numWordInLine++;
+                        currentText++;
+                        break;
+                    }
+                    case 'C': // center
+                    {
+                        line_type &= 0xFFFE;
+                        line_type |= 8;
+                        break;
+                    }
+                    case 'G': // print number
+                    {
+                        currentTextIdx = 0;
 
-					  while(*ptrt>='0' && *ptrt<='9')
-					  {
-						  currentTextIdx = (currentTextIdx * 10 + *ptrt - 48);
-						  ptrt ++;
-					  }
+                        while (*ptrt >= '0' && *ptrt <= '9')
+                        {
+                            currentTextIdx = (currentTextIdx * 10 + *ptrt - 48);
+                            ptrt++;
+                        }
 
-					  if(loadPakToPtr("ITD_RESS",9,aux2))
-					  {
-						  /*  var_C = printTextSub3(currentTextIdx,aux2);
-						  var_A = printTextSub4(currentTextIdx,aux2);
+                        if (LoadPak("ITD_RESS", 9, aux2))
+                        {
+                            assert(0); // when is this used?
+                            /*  var_C = printTextSub3(currentTextIdx,aux2);
+                            var_A = printTextSub4(currentTextIdx,aux2);
 
-						  if(currentTextY + var_A > bottom)
-						  {
-						  var_1C2 = var_1BE;
+                            if(currentTextY + var_A > bottom)
+                            {
+                            var_1C2 = var_1BE;
 
-						  goto pageChange;
-						  }
-						  else
-						  {
-						  printTextSub5((((right-left)/2)+left)-var_C, currentTextY, currentTextIdx, aux2);
-						  currentTextY = var_A;
-						  }*/
-					  }
+                            goto pageChange;
+                            }
+                            else
+                            {
+                            printTextSub5((((right-left)/2)+left)-var_C, currentTextY, currentTextIdx, aux2);
+                            currentTextY = var_A;
+                            }*/
+                        }
 
-					  break;
-				  }
-			  }
-		  }
+                        break;
+                    }
+                    }
+                }
 
-		  currentText->textPtr = ptrt;
+                currentText->textPtr = ptrt;
 
-		  do
-		  {
-			  var_1C3 = *((unsigned char*)ptrt++);
-		  }while(var_1C3>' '); // go to the end of the string
+                do
+                {
+                    var_1C3 = *((unsigned char*)ptrt++);
+                } while (var_1C3 > ' '); // go to the end of the string
 
-		  *(ptrt-1) = 0; // add end of string marker to cut the word
+                *(ptrt - 1) = 0; // add end of string marker to cut the word
 
-		  currentStringWidth = computeStringWidth(currentText->textPtr) + 3;
+                currentStringWidth = ExtGetSizeFont(currentText->textPtr) + 3;
 
-		  if(currentStringWidth <= maxStringWidth)
-		  {
-			  if( var_1BA + currentStringWidth > maxStringWidth )
-			  {
-				  ptrt = currentText->textPtr;
-			  }
-			  else
-			  {
-				  currentText->width = currentStringWidth;
-				  var_1BA += currentStringWidth;
+                if (currentStringWidth > maxStringWidth) {
+                    quit = 1;
+                    break;
+                }
 
-				  numWordInLine++;
-				  currentText++;
+                if (var_1BA + currentStringWidth > maxStringWidth)
+                {
+                    ptrt = currentText->textPtr;
+                    break;
+                }
 
-				  switch(var_1C3) // eval the character that caused the 'end of word' state
-				  {
-				  case 0x1A: // end of text
-					  {
-						  line_type &= 0xFFFE;
-						  line_type |= 4;
-						  lastPageReached = true;
+                currentText->width = currentStringWidth;
+                var_1BA += currentStringWidth;
 
-						  break;
-					  }
-				  case 0x0D:
-				  case 0x00:
-					  {
-						  if(*ptrt < ' ')
-						  {
-							  if(*(++ptrt) == 0xD)
-							  {
-								  ptrt+=2;
-								  line_type&=0xFFFE;
-								  line_type|=2;
-							  }
-							  else
-							  {
-								  if(*ptrt=='#')
-								  {
-									  line_type &=0xFFFE;
-								  }
-							  }
-						  }
-						  else
-						  {
-							  goto parseSpe;
-						  }
-						  break;
-					  }
-				  default:
-					  {
-						  goto parseSpe;
-						  break;
-					  }
-				  }
-			  }
-		  }
-		  else
-		  {
-			  quit = 1;
-		  }
+                numWordInLine++;
+                currentText++;
 
-		  if(line_type & 1) // stretch words on line
-		  {
-			  //interWordSpace = (maxStringWidth - var_1BA) / (numWordInLine-1);
-		  }
+                // eval the character that caused the 'end of word' state
+                if (var_1C3 == 26) {
+                    line_type &= 0xFFFE;
+                    line_type |= 4;
+                    lastPageReached = true;
+                    break;
+                }
 
-		  currentText = textTable;
-		  currentTextX;
+                if (((var_1C3 == 13) || (var_1C3 == 0)) && (*ptrt < ' ')) {
+                    ++ptrt;
+                    if (*ptrt == 0xD)
+                    {
+                        ptrt += 2;
+                        line_type &= 0xFFFE;
+                        line_type |= 2;
+                        break;
+                    }
+                    if (*ptrt == '#')
+                    {
+                        line_type &= 0xFFFE;
+                        break;
+                    }
+                }
+            }
 
-		  if(line_type & 8) // center
-		  {
-			  currentTextX = left + ((maxStringWidth - var_1BA) / 2);
-		  }
-		  else
-		  {
-			  currentTextX = left;
-		  }
+            if(line_type & 1) // stretch words on line
+            {
+                interWordSpace = (maxStringWidth - var_1BA) / (numWordInLine-1);
+            }
 
-		  currentTextIdx = 0;
+            currentText = textTable;
 
-		  while(currentTextIdx < numWordInLine)
-		  {
-			  renderText(currentTextX,currentTextY,logicalScreen,currentText->textPtr);
+            if (line_type & 8) // center
+            {
+                currentTextX = startx + ((maxStringWidth - var_1BA) / 2);
+            }
+            else
+            {
+                currentTextX = startx;
+            }
 
-			  currentTextX += currentText->width + interWordSpace; // add inter word space
+            for (int i = 0; i < numWordInLine; i++) {
+                renderText(currentTextX, currentTextY, logicalScreen, currentText->textPtr);
+                currentTextX += currentText->width + interWordSpace; // add inter word space
+                currentText++;
+            }
+            currentTextIdx = 0;
 
-			  currentText++;
-			  currentTextIdx++;
-		  }
 
-		  if(line_type&2) // font size
-		  {
-			  currentTextY += 8;
-		  }
+            if (line_type & 2) // font size
+            {
+                currentTextY += 8;
+            }
 
-		  currentTextY += 16;
+            currentTextY += 16;
+
+            if (lastPageReached)
+                break;
+        }
+
+        pageChange:
+        if(lastPageReached)
+		{
+			*(ptrt-1) = 0x1A; // rewrite End Of Text
+		}
+		else
+		{
+			ptrpage[page+1] = ptrt;
 		}
 
-		if(!lastPageReached || bottom+16<currentTextY)
+		if(demoMode == 0)
 		{
-pageChange: if(lastPageReached)
+			if(page>0)
 			{
-				*(ptrt-1) = 0x1A;
-			}
-			else
-			{
-				localTextTable[currentPage+1] = ptrt;
+				AffSpfI(startx-19,185,12,PtrCadre);
 			}
 
-			if(demoMode==0)
+			if(!lastPageReached)
 			{
-				if(currentPage>0)
-				{
-					afficheSpriteI(left-19,185,12,aitdBoxGfx);
-				}
+				AffSpfI(endx+4,185,11,PtrCadre);
+			}
+		}
 
-				if(!lastPageReached)
-				{
-					afficheSpriteI(right+4,185,11,aitdBoxGfx);
-				}
+		if(demoMode == 2)
+		{
+			if(page>0)
+			{
+				AffSpfI(startx-3,191,13,PtrCadre);
 			}
 
-			if(demoMode==2)
+			if(!lastPageReached)
 			{
-				if(currentPage>0)
-				{
-					afficheSpriteI(left-3,191,13,aitdBoxGfx);
-				}
+				AffSpfI(endx-10,191,14,PtrCadre);
+			}
+		} 
 
-				if(!lastPageReached)
-				{
-					afficheSpriteI(right-10,191,14,aitdBoxGfx);
-				}
-			} 
-
-			if(isFirstPage)
+		if(firstpage)
+		{
+			if(demoMode!=1)
 			{
-				if(demoMode!=1)
-				{
-					osystem_CopyBlockPhys((unsigned char*)logicalScreen,0,0,320,200);
-					FadeInPhys(16,0);
-				}
-				else
-				{
-					if(turnPageFlag)
-					{
-						turnPageForward();
-					}
-					else
-					{
-						osystem_CopyBlockPhys((unsigned char*)logicalScreen,0,0,320,200);
-					}
-				}
-
-				isFirstPage = 0;
+				osystem_CopyBlockPhys((unsigned char*)logicalScreen,0,0,320,200);
+				FadeInPhys(16,0);
 			}
 			else
 			{
 				if(turnPageFlag)
 				{
-					if(previousPage<currentPage)
-					{
-						turnPageForward();
-						osystem_CopyBlockPhys((unsigned char*)logicalScreen,0,0,320,200); // temp
-					}
-					else
-					{
-						turnPageBackward();
-						osystem_CopyBlockPhys((unsigned char*)logicalScreen,0,0,320,200); // temp
-					}
+					turnPageForward();
 				}
 				else
 				{
@@ -946,96 +899,128 @@ pageChange: if(lastPageReached)
 				}
 			}
 
-			osystem_drawBackground();
-
-			if(demoMode!=1) // mode != 1: normal behavior (user can flip pages)
+			firstpage = 0;
+		}
+		else
+		{
+			if(turnPageFlag)
 			{
-				do
+				if(previousPage<page)
 				{
-					process_events();
-				}while(key || JoyD || click);
-
-				while(1)
-				{
-					process_events();
-					localKey = key;
-					localJoyD = JoyD;
-					localClick = click;
-
-					if(localKey==1 || localClick)
-					{
-						quit = 1;
-						break;
-					}
-					else
-					{
-						if(demoMode!=2 || localKey != 0x1C)
-						{
-							if(JoyD&0xA0 || localKey == 0x1C)
-							{
-								if(!lastPageReached) // flip to next page
-								{
-									previousPage = currentPage++;
-
-									if(demoMode==2)
-									{
-										playSound(CVars[getCVarsIdx(SAMPLE_PAGE)]);
-										//                        soundVar2 = -1;
-										//                        soundVar1 = -1;
-									}
-									break;
-								}
-							}
-							else
-							{
-								// flip to previous page
-
-								// TODO: implement...
-							}
-						}
-						else
-						{
-							quit = 1;
-							break;
-						}
-					}
-				}
-			}
-			else // auto page fip
-			{
-				unsigned int var_6;
-				startChrono(&var_6);
-
-				do
-				{
-					process_events();
-					if(evalChrono(&var_6) > 300)
-					{
-						break;
-					}
-				}while(!key && !click);
-
-				if(key || click)
-				{
-					quit = 1;
-				}
-
-				if(!lastPageReached)
-				{
-					currentPage++;
-					playSound(CVars[getCVarsIdx(SAMPLE_PAGE)]);
-					//                soundVar2 = -1;
+					turnPageForward();
 				}
 				else
 				{
-					quit = 1;
-					demoMode = 0;
+					turnPageBackward();
 				}
+			}
+			else
+			{
+				osystem_CopyBlockPhys((unsigned char*)logicalScreen,0,0,320,200);
+			}
+		}
+
+		osystem_drawBackground();
+
+		if(demoMode!=1) // mode != 1: normal behavior (user can flip pages)
+		{
+			do
+			{
+				process_events();
+			}while(key || JoyD || Click);
+
+			while(1)
+			{
+				process_events();
+				localKey = key;
+				localJoyD = JoyD;
+				localClick = Click;
+
+				if((localKey==1) || localClick)
+				{
+					quit = 1;
+					break;
+				}
+
+                if ((demoMode == 2) && (localKey == 0x1C)) {
+                    quit = 1;
+                    break;
+                }
+
+                // flip to next page
+                if (JoyD & 0xA || localKey == 0x1C)
+                {
+                    if (!lastPageReached)
+                    {
+                        previousPage = page;
+                        page++;
+
+                        if (demoMode == 2)
+                        {
+                            playSound(CVars[getCVarsIdx(SAMPLE_PAGE)]);
+                            LastSample = -1;
+                            LastPriority = -1;
+                        }
+                        break;
+                    }
+                    else {
+                        if (localKey == 0x1C) {
+                            quit = 1;
+                            break;
+                        }
+                    }
+                }
+
+                // flip to previous page
+                if (JoyD & 5) {
+                    if (page > 0) {
+                        previousPage = page;
+                        page--;
+                        if (demoMode == 2)
+                        {
+                            playSound(CVars[getCVarsIdx(SAMPLE_PAGE)]);
+                            LastSample = -1;
+                            LastPriority = -1;
+                        }
+                        break;
+                    }
+                }
+			}
+		}
+		else // Demo mode: pages automatically flips
+		{
+			unsigned int var_6;
+			startChrono(&var_6);
+
+			do
+			{
+				process_events();
+				if(evalChrono(&var_6) > 300)
+				{
+					break;
+				}
+			}while(!key && !Click);
+
+			if(key || Click)
+			{
+				quit = 1;
+			}
+
+			if(!lastPageReached)
+			{
+				page++;
+				playSound(CVars[getCVarsIdx(SAMPLE_PAGE)]);
+				LastSample = -1;
+			}
+			else
+			{
+				quit = 1;
+				demoMode = 0;
 			}
 		}
 	}
 
-	HQ_Free(HQ_Memory, textIndexMalloc);
+	HQ_Free_Malloc(HQ_Memory, textIndexMalloc);
 
 	return(demoMode);
 }
@@ -1261,9 +1246,9 @@ void initVars()
 	genVar5 = 0;
 	genVar6 = 0;
 
-	soundVar2 = -1;
+	LastSample = -1;
 	nextSample = -1;
-	soundVar1 = -1;
+	LastPriority = -1;
 	currentMusic = -1;
 	nextMusic = -1;
 
@@ -1330,7 +1315,7 @@ void loadCamera(int cameraIdx)
 		}
 	}
 
-	if(!loadPakToPtr(name,cameraIdx,aux))
+	if(!LoadPak(name,cameraIdx,aux))
 	{
 		fatalError(0,name);
 	}
@@ -1701,7 +1686,7 @@ void DeleteObjet(int index) // remove actor
 			CVars[getCVarsIdx(FOG_FLAG)] = 0;
 		}
 
-		HQ_Free(HQ_Memory,actorPtr->FRAME);
+		HQ_Free_Malloc(HQ_Memory,actorPtr->FRAME);
 	}
 	else
 	{
@@ -1921,7 +1906,7 @@ void copyZv(ZVStruct* source, ZVStruct* dest)
 
 void setupCameraSub4(void)
 {
-	copyToScreen(aux,aux2);
+	FastCopyScreen(aux,aux2);
 
 	//TODO: implementer la suite
 }
@@ -3099,7 +3084,7 @@ void drawBgOverlay(tObject* actorPtr)
 	//if(actorPtr->trackMode != 1)
 	//	return;
 
-	setClip(BBox3D1, BBox3D2, BBox3D3, BBox3D4);
+	SetClip(BBox3D1, BBox3D2, BBox3D3, BBox3D4);
 
 	cameraDataStruct* pCamera = cameraDataTable[currentCamera];
 
@@ -3192,7 +3177,7 @@ void drawBgOverlay(tObject* actorPtr)
 		}
 	}
 
-	setClip(0,0,319,199);
+	SetClip(0,0,319,199);
 }
 
 void mainDrawSub2(int actorIdx) // draw flow
@@ -3288,12 +3273,12 @@ void mainDraw(int flagFlip)
 	else
 	{
 		genVar5 = 0;
-		copyToScreen(aux2,logicalScreen);
+		FastCopyScreen(aux2,logicalScreen);
 	}
 
 	//osystem_drawBackground();
 
-	setClip(0,0,319,199);
+	SetClip(0,0,319,199);
 	genVar6 = 0;
 
 #ifdef FITD_DEBUGGER
@@ -3678,9 +3663,9 @@ void foundObject(int objIdx, int param)
 	statusVar1 = 0;
 
 	memset(frontBuffer, 0, 320*200);
-	copyToScreen(frontBuffer,logicalScreen);
+	FastCopyScreen(frontBuffer,logicalScreen);
 
-	drawAITDBox(160,100,240,120);
+	AffBigCadre(160,100,240,120);
 
 	drawFoundObect(var_6, objPtr->foundName, var_A);
 	osystem_flip(NULL);
@@ -3696,7 +3681,7 @@ void foundObject(int objIdx, int param)
 
 		localKey = key;
 		localJoyD = JoyD;
-		localClick = click;
+		localClick = Click;
 
 		if(!input5)
 		{
@@ -3764,7 +3749,7 @@ void foundObject(int objIdx, int param)
 		objPtr->trackNumber = timer;
 	}
 
-	while(key && click)
+	while(key && Click)
 	{
 		process_events();
 	}
@@ -4699,7 +4684,7 @@ int FitdMain(int argc, char* argv[])
 
 	//  int protectionToBeDone = 1;
 
-	sysInit();
+	OpenProgram();
 
 	paletteFill(currentGamePalette,0,0,0);
 
@@ -4772,11 +4757,11 @@ int drawTextOverlay(void)
 				{
 					if(currentMessage->time<26)
 					{
-						initFont(fontData,16);
+						ExtSetFont(PtrFont,16);
 					}
 					else
 					{
-						initFont(fontData,16+(currentMessage->time-26)/2);
+						ExtSetFont(PtrFont,16+(currentMessage->time-26)/2);
 					}
 
 					renderText(X,var_10+1,logicalScreen,currentMessage->string->textPtr);
@@ -4842,7 +4827,7 @@ void hit(int animNumber,int arg_2,int arg_4,int arg_6,int hitForce,int arg_A)
 	}
 }
 
-void setClip(int left, int top, int right, int bottom)
+void SetClip(int left, int top, int right, int bottom)
 {
 	clipLeft = left;
 	clipTop = top;

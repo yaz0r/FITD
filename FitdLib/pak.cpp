@@ -63,7 +63,7 @@ unsigned int PAK_getNumFiles(const char* name)
     return((fileOffset/4)-2);
 }
 
-int loadPakToPtr(const char* name, int index, char* ptr)
+int LoadPak(const char* name, int index, char* ptr)
 {
 #ifdef USE_UNPACKED_DATA
     char buffer[256];

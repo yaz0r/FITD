@@ -128,6 +128,7 @@ int FitdInit(int argc, char* argv[])
     int FRAMES_PER_SECOND = 25;
 
     u32 startOfPreviousFrame = SDL_GetTicks();
+    bool bFirstFrame = true;
 
     while (1)
     {
@@ -163,19 +164,26 @@ int FitdInit(int argc, char* argv[])
 
         SDL_GL_MakeCurrent(NULL, NULL);
 
-        SDL_Event event;
-        while (SDL_PollEvent(&event))
+        // Don't process events on first frame to avoid race condition with the init code
+        if(!bFirstFrame)
         {
-            ImGui_ImplSDL2_ProcessEvent(&event);
-
-            switch (event.type)
+            SDL_Event event;
+            while (SDL_PollEvent(&event))
             {
-            case SDL_QUIT:
-                gCloseApp = true;
-                break;
-            default:
-                break;
+                ImGui_ImplSDL2_ProcessEvent(&event);
+
+                switch (event.type)
+                {
+                case SDL_QUIT:
+                    gCloseApp = true;
+                    break;
+                default:
+                    break;
+                }
             }
+        }
+        else {
+            bFirstFrame = false;
         }
         
         SDL_SemPost(startOfRender);

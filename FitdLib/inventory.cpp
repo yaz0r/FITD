@@ -24,12 +24,12 @@ int DrawListObjets(int startIdx, int selectIdx, int selectColor)
 
 	if(g_gameId <= JACK)
 	{
-		drawAITDBox(160,50,320,100);
+		AffBigCadre(160,50,320,100);
 		y = currentMenuTop+1;
 	}
 	else
 	{
-		setClip(27,25,292,98);
+		SetClip(27,25,292,98);
 		fillBox(27,25,292,98,0);
 
 		currentMenuLeft = 30;
@@ -79,12 +79,12 @@ int DrawListObjets(int startIdx, int selectIdx, int selectColor)
 
 	if(var_6>0)
 	{
-		afficheSpriteI(298,10,10,aitdBoxGfx);
+		AffSpfI(298,10,10,PtrCadre);
 	}
 
     if(var_6+5 < numObjInInventoryTable[currentInventory])
     {
-        afficheSpriteI(298,74,9,aitdBoxGfx);
+        AffSpfI(298,74,9,PtrCadre);
     }
 
     return(var_8);
@@ -92,7 +92,7 @@ int DrawListObjets(int startIdx, int selectIdx, int selectColor)
 
 void renderInventoryObject(int arg)
 {
-    setClip(statusLeft,statusTop,statusRight,statusBottom);
+    SetClip(statusLeft,statusTop,statusRight,statusBottom);
     fillBox(statusLeft,statusTop,statusRight,statusBottom,0);
 
     statusVar1 -= 8;
@@ -103,7 +103,7 @@ void renderInventoryObject(int arg)
     if(arg!=-1)
     {
         u8 buffer[256];
-        initFont(fontData,4);
+        ExtSetFont(PtrFont,4);
         sprintf((char*)buffer,"%d",vars[arg]);
         renderText(statusLeft+4,statusTop+4,logicalScreen,buffer);
     }
@@ -126,12 +126,12 @@ void drawInventoryActions(int arg)
 
 	if(g_gameId <= JACK)
 	{
-		drawAITDBox(240,150,160,100);
+		AffBigCadre(240,150,160,100);
 		y = 150 - ((numInventoryActions<<4)/2);
 	}
 	else
 	{
-		setClip(162,100,292,174);
+		SetClip(162,100,292,174);
 		fillBox(162,100,292,174, 0);
 
 		currentMenuLeft = 166;
@@ -213,7 +213,7 @@ void processInventory(void)
 	{
 	case AITD1:
 	case JACK:
-		drawAITDBox(80,150,160,100);
+		AffBigCadre(80,150,160,100);
 
 		statusLeft = currentMenuLeft;
 		statusTop = currentMenuTop;
@@ -246,7 +246,7 @@ void processInventory(void)
 
         localKey = key;
         localJoyD = JoyD;
-        localClick = click;
+        localClick = Click;
 
         if(!localKey && !localJoyD && !localClick)
         {
@@ -425,7 +425,7 @@ void processInventory(void)
 
     flagInitView = 1;
 
-    while(click || key || JoyD)
+    while(Click || key || JoyD)
     {
       process_events();
     }

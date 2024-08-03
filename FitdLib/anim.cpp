@@ -318,7 +318,7 @@ void updateAnimation(void)
 			currentProcessedActorPtr->animNegZ = 0;
 		}
 
-		initBufferAnim(bufferAnim[bufferAnimCounter], HQR_Get(listBody,currentProcessedActorPtr->bodyNum)); 
+		initBufferAnim(BufferAnim[bufferAnimCounter], HQR_Get(listBody,currentProcessedActorPtr->bodyNum)); 
 
 		bufferAnimCounter++;
 		if(bufferAnimCounter == NB_BUFFER_ANIM)

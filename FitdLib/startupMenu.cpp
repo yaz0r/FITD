@@ -5,7 +5,7 @@ void drawStartupMenu(int selectedEntry)
     int currentY = 76;
     int currentTextNum = 0;
 
-    drawAITDBox(160,100,320,80);
+    AffBigCadre(160,100,320,80);
 
     while(currentTextNum<3)
     {
@@ -98,7 +98,7 @@ int processStartupMenu(void)
             }
         } 
 
-        if(key == 28 || (key != 28 && click!=0)) // select current entry
+        if(key == 28 || (key != 28 && Click!=0)) // select current entry
         {
             selectedEntry = currentSelectedEntry;
         }
@@ -108,7 +108,7 @@ int processStartupMenu(void)
 
     if(selectedEntry==2) // if exit game, do not fade
     {
-        fadeOut(16,0);
+        FadeOutPhys(16,0);
     }
 
     while(JoyD)

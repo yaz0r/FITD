@@ -210,13 +210,13 @@ FORCEINLINE u16 READ_BE_U16(void *ptr)
 #ifdef MACOSX
   return *(u16*)ptr;
 #else
-  return (((u8*)ptr)[1]<<8)|((u8*)ptr)[0];
+  return (((u8*)ptr)[0]<<8)|((u8*)ptr)[1];
 #endif
 }
 
 FORCEINLINE s16 READ_BE_S16(void *ptr)
 {
-  return (s16)READ_BE_S16(ptr);
+  return (s16)READ_BE_U16(ptr);
 }
 
 FORCEINLINE u32 READ_LE_U32(void *ptr)

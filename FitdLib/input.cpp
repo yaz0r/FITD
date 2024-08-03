@@ -26,7 +26,7 @@ void readKeyboard(void)
     const unsigned char *keyboard;
 
     JoyD = 0;
-    click = 0;
+    Click = 0;
     key = 0;
 
     while (SDL_PollEvent(&event)) {
@@ -106,7 +106,7 @@ void readKeyboard(void)
                 JoyD |= 4;
                 break;
             case SDL_SCANCODE_SPACE:
-                click = 1;
+                Click = 1;
                 break;
 #ifdef FITD_DEBUGGER
             case SDL_SCANCODE_O:

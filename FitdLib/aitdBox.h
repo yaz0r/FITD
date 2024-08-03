@@ -1,1 +1,1 @@
-void drawAITDBox(int x, int y, int width, int height);
+void AffBigCadre(int x, int y, int width, int height);

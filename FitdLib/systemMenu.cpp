@@ -23,14 +23,14 @@ void drawSystemMenuLayout(int selectedStringNumber)
     int backupLeft;
     int backupRight;
 
-    drawAITDBox(160,100,320,200);
+    AffBigCadre(160,100,320,200);
 
     backupTop = currentMenuTop;
     backupBottom = currentMenuBottom;
     backupLeft = currentMenuLeft;
     backupRight = currentMenuRight;
 
-    drawAITDBox(80,55,120,70);
+    AffBigCadre(80,55,120,70);
 
     //scaleDownImage(40,35,aux2);
 
@@ -39,7 +39,7 @@ void drawSystemMenuLayout(int selectedStringNumber)
     currentMenuLeft = backupLeft;
     currentMenuRight = backupRight;
 
-    setClip(currentMenuLeft,currentMenuTop,currentMenuRight,currentMenuBottom);
+    SetClip(currentMenuLeft,currentMenuTop,currentMenuRight,currentMenuBottom);
 
     printString(0,48,selectedStringNumber);
     printString(1,45,selectedStringNumber);
@@ -87,7 +87,7 @@ void processSystemMenu(void)
         //  while(!exitMenu)
         {
             localKey = key;
-            localClick = click;
+            localClick = Click;
             localJoyD = JoyD;
 
             if(!input5)
@@ -153,7 +153,7 @@ void processSystemMenu(void)
     }
 
 	//fadeOut(32,2);
-	while(key || JoyD || click)
+	while(key || JoyD || Click)
 	{
 		process_events();
 	}

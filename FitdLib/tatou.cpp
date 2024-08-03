@@ -32,7 +32,7 @@ void copyPalette(unsigned char* source, unsigned char* dest)
     }
 }
 
-void copyToScreen(void* source, void* dest)
+void FastCopyScreen(void* source, void* dest)
 {
 	memcpy(dest, source, 64000);
 }
@@ -94,7 +94,7 @@ void FadeInPhys(int step,int start)
     unfreezeTime();
 }
 
-void fadeOut(int var1, int var2)
+void FadeOutPhys(int var1, int var2)
 {
     unsigned char localPalette[0x300];
 

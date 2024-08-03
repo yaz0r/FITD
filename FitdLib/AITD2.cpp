@@ -233,7 +233,7 @@ void startAITD2()
 
 					//          freeScene();
 
-					fadeOut(8,0);
+					FadeOutPhys(8,0);
 				}
 
 				break;
@@ -254,13 +254,13 @@ void drawInventoryAITD2()
 	switch (CVars[getCVarsIdx(TYPE_INVENTAIRE)])
 	{
 	case 0:
-		loadPakToPtr("ITD_RESS", AITD2_INVENTAIRE_PIRATE, logicalScreen);
+		LoadPak("ITD_RESS", AITD2_INVENTAIRE_PIRATE, logicalScreen);
 		break;
 	case 1:
-		loadPakToPtr("ITD_RESS", AITD2_INVENTAIRE_GANG, logicalScreen);
+		LoadPak("ITD_RESS", AITD2_INVENTAIRE_GANG, logicalScreen);
 		break;
 	case 2:
-		loadPakToPtr("ITD_RESS", AITD2_INVENTAIRE_GRACE, logicalScreen);
+		LoadPak("ITD_RESS", AITD2_INVENTAIRE_GRACE, logicalScreen);
 		break;
 	default:
 		assert(0);
@@ -281,7 +281,7 @@ void redrawInventorySpriteAITD2()
 {
 	int inventoryType = CVars[getCVarsIdx(TYPE_INVENTAIRE)];
 
-	afficheSpriteI(TabXSprite[inventoryType], TabYSprite[inventoryType], inventoryType, pAITD2InventorySprite);
+	AffSpfI(TabXSprite[inventoryType], TabYSprite[inventoryType], inventoryType, pAITD2InventorySprite);
 }
 
 void AITD2_ReadBook(int index, int type)
@@ -290,7 +290,7 @@ void AITD2_ReadBook(int index, int type)
 	{
 	case 0: // READ_MESSAGE
 		{
-			loadPakToPtr("ITD_RESS", AITD2_LETTRE, aux);
+			LoadPak("ITD_RESS", AITD2_LETTRE, aux);
 			unsigned char lpalette[0x300];
 			copyPalette((unsigned char*)aux+64000,lpalette);
 			convertPaletteIfRequired(lpalette);
@@ -298,12 +298,12 @@ void AITD2_ReadBook(int index, int type)
 			setPalette(lpalette);
 			osystem_CopyBlockPhys((unsigned char*)aux,0,0,320,200);
 			turnPageFlag = 0;
-			printText(index, 60, 10, 245, 190, 0, 124, 124);
+			Lire(index, 60, 10, 245, 190, 0, 124, 124);
 			break;
 		}
 	case 1: // READ_BOOK
 		{
-			loadPakToPtr("ITD_RESS", AITD2_LIVRE, aux);
+			LoadPak("ITD_RESS", AITD2_LIVRE, aux);
 			unsigned char lpalette[0x300];
 			copyPalette((unsigned char*)aux+64000,lpalette);
 			convertPaletteIfRequired(lpalette);
@@ -311,12 +311,12 @@ void AITD2_ReadBook(int index, int type)
 			setPalette(lpalette);
 			osystem_CopyBlockPhys((unsigned char*)aux,0,0,320,200);
 			turnPageFlag = 1;
-			printText(index, 60, 10, 245, 190, 0, 124, 124);
+			Lire(index, 60, 10, 245, 190, 0, 124, 124);
 			break;
 		}
 	case 2: // READ_CARNET
 		{
-			loadPakToPtr("ITD_RESS", AITD2_CARNET, aux);
+			LoadPak("ITD_RESS", AITD2_CARNET, aux);
 			unsigned char lpalette[0x300];
 			copyPalette((unsigned char*)aux+64000,lpalette);
 			convertPaletteIfRequired(lpalette);
@@ -324,7 +324,7 @@ void AITD2_ReadBook(int index, int type)
 			setPalette(lpalette);
 			osystem_CopyBlockPhys((unsigned char*)aux,0,0,320,200);
 			turnPageFlag = 0;
-			printText(index, 60, 10, 245, 190, 0, 124, 124);
+			Lire(index, 60, 10, 245, 190, 0, 124, 124);
 			break;
 		}
 	default:

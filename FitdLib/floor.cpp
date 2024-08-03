@@ -32,8 +32,8 @@ void loadFloor(int floorNumber)
         g_currentFloorRoomRawDataSize = getPakSize(floorFileName,0);
         g_currentFloorCameraRawDataSize = getPakSize(floorFileName,1);
 
-        g_currentFloorRoomRawData = loadPakSafe(floorFileName,0);
-        g_currentFloorCameraRawData = loadPakSafe(floorFileName,1);
+        g_currentFloorRoomRawData = CheckLoadMallocPak(floorFileName,0);
+        g_currentFloorCameraRawData = CheckLoadMallocPak(floorFileName,1);
     }
 
     currentCamera = -1;
@@ -80,7 +80,7 @@ void loadFloor(int floorNumber)
                 sprintf(buffer,"ETAGE%02d",floorNumber);
             }
 
-            roomData = (u8*)loadPakSafe(buffer,i);
+            roomData = (u8*)CheckLoadMallocPak(buffer,i);
         }
         else
         {
@@ -236,7 +236,7 @@ void loadFloor(int floorNumber)
 
             offset = 0;
             g_currentFloorCameraRawDataSize = 1;
-            currentCameraData = (unsigned char*)loadPakSafe(buffer,i);
+            currentCameraData = (unsigned char*)CheckLoadMallocPak(buffer,i);
         }
         else
         {

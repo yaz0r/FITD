@@ -124,13 +124,13 @@ int makeIntroScreens(void)
     unsigned int chrono;
 
     data = loadPak("ITD_RESS", AITD1_TITRE);
-    copyToScreen(data + 770, frontBuffer);
+    FastCopyScreen(data + 770, frontBuffer);
     osystem_CopyBlockPhys(frontBuffer, 0, 0, 320, 200);
     FadeInPhys(8, 0);
     memcpy(logicalScreen, frontBuffer, 320 * 200);
     osystem_flip(NULL);
     free(data);
-    loadPakToPtr("ITD_RESS", AITD1_LIVRE, aux);
+    LoadPak("ITD_RESS", AITD1_LIVRE, aux);
     startChrono(&chrono);
 
     osystem_drawBackground();
@@ -146,20 +146,20 @@ int makeIntroScreens(void)
         if (time >= 0x30)
             break;
 
-    } while (key == 0 && click == 0);
+    } while (key == 0 && Click == 0);
 
     playSound(CVars[getCVarsIdx(SAMPLE_PAGE)]);
-    /*  soundVar2 = -1;
-    soundVar1 = -1;
-    soundVar2 = -1;
-    soundVar1 = 0; */
+    /*  LastSample = -1;
+    LastPriority = -1;
+    LastSample = -1;
+    LastPriority = 0; */
     turnPageFlag = 1;
-    printText(CVars[getCVarsIdx(TEXTE_CREDITS)] + 1, 48, 2, 260, 197, 1, 26, 0);
+    Lire(CVars[getCVarsIdx(TEXTE_CREDITS)] + 1, 48, 2, 260, 197, 1, 26, 0);
 
     return(0);
 }
 
-void selectHeroSub1(int x1, int y1, int x2, int y2)
+void CopyBox_Aux_Log(int x1, int y1, int x2, int y2)
 {
     int i;
     int j;
@@ -173,50 +173,52 @@ void selectHeroSub1(int x1, int y1, int x2, int y2)
     }
 }
 
-int selectHero(void)
+int ChoosePerso(void)
 {
     int choice = 0;
-    int var_4 = 1;
+    int firsttime = 1;
     int choiceMade = 0;
 
-    sysInitSub1(aux, logicalScreen);
+    InitCopyBox(aux, logicalScreen);
 
     while (choiceMade == 0)
     {
         process_events();
         osystem_drawBackground();
 
-        loadPakToPtr("ITD_RESS", 10, aux);
-        copyToScreen(aux, logicalScreen);
-        copyToScreen(logicalScreen, aux2);
+        // TODO: missing code for music stop
+
+        LoadPak("ITD_RESS", 10, aux);
+        FastCopyScreen(aux, logicalScreen);
+        FastCopyScreen(logicalScreen, aux2);
 
         if (choice == 0)
         {
-            drawAITDBox(80, 100, 160, 200);
-            selectHeroSub1(10, 10, 149, 190);
+            AffBigCadre(80, 100, 160, 200);
+            CopyBox_Aux_Log(10, 10, 149, 190);
         }
         else
         {
-            drawAITDBox(240, 100, 160, 200);
-            selectHeroSub1(170, 10, 309, 190);
+            AffBigCadre(240, 100, 160, 200);
+            CopyBox_Aux_Log(170, 10, 309, 190);
         }
 
-        copyToScreen(logicalScreen, frontBuffer);
+        FastCopyScreen(logicalScreen, frontBuffer);
         osystem_CopyBlockPhys(frontBuffer, 0, 0, 320, 200);
 
-        if (var_4 != 0)
+        if (firsttime != 0)
         {
             FadeInPhys(0x40, 0);
 
             do
             {
                 process_events();
-            } while (click || key);
+            } while (Click || key);
 
-            var_4 = 0;
+            firsttime = 0;
         }
 
-        while ((localKey = key) != 28 && click == 0) // process input
+        while ((localKey = key) != 28 && Click == 0) // process input
         {
             process_events();
             osystem_drawBackground();
@@ -224,9 +226,9 @@ int selectHero(void)
             if (JoyD & 4) // left
             {
                 choice = 0;
-                copyToScreen(aux2, logicalScreen);
-                drawAITDBox(80, 100, 160, 200);
-                selectHeroSub1(10, 10, 149, 190);
+                FastCopyScreen(aux2, logicalScreen);
+                AffBigCadre(80, 100, 160, 200);
+                CopyBox_Aux_Log(10, 10, 149, 190);
                 osystem_CopyBlockPhys((unsigned char*)logicalScreen, 0, 0, 320, 200);
 
                 while (JoyD != 0)
@@ -238,9 +240,9 @@ int selectHero(void)
             if (JoyD & 8) // right
             {
                 choice = 1;
-                copyToScreen(aux2, logicalScreen);
-                drawAITDBox(240, 100, 160, 200);
-                selectHeroSub1(170, 10, 309, 190);
+                FastCopyScreen(aux2, logicalScreen);
+                AffBigCadre(240, 100, 160, 200);
+                CopyBox_Aux_Log(170, 10, 309, 190);
                 osystem_CopyBlockPhys((unsigned char*)logicalScreen, 0, 0, 320, 200);
 
                 while (JoyD != 0)
@@ -251,36 +253,36 @@ int selectHero(void)
 
             if (localKey == 1)
             {
-                sysInitSub1(aux2, logicalScreen);
-                fadeOut(0x40, 0);
+                InitCopyBox(aux2, logicalScreen);
+                FadeOutPhys(0x40, 0);
                 return(-1);
             }
         }
 
-        fadeOut(0x40, 0);
+        FadeOutPhys(0x40, 0);
         turnPageFlag = 0;
 
         switch (choice)
         {
             case 0:
             {
-                copyToScreen(frontBuffer, logicalScreen);
-                setClip(0, 0, 319, 199);
-                loadPakToPtr("ITD_RESS", AITD1_FOND_INTRO, aux);
-                selectHeroSub1(160, 0, 319, 199);
-                copyToScreen(logicalScreen, aux);
-                printText(CVars[getCVarsIdx(INTRO_HERITIERE)] + 1, 165, 5, 314, 194, 2, 15, 0);
+                FastCopyScreen(frontBuffer, logicalScreen);
+                SetClip(0, 0, 319, 199);
+                LoadPak("ITD_RESS", AITD1_FOND_INTRO, aux);
+                CopyBox_Aux_Log(160, 0, 319, 199);
+                FastCopyScreen(logicalScreen, aux);
+                Lire(CVars[getCVarsIdx(INTRO_HERITIERE)] + 1, 165, 5, 314, 194, 2, 15, 0);
                 CVars[getCVarsIdx(CHOOSE_PERSO)] = 1;
                 break;
             }
             case 1:
             {
-                copyToScreen(frontBuffer, logicalScreen);
-                setClip(0, 0, 319, 199);
-                loadPakToPtr("ITD_RESS", AITD1_FOND_INTRO, aux);
-                selectHeroSub1(0, 0, 159, 199);
-                copyToScreen(logicalScreen, aux);
-                printText(CVars[getCVarsIdx(INTRO_DETECTIVE)] + 1, 5, 5, 154, 194, 2, 15, 0);
+                FastCopyScreen(frontBuffer, logicalScreen);
+                SetClip(0, 0, 319, 199);
+                LoadPak("ITD_RESS", AITD1_FOND_INTRO, aux);
+                CopyBox_Aux_Log(0, 0, 159, 199);
+                FastCopyScreen(logicalScreen, aux);
+                Lire(CVars[getCVarsIdx(INTRO_DETECTIVE)] + 1, 5, 5, 154, 194, 2, 15, 0);
                 CVars[getCVarsIdx(CHOOSE_PERSO)] = 0;
                 break;
             }
@@ -293,10 +295,8 @@ int selectHero(void)
 
     }
 
-    fadeOut(0x40, 0);
-
-    sysInitSub1(aux2, logicalScreen);
-
+    FadeOutPhys(64, 0);
+    InitCopyBox(aux2, logicalScreen);
     return(choice);
 }
 
@@ -342,7 +342,7 @@ void startAITD1()
             // here, original would ask for protection
 
 #if !TARGET_OS_IOS && !AITD_UE4
-            if(selectHero()!=-1)
+            if(ChoosePerso()!=-1)
 #endif
             {
                 process_events();
@@ -380,7 +380,7 @@ void startAITD1()
 
                 //          freeScene();
 
-                fadeOut(8, 0);
+                FadeOutPhys(8, 0);
             }
 
             break;
@@ -402,23 +402,23 @@ void AITD1_ReadBook(int index, int type)
     {
     case 0: // READ_MESSAGE
     {
-        loadPakToPtr("ITD_RESS", AITD1_LETTRE, aux);
+        LoadPak("ITD_RESS", AITD1_LETTRE, aux);
         turnPageFlag = 0;
-        printText(index, 60, 10, 245, 190, 0, 26, 0);
+        Lire(index, 60, 10, 245, 190, 0, 26, 0);
         break;
     }
     case 1: // READ_BOOK
     {
-        loadPakToPtr("ITD_RESS", AITD1_LIVRE, aux);
+        LoadPak("ITD_RESS", AITD1_LIVRE, aux);
         turnPageFlag = 1;
-        printText(index, 48, 2, 260, 197, 0, 26, 0);
+        Lire(index, 48, 2, 260, 197, 0, 26, 0);
         break;
     }
     case 2: // READ_CARNET
     {
-        loadPakToPtr("ITD_RESS", AITD1_CARNET, aux);
+        LoadPak("ITD_RESS", AITD1_CARNET, aux);
         turnPageFlag = 0;
-        printText(index, 50, 20, 250, 199, 0, 26, 0);
+        Lire(index, 50, 20, 250, 199, 0, 26, 0);
         break;
     }
     default:

@@ -24,9 +24,9 @@ int make3dTatou(void)
     unsigned char paletteBackup[768];
     unsigned int localChrono;
 
-    tatou2d = loadPakSafe("ITD_RESS",AITD1_TATOU_MCG);
-    tatou3d = loadPakSafe("ITD_RESS",AITD1_TATOU_3DO);
-    tatouPal = (unsigned char*)loadPakSafe("ITD_RESS",AITD1_TATOU_PAL);
+    tatou2d = CheckLoadMallocPak("ITD_RESS",AITD1_TATOU_MCG);
+    tatou3d = CheckLoadMallocPak("ITD_RESS",AITD1_TATOU_3DO);
+    tatouPal = (unsigned char*)CheckLoadMallocPak("ITD_RESS",AITD1_TATOU_PAL);
 
     time = 8920;
     deltaTime = 50;
@@ -42,8 +42,8 @@ int make3dTatou(void)
     setPalette(currentGamePalette);
 
     copyPalette(tatouPal,currentGamePalette);
-    copyToScreen(tatou2d+770,frontBuffer);
-    copyToScreen(frontBuffer,aux2);
+    FastCopyScreen(tatou2d+770,frontBuffer);
+    FastCopyScreen(frontBuffer,aux2);
 
     osystem_CopyBlockPhys(frontBuffer,0,0,320,200);
 
@@ -60,20 +60,20 @@ int make3dTatou(void)
 
         if(evalChrono(&localChrono)<=180) // avant eclair
         {
-            if(key || click)
+            if(key || Click)
             {
                 break;
             }
         }
         else // eclair
         {
-            /*  soundVar2 = -1;
-            soundVar1 = -1; */
+            /*  LastSample = -1;
+            LastPriority = -1; */
 
             playSound(CVars[getCVarsIdx(SAMPLE_TONNERRE)]);
 
-            /*     soundVar2 = -1;
-            soundVar1 = -1;*/
+            /*     LastSample = -1;
+            LastPriority = -1;*/
 
             paletteFill(currentGamePalette,63,63,63);
             setPalette(currentGamePalette);
@@ -95,7 +95,7 @@ int make3dTatou(void)
 			osystem_CopyBlockPhys((unsigned char*)frontBuffer,0,0,320,200);
 
 
-            while(key==0 && click == 0 && JoyD == 0) // boucle de rotation du tatou
+            while(key==0 && Click == 0 && JoyD == 0) // boucle de rotation du tatou
             {
                 process_events();
 
@@ -125,20 +125,20 @@ int make3dTatou(void)
     free(tatou3d);
     free(tatou2d);
 
-    if(key || click || JoyD)
+    if(key || Click || JoyD)
     {
         while(key)
         {
           process_events();
         }
 
-        fadeOut(32,0);
+        FadeOutPhys(32,0);
         copyPalette((unsigned char*)paletteBackup,currentGamePalette);
         return(1);
     }
     else
     {
-        fadeOut(16,0);
+        FadeOutPhys(16,0);
         copyPalette((unsigned char*)paletteBackup,currentGamePalette);
         return(0);
     }

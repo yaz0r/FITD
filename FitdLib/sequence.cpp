@@ -187,7 +187,7 @@ void playSequence(int sequenceIdx, int fadeStart, int fadeOutVar)
                 break;
             }
 
-            if(!loadPakToPtr(buffer,currentFrameId,logicalScreen))
+            if(!LoadPak(buffer,currentFrameId,logicalScreen))
             {
                 fatalError(0,buffer);
             }
@@ -229,7 +229,7 @@ void playSequence(int sequenceIdx, int fadeStart, int fadeOutVar)
                 }
                 else // delta frame
                 {
-                    copyToScreen(logicalScreen,aux);
+                    FastCopyScreen(logicalScreen,aux);
                 }
             }
 

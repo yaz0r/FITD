@@ -269,7 +269,7 @@ extern char* aux2;
 #define NB_BUFFER_ANIM 25 // AITD1 was  20
 #define SIZE_BUFFER_ANIM (8*41) // AITD1 was 4*31
 
-extern std::vector<std::vector<s16>> bufferAnim;
+extern std::vector<std::vector<s16>> BufferAnim;
 
 extern char* logicalScreen;
 
@@ -278,11 +278,11 @@ extern int unkScreenVar2;
 
 extern std::vector<s16> CVars;
 
-extern char* priority;
+extern char* PtrPrioritySample;
 
-extern char* fontData;
+extern char* PtrFont;
 
-extern char* aitdBoxGfx;
+extern char* PtrCadre;
 
 extern unsigned char currentGamePalette[0x300];
 
@@ -304,7 +304,7 @@ extern u8* systemTextes;
 extern "C" {
     extern char JoyD;
 };
-extern char click;
+extern char Click;
 extern char key;
 extern char localKey;
 extern char localJoyD;
@@ -363,8 +363,8 @@ extern s16 currentCameraTargetActor;
 extern s16 giveUp;
 extern s16 lightOff;
 extern int lightVar2;
-extern int soundVar1;
-extern int soundVar2;
+extern int LastPriority;
+extern int LastSample;
 extern s16 statusScreenAllowed;
 
 extern char* g_currentFloorRoomRawData;

@@ -4,7 +4,7 @@
 extern int input5;
 
 void menuWaitVSync();
-void afficheSpriteI(int x, int y, int param, char* gfx);
+void AffSpfI(int x, int y, int param, char* gfx);
 void processActor2();
 void loadFloor(int floorNumber);
 void loadRoom(int roomNumber);
@@ -30,7 +30,7 @@ int parseAllSaves(int arg);
 textEntryStruct* getTextFromIdx(int index);
 void cleanupAndExit(void);
 void drawProjectedBox(int x1,int x2,int y1,int y2,int z1,int z2, int color, int transparency);
-void HQ_Free(hqrEntryStruct* hqrPtr, int index);
+void HQ_Free_Malloc(hqrEntryStruct* hqrPtr, int index);
 
 void playSequence(int sequenceIdx, int fadeStart, int fadeOutVar);
 
@@ -42,7 +42,7 @@ int fileExists(const char* name);
 }
 #endif
 
-void sysInit(void);
+void OpenProgram(void);
 void freeAll(void);
 void startGame(int startupEtage, int startupRoom, int allowSystemMenu);
 void fillBox(int x1, int y1, int x2, int y2, char color); // fast recode. No RE
@@ -54,11 +54,11 @@ void hit(int animNumber,int arg_2,int arg_4,int arg_6,int hitForce,int arg_A);
 int checkZvCollision(ZVStruct* zvPtr1,ZVStruct* zvPtr2);
 void getZvCube(char* bodyPtr, ZVStruct* zvPtr);
 void putAt(int objIdx, int objIdxToPutAt);
-void setClip(int left, int top, int right, int bottom);
+void SetClip(int left, int top, int right, int bottom);
 
 ///
 void readBook(int index, int type);
-int printText(int index, int left, int top, int right, int bottom, int mode, int color, int shadow);
+int Lire(int index, int left, int top, int right, int bottom, int mode, int color, int shadow);
 
 void setupCameraProjection(int centerX, int centerY, int x, int y, int z);
 void SetAngleCamera(int x, int y, int z);

@@ -51,7 +51,7 @@ void mainLoop(int allowSystemMenu, int deltaTime)
         
         localKey = key;
         localJoyD = JoyD;
-        localClick = click;
+        localClick = Click;
 
         if(localKey)
         {

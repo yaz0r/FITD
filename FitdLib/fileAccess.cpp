@@ -42,7 +42,7 @@ char* loadFromItd(const char* name)
     return(ptr);
 }
 
-char* loadPakSafe(const char* name, int index)
+char* CheckLoadMallocPak(const char* name, int index)
 {
     char* ptr;
     ptr = loadPak(name, index);
