@@ -78,27 +78,23 @@ struct sphereVertex
     float U;
     float V;
 
-    unsigned char R;
-    unsigned char G;
-    unsigned char B;
-    unsigned char A;
-
     float centerX;
     float centerY;
     float size;
+    float material;
 };
 
 #define NUM_MAX_FLAT_VERTICES 5000*3
 #define NUM_MAX_NOISE_VERTICES 2000*3
 #define NUM_MAX_TRANSPARENT_VERTICES 1000*2
 #define NUM_MAX_RAMP_VERTICES 3000*3
-#define NUM_MAX_SPHERES 1000
+#define NUM_MAX_SPHERES_VERTICES 3000
 
 std::array<polyVertex, NUM_MAX_FLAT_VERTICES> flatVertices;
 std::array<polyVertex, NUM_MAX_NOISE_VERTICES> noiseVertices;
 std::array<polyVertex, NUM_MAX_TRANSPARENT_VERTICES> transparentVertices;
 std::array<polyVertex, NUM_MAX_RAMP_VERTICES> rampVertices;
-std::array<sphereVertex, NUM_MAX_SPHERES> sphereVertices;
+std::array<sphereVertex, NUM_MAX_SPHERES_VERTICES> sphereVertices;
 
 int numUsedFlatVertices = 0;
 int numUsedNoiseVertices = 0;
@@ -743,8 +739,7 @@ void osystem_flushPendingPrimitives()
             .begin()
             .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
             .add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
-            .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8)
-            .add(bgfx::Attrib::TexCoord1, 3, bgfx::AttribType::Float)
+            .add(bgfx::Attrib::TexCoord1, 4, bgfx::AttribType::Float)
             .end();
 
         bgfx::TransientVertexBuffer transientBuffer;
@@ -1188,17 +1183,13 @@ void osystem_drawPoint(float X, float Y, float Z, u8 color, float size)
     {
         sphereVertex* pVertex = &sphereVertices[numUsedSpheres];
         numUsedSpheres++;
-        assert(numUsedSpheres < NUM_MAX_SPHERES);
+        assert(numUsedSpheres < NUM_MAX_SPHERES_VERTICES);
 
         pVertex->X = corners[mapping[i]].X;
         pVertex->Y = corners[mapping[i]].Y;
         pVertex->Z = corners[mapping[i]].Z;
         pVertex->U = (color & 0xF) / 15.f;
         pVertex->V = ((color & 0xF0) >> 4) / 15.f;
-        pVertex->R = RGB_Pal[color * 3];
-        pVertex->G = RGB_Pal[color * 3 + 1];
-        pVertex->B = RGB_Pal[color * 3 + 2];
-        pVertex->A = 128;
         pVertex->size = size;
         pVertex->centerX = X;
         pVertex->centerY = Y;

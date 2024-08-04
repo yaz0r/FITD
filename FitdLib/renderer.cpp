@@ -780,13 +780,13 @@ void processPrim_Poly(int primType, sPrimitive* ptr, char** out)
     }
 }
 
-void processPrim_Point(int primType, sPrimitive* ptr, char** out)
+void processPrim_Point(primTypeEnum primType, sPrimitive* ptr, char** out)
 {
     primEntryStruct* pCurrentPrimEntry = &primTable[positionInPrimEntry];
 
     ASSERT(positionInPrimEntry < NUM_MAX_PRIM_ENTRY);
 
-    pCurrentPrimEntry->type = primTypeEnum_Point;
+    pCurrentPrimEntry->type = primType;
     pCurrentPrimEntry->numOfVertices = 1;
     pCurrentPrimEntry->color = ptr->m_color;
     pCurrentPrimEntry->material = ptr->m_material;
@@ -846,53 +846,6 @@ void processPrim_Sphere(int primType, sPrimitive* ptr, char** out)
 
         numOfPrimitiveToRender++;
         ASSERT(positionInPrimEntry < NUM_MAX_PRIM_ENTRY);
-    }
-}
-
-void processPrim_Point(int primType, char** ptr, char** out) // point
-{
-    u8 pointColor;
-    u16 pointIndex;
-    float depth = 32000.f;
-    primEntryStruct* pCurrentPrimEntry = &primTable[positionInPrimEntry];
-
-    (*ptr)++;
-    pointColor = **ptr;
-    (*ptr)++;
-    (*ptr)++;
-
-	switch(primType)
-	{
-		case primTypeEnum_Point:
-			pCurrentPrimEntry->type = primTypeEnum_Point;
-			break;
-		case primTypeEnum_BigPoint:
-			pCurrentPrimEntry->type = primTypeEnum_BigPoint;
-			break;
-		case primTypeEnum_Zixel:
-			pCurrentPrimEntry->type = primTypeEnum_Zixel;
-			break;
-		default:
-			assert(0);
-			break;
-	}
-    pCurrentPrimEntry->type = primTypeEnum_Point;
-    pCurrentPrimEntry->color = pointColor;
-
-    pointIndex = *(u16*)(*ptr);
-    (*ptr)+=2;
-
-    ASSERT((pointIndex%2) == 0);
-
-    pCurrentPrimEntry->vertices[0].X = renderPointList[pointIndex/2];
-    pCurrentPrimEntry->vertices[0].Y = renderPointList[(pointIndex/2)+1];
-    depth = pCurrentPrimEntry->vertices[0].Z = renderPointList[(pointIndex/2)+2];
-
-    if(depth > 0)
-    {
-        positionInPrimEntry++;
-        numOfPrimitiveToRender++;
-		ASSERT(positionInPrimEntry < NUM_MAX_PRIM_ENTRY);
     }
 }
 
@@ -961,29 +914,22 @@ void renderPoly(primEntryStruct* pEntry) // poly
 
 void renderZixel(primEntryStruct* pEntry) // point
 {
-    float transformedSize;
-
-    transformedSize = ((5.f * (float)cameraFovX) / (float)(pEntry->vertices[0].Z+cameraPerspective));
+    float pointSize = 20.f;
+    float transformedSize = ((pointSize * (float)cameraFovX) / (float)(pEntry->vertices[0].Z+cameraPerspective));
 
     osystem_drawPoint(pEntry->vertices[0].X,pEntry->vertices[0].Y,pEntry->vertices[0].Z,pEntry->color,transformedSize);
 }
 
 void renderPoint(primEntryStruct* pEntry) // point
 {
-    float transformedSize;
-	
-    transformedSize = ((1.f * (float)cameraFovX) / (float)(pEntry->vertices[0].Z+cameraPerspective));
-	
-    osystem_drawPoint(pEntry->vertices[0].X,pEntry->vertices[0].Y,pEntry->vertices[0].Z,pEntry->color, transformedSize);
+    float pointSize = 0.3f; // TODO: better way to compute that?
+    osystem_drawPoint(pEntry->vertices[0].X,pEntry->vertices[0].Y,pEntry->vertices[0].Z,pEntry->color, pointSize);
 }
 
 void renderBigPoint(primEntryStruct* pEntry) // point
 {
-    float transformedSize;
-	
-    transformedSize = ((2.f * (float)cameraFovX) / (float)(pEntry->vertices[0].Z+cameraPerspective));
-	
-    osystem_drawPoint(pEntry->vertices[0].X,pEntry->vertices[0].Y,pEntry->vertices[0].Z,pEntry->color, transformedSize);
+    float bigPointSize = 2.f; // TODO: better way to compute that?
+    osystem_drawPoint(pEntry->vertices[0].X,pEntry->vertices[0].Y,pEntry->vertices[0].Z,pEntry->color, bigPointSize);
 }
 
 void renderSphere(primEntryStruct* pEntry) // sphere
@@ -1008,6 +954,8 @@ renderFunction renderFunctions[]={
     renderPoly, // poly
     renderPoint, // point
     renderSphere, // sphere
+    nullptr,
+    nullptr,
     renderBigPoint,
 	renderZixel,
 };
@@ -1093,7 +1041,7 @@ int AffObjet(int x,int y,int z,int alpha,int beta,int gamma,void* modelPtr)
         for(i=0;i<numPrim;i++)
         {
             sPrimitive* pPrimitive = &pBody->m_primitives[i];
-            u8 primType = pPrimitive->m_type;
+            primTypeEnum primType = pPrimitive->m_type;
 
 			switch(primType)
 			{
