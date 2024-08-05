@@ -917,19 +917,19 @@ void renderZixel(primEntryStruct* pEntry) // point
     float pointSize = 20.f;
     float transformedSize = ((pointSize * (float)cameraFovX) / (float)(pEntry->vertices[0].Z+cameraPerspective));
 
-    osystem_drawPoint(pEntry->vertices[0].X,pEntry->vertices[0].Y,pEntry->vertices[0].Z,pEntry->color,transformedSize);
+    osystem_drawPoint(pEntry->vertices[0].X,pEntry->vertices[0].Y,pEntry->vertices[0].Z,pEntry->color,pEntry->material, transformedSize);
 }
 
 void renderPoint(primEntryStruct* pEntry) // point
 {
     float pointSize = 0.3f; // TODO: better way to compute that?
-    osystem_drawPoint(pEntry->vertices[0].X,pEntry->vertices[0].Y,pEntry->vertices[0].Z,pEntry->color, pointSize);
+    osystem_drawPoint(pEntry->vertices[0].X,pEntry->vertices[0].Y,pEntry->vertices[0].Z,pEntry->color, pEntry->material, pointSize);
 }
 
 void renderBigPoint(primEntryStruct* pEntry) // point
 {
     float bigPointSize = 2.f; // TODO: better way to compute that?
-    osystem_drawPoint(pEntry->vertices[0].X,pEntry->vertices[0].Y,pEntry->vertices[0].Z,pEntry->color, bigPointSize);
+    osystem_drawPoint(pEntry->vertices[0].X,pEntry->vertices[0].Y,pEntry->vertices[0].Z,pEntry->color, pEntry->material, bigPointSize);
 }
 
 void renderSphere(primEntryStruct* pEntry) // sphere
@@ -938,7 +938,7 @@ void renderSphere(primEntryStruct* pEntry) // sphere
 
     transformedSize = (((float)pEntry->size * (float)cameraFovX) / (float)(pEntry->vertices[0].Z+cameraPerspective));
 
-    osystem_drawSphere(pEntry->vertices[0].X,pEntry->vertices[0].Y,pEntry->vertices[0].Z,pEntry->color, transformedSize);
+    osystem_drawSphere(pEntry->vertices[0].X,pEntry->vertices[0].Y,pEntry->vertices[0].Z,pEntry->color, pEntry->material, transformedSize);
 }
 
 

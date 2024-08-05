@@ -1150,12 +1150,12 @@ void osystem_draw3dQuad(float x1, float y1, float z1, float x2, float y2, float 
 
 }
 
-void osystem_drawSphere(float X, float Y, float Z, u8 color, float size)
+void osystem_drawSphere(float X, float Y, float Z, u8 color, u8 material, float size)
 {
-    osystem_drawPoint(X, Y, Z, color, size);
+    osystem_drawPoint(X, Y, Z, color, material, size);
 }
 
-void osystem_drawPoint(float X, float Y, float Z, u8 color, float size)
+void osystem_drawPoint(float X, float Y, float Z, u8 color, u8 material, float size)
 {
     std::array<sphereVertex, 4> corners;
     corners[0].X = X + size;
@@ -1193,6 +1193,7 @@ void osystem_drawPoint(float X, float Y, float Z, u8 color, float size)
         pVertex->size = size;
         pVertex->centerX = X;
         pVertex->centerY = Y;
+        pVertex->material = material;
     }
 }
 

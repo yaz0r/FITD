@@ -10,8 +10,10 @@ void main()
 
     vec2 sphereCenter = a_texcoord1.xy;
     float sphereSize = a_texcoord1.z;
+    float sphereMaterial = a_texcoord1.w;
 
     v_screenSpacePosition = a_position.xyz;
     v_sphereParams.xy = sphereCenter.xy;
-    v_sphereParams.z = sphereSize; // radius
+    v_sphereParams.z = sphereSize;
+    v_sphereParams.w = sphereMaterial;
 }
