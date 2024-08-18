@@ -1,53 +1,51 @@
 #include "common.h"
 
-void printString(int index, int textIndex, int selectedIndex)
+#define	NB_OPTIONS	7
+#define SELECT_COUL 0xF
+#define MENU_COUL 4
+#define	SIZE_FONT 16
+
+void AffOption(int n, int num, int selected)
 {
-    int topPosition;
+    int y = WindowY1 + ((WindowY2 - WindowY1) / 2) - (NB_OPTIONS * SIZE_FONT) / 2 + (n * SIZE_FONT);
 
-    topPosition = (((currentMenuBottom - currentMenuTop) / 2) + currentMenuTop) + (index << 4) - 56;
-
-    if(index == selectedIndex)
+    if(n == selected)
     {
-        drawSlectedText(0xA0,topPosition,textIndex,0xF,4);
+        SelectedMessage( 160, y, num, SELECT_COUL, MENU_COUL);
     }
     else
     {
-        SimpleMessage(0xA0,topPosition,textIndex,4);
+        SimpleMessage( 160, y, num, MENU_COUL);
     }
 }
 
-void drawSystemMenuLayout(int selectedStringNumber)
+void AffOptionList(int selectedStringNumber)
 {
-    int backupTop;
-    int backupBottom;
-    int backupLeft;
-    int backupRight;
-
     AffBigCadre(160,100,320,200);
 
-    backupTop = currentMenuTop;
-    backupBottom = currentMenuBottom;
-    backupLeft = currentMenuLeft;
-    backupRight = currentMenuRight;
+    int backupTop = WindowY1;
+    int backupBottom = WindowY2;
+    int backupLeft = WindowX1;
+    int backupRight = WindowX2;
 
     AffBigCadre(80,55,120,70);
 
     //scaleDownImage(40,35,aux2);
 
-    currentMenuTop = backupTop;
-    currentMenuBottom = backupBottom;
-    currentMenuLeft = backupLeft;
-    currentMenuRight = backupRight;
+    WindowY1 = backupTop;
+    WindowY2 = backupBottom;
+    WindowX1 = backupLeft;
+    WindowX2 = backupRight;
 
-    SetClip(currentMenuLeft,currentMenuTop,currentMenuRight,currentMenuBottom);
+    SetClip(WindowX1,WindowY1,WindowX2,WindowY2);
 
-    printString(0,48,selectedStringNumber);
-    printString(1,45,selectedStringNumber);
-    printString(2,46,selectedStringNumber);
-    printString(3,41+musicEnabled,selectedStringNumber);
-    printString(4,43/*+soundToggle*/,selectedStringNumber);
-    printString(5,49/*+detailToggle*/,selectedStringNumber);
-    printString(6,47,selectedStringNumber);
+    AffOption(0,48,selectedStringNumber);
+    AffOption(1,45,selectedStringNumber);
+    AffOption(2,46,selectedStringNumber);
+    AffOption(3,41+musicEnabled,selectedStringNumber);
+    AffOption(4,43/*+soundToggle*/,selectedStringNumber);
+    AffOption(5,49/*+detailToggle*/,selectedStringNumber);
+    AffOption(6,47,selectedStringNumber);
 
     menuWaitVSync();
 }
@@ -72,7 +70,7 @@ void processSystemMenu(void)
 
     while(!exitMenu)
     {
-        drawSystemMenuLayout(currentSelectedEntry);
+        AffOptionList(currentSelectedEntry);
         osystem_CopyBlockPhys((unsigned char*)logicalScreen,0,0,320,200);
         osystem_startFrame();
 		process_events();

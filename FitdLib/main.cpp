@@ -3545,27 +3545,27 @@ void drawFoundObect(int menuState,int objectName,int zoomFactor)
 
 	AffObjet(0,0,0,0,0,0, HQR_Get(listBody, currentFoundBodyIdx));
 
-	SimpleMessage(160,currentMenuTop,20,1);
-	SimpleMessage(160,currentMenuTop+16,objectName,1);
-	SimpleMessage(160,currentMenuTop+16,objectName,1);
+	SimpleMessage(160,WindowY1,20,1);
+	SimpleMessage(160,WindowY1+16,objectName,1);
+	SimpleMessage(160,WindowY1+16,objectName,1);
 
 	switch(menuState)
 	{
 	case 0:
 		{
-			drawSlectedText(130,currentMenuBottom-16,21,1,4);
-			SimpleMessage(190,currentMenuBottom-16,22,4);
+			SelectedMessage(130,WindowY2-16,21,1,4);
+			SimpleMessage(190,WindowY2-16,22,4);
 			break;
 		}
 	case 1:
 		{
-			SimpleMessage(130,currentMenuBottom-16,21,4);
-			drawSlectedText(190,currentMenuBottom-16,22,1,4);
+			SimpleMessage(130,WindowY2-16,21,4);
+			SelectedMessage(190,WindowY2-16,22,1,4);
 			break;
 		}
 	case 2:
 		{
-			drawSlectedText(160,currentMenuBottom-16,10,1,4);
+			SelectedMessage(160,WindowY2-16,10,1,4);
 			break;
 		}
 	}

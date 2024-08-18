@@ -12,7 +12,7 @@ void drawStartupMenu(int selectedEntry)
         if(currentTextNum == selectedEntry) // hilight selected entry
         {
             fillBox(10,currentY,309,currentY+16,100);
-            drawSlectedText(160,currentY,currentTextNum+11,15,4);
+            SelectedMessage(160,currentY,currentTextNum+11,15,4);
         }
         else
         {

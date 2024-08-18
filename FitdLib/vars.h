@@ -293,10 +293,10 @@ extern char rgbaBuffer[320*200*4];
 extern unsigned int timer;
 extern unsigned int timeGlobal;
 
-extern int currentMenuLeft;
-extern int currentMenuTop;
-extern int currentMenuRight;
-extern int currentMenuBottom;
+extern int WindowX1;
+extern int WindowY1;
+extern int WindowX2;
+extern int WindowY2;
 
 extern textEntryStruct* tabTextes;
 extern u8* systemTextes;

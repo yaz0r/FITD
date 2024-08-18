@@ -178,7 +178,7 @@ void renderText(int x, int y, char* surface, u8* string)
     }
 }
 
-void drawSlectedText(int x, int y, int index, int color1, int color2)
+void SelectedMessage(int x, int y, int index, int color1, int color2)
 {
     textEntryStruct* entryPtr;
     u8* textPtr;

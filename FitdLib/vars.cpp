@@ -38,10 +38,10 @@ char rgbaBuffer[320*200*4];
 unsigned int timer;
 unsigned int timeGlobal;
 
-int currentMenuLeft;
-int currentMenuTop;
-int currentMenuRight;
-int currentMenuBottom;
+int WindowX1;
+int WindowY1;
+int WindowX2;
+int WindowY2;
 
 textEntryStruct* tabTextes;
 u8* systemTextes;

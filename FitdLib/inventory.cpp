@@ -15,7 +15,7 @@ s16 inventoryActionTable[5];
 
 int DrawListObjets(int startIdx, int selectIdx, int selectColor)
 {
-    int y = currentMenuTop+1;
+    int y = WindowY1+1;
     int var_6 = startIdx;
     int var_8;
     int i;
@@ -25,17 +25,17 @@ int DrawListObjets(int startIdx, int selectIdx, int selectColor)
 	if(g_gameId <= JACK)
 	{
 		AffBigCadre(160,50,320,100);
-		y = currentMenuTop+1;
+		y = WindowY1+1;
 	}
 	else
 	{
 		SetClip(27,25,292,98);
 		fillBox(27,25,292,98,0);
 
-		currentMenuLeft = 30;
-		currentMenuTop = 27;
-		currentMenuRight = 288;
-		currentMenuBottom = 95;
+		WindowX1 = 30;
+		WindowY1 = 27;
+		WindowX2 = 288;
+		WindowY2 = 95;
 
 		y = 28;
 	}
@@ -58,7 +58,7 @@ int DrawListObjets(int startIdx, int selectIdx, int selectColor)
 					fillBox(0xA,y,0x135,y+0x10,0x64);
 				}
 
-				drawSlectedText(160,y,objPtr->foundName,selectColor,4);
+				SelectedMessage(160,y,objPtr->foundName,selectColor,4);
 			}
 			else
 			{
@@ -134,10 +134,10 @@ void drawInventoryActions(int arg)
 		SetClip(162,100,292,174);
 		fillBox(162,100,292,174, 0);
 
-		currentMenuLeft = 166;
-		currentMenuTop = 104;
-		currentMenuRight = 288;
-		currentMenuBottom = 170;
+		WindowX1 = 166;
+		WindowY1 = 104;
+		WindowX2 = 288;
+		WindowY2 = 170;
 
 		y = 139 - ((numInventoryActions*fontHeight)/2);
 	}
@@ -149,7 +149,7 @@ void drawInventoryActions(int arg)
 			if(g_gameId <= JACK)
 			{
 				fillBox(170,y,309,y+16,100);
-				drawSlectedText(240,y,inventoryActionTable[i],15,4);
+				SelectedMessage(240,y,inventoryActionTable[i],15,4);
 			}
 			else
 			{
@@ -215,10 +215,10 @@ void processInventory(void)
 	case JACK:
 		AffBigCadre(80,150,160,100);
 
-		statusLeft = currentMenuLeft;
-		statusTop = currentMenuTop;
-		statusRight = currentMenuRight;
-		statusBottom = currentMenuBottom;
+		statusLeft = WindowX1;
+		statusTop = WindowY1;
+		statusRight = WindowX2;
+		statusBottom = WindowY2;
 
 		setupCameraProjection(((statusRight-statusLeft)/2)+statusLeft,((statusBottom-statusTop)/2) + statusTop,128,400,390);
 

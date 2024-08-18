@@ -161,12 +161,12 @@ void AffBigCadre(int x, int y, int width, int height)
 
     afficheSprite(x-20,currentTopPosition+12,8,PtrCadre); // draw "in the dark"
 
-    currentMenuLeft = left + 8;
-    currentMenuTop = top + 8;
-    currentMenuRight = right - 9;
-    currentMenuBottom = bottom - 9;
+    WindowX1 = left + 8;
+    WindowY1 = top + 8;
+    WindowX2 = right - 9;
+    WindowY2 = bottom - 9;
 
-    fillBox(currentMenuLeft,currentMenuTop,currentMenuRight,currentMenuBottom,0);
-    SetClip(currentMenuLeft,currentMenuTop,currentMenuRight,currentMenuBottom);
+    fillBox(WindowX1,WindowY1,WindowX2,WindowY2,0);
+    SetClip(WindowX1,WindowY1,WindowX2,WindowY2);
 
 }
