@@ -217,7 +217,7 @@ void processTrack(void)
         }
     case 2: // follow
         {
-            int followedActorIdx = worldObjects[currentProcessedActorPtr->trackNumber].objIndex;
+            int followedActorIdx = ListWorldObjets[currentProcessedActorPtr->trackNumber].objIndex;
 
             if(followedActorIdx == -1)
             {
@@ -547,9 +547,9 @@ void processTrack(void)
                 {
                     int objNum = currentProcessedActorPtr->indexInWorld;
 
-                    worldObjects[objNum].x = currentProcessedActorPtr->roomX + currentProcessedActorPtr->stepX;
-                    worldObjects[objNum].y = currentProcessedActorPtr->roomY + currentProcessedActorPtr->stepY;
-                    worldObjects[objNum].z = currentProcessedActorPtr->roomZ + currentProcessedActorPtr->stepZ;
+                    ListWorldObjets[objNum].x = currentProcessedActorPtr->roomX + currentProcessedActorPtr->stepX;
+                    ListWorldObjets[objNum].y = currentProcessedActorPtr->roomY + currentProcessedActorPtr->stepY;
+                    ListWorldObjets[objNum].z = currentProcessedActorPtr->roomZ + currentProcessedActorPtr->stepZ;
 
                     currentProcessedActorPtr->positionInTrack++;
 
@@ -571,9 +571,9 @@ void processTrack(void)
                     z = *(s16*)(trackPtr);
                     trackPtr += 2;
 
-                    objX = worldObjects[currentProcessedActorPtr->indexInWorld].x;
-                    objY = worldObjects[currentProcessedActorPtr->indexInWorld].y;
-                    objZ = worldObjects[currentProcessedActorPtr->indexInWorld].z;
+                    objX = ListWorldObjets[currentProcessedActorPtr->indexInWorld].x;
+                    objY = ListWorldObjets[currentProcessedActorPtr->indexInWorld].y;
+                    objZ = ListWorldObjets[currentProcessedActorPtr->indexInWorld].z;
 
                     if(   currentProcessedActorPtr->roomY + currentProcessedActorPtr->stepY < y - 100
                         ||  currentProcessedActorPtr->roomY + currentProcessedActorPtr->stepY > y + 100)
@@ -641,9 +641,9 @@ void processTrack(void)
                     z = *(s16*)(trackPtr);
                     trackPtr += 2;
 
-                    objX = worldObjects[currentProcessedActorPtr->indexInWorld].x;
-                    objY = worldObjects[currentProcessedActorPtr->indexInWorld].y;
-                    objZ = worldObjects[currentProcessedActorPtr->indexInWorld].z;
+                    objX = ListWorldObjets[currentProcessedActorPtr->indexInWorld].x;
+                    objY = ListWorldObjets[currentProcessedActorPtr->indexInWorld].y;
+                    objZ = ListWorldObjets[currentProcessedActorPtr->indexInWorld].z;
 
                     if(   currentProcessedActorPtr->roomY + currentProcessedActorPtr->stepY < y - 100
                         ||  currentProcessedActorPtr->roomY + currentProcessedActorPtr->stepY > y + 100)
@@ -772,7 +772,7 @@ void processTrack2(void)
         }
     case 2: // follow
         {
-            int followedActorIdx = worldObjects[currentProcessedActorPtr->trackNumber].objIndex;
+            int followedActorIdx = ListWorldObjets[currentProcessedActorPtr->trackNumber].objIndex;
 
             if(followedActorIdx == -1)
             {

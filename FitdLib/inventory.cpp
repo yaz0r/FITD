@@ -47,7 +47,7 @@ int DrawListObjets(int startIdx, int selectIdx, int selectColor)
 
         currentObj = inventoryTable[currentInventory][startIdx];
 
-        objPtr = &worldObjects[currentObj];
+        objPtr = &ListWorldObjets[currentObj];
 
         if(startIdx == selectIdx)
         {
@@ -321,11 +321,11 @@ void processInventory(void)
             {
                 selectedWorldObjectIdx = DrawListObjets(firstObjectDisplayedIdx,selectedObjectIdx,15);
 
-                currentFoundBodyIdx = worldObjects[selectedWorldObjectIdx].foundBody;
+                currentFoundBodyIdx = ListWorldObjets[selectedWorldObjectIdx].foundBody;
 
                 currentFoundBody = HQR_Get(listBody,currentFoundBodyIdx);
 
-                var_C = worldObjects[selectedWorldObjectIdx].flags2;
+                var_C = ListWorldObjets[selectedWorldObjectIdx].flags2;
 
                 numInventoryActions = 0;
                 numActionForObject = 0;
@@ -406,7 +406,7 @@ void processInventory(void)
                 }
             }
         }
-        renderInventoryObject(worldObjects[selectedWorldObjectIdx].floorLife);
+        renderInventoryObject(ListWorldObjets[selectedWorldObjectIdx].floorLife);
 
         if(firstTime)
         {

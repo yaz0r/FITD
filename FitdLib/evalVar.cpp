@@ -198,7 +198,7 @@ int evalVar(const char* name)
 
                 objectNumber = *(s16*)currentLifePtr;
 
-                actorIdx = worldObjects[objectNumber].objIndex;
+                actorIdx = ListWorldObjets[objectNumber].objIndex;
 
                 currentLifePtr+=2;
                 actorPtr = &objectTable[actorIdx];
@@ -209,12 +209,12 @@ int evalVar(const char* name)
                     {
                     case 0x1F:
                         {
-                            return(worldObjects[objectNumber].room);
+                            return(ListWorldObjets[objectNumber].room);
                             break;
                         }
                     case 0x26:
                         {
-                            return(worldObjects[objectNumber].stage);
+                            return(ListWorldObjets[objectNumber].stage);
                             break;
                         }
                     default:
@@ -334,7 +334,7 @@ int evalVar(const char* name)
                     }
                 case 0xE: // DIST
                     {
-                        int actorNumber = worldObjects[*(s16*)currentLifePtr].objIndex;
+                        int actorNumber = ListWorldObjets[*(s16*)currentLifePtr].objIndex;
                         currentLifePtr+=2;
 
                         if(actorNumber == -1)
@@ -362,7 +362,7 @@ int evalVar(const char* name)
                     }
                 case 0x10: // found
                     {
-                        if(worldObjects[evalVar()].flags2 & 0x8000)
+                        if(ListWorldObjets[evalVar()].flags2 & 0x8000)
                         {
                             return(1);
                         }
@@ -385,12 +385,12 @@ int evalVar(const char* name)
                         objNum = *(s16*)currentLifePtr;
                         currentLifePtr+=2;
 
-                        if(worldObjects[objNum].objIndex == -1)
+                        if(ListWorldObjets[objNum].objIndex == -1)
                         {
                             return 0;
                         }
 
-                        return (getPosRel(actorPtr, &objectTable[worldObjects[objNum].objIndex]));
+                        return (getPosRel(actorPtr, &objectTable[ListWorldObjets[objNum].objIndex]));
 
                         break;
                     }
@@ -485,7 +485,7 @@ int evalVar(const char* name)
                         objNum = *(s16*)currentLifePtr;
                         currentLifePtr+=2;
 
-                        if(worldObjects[objNum].flags2 & 0xC000)
+                        if(ListWorldObjets[objNum].flags2 & 0xC000)
                         {
                             return(1);
                         }
@@ -539,7 +539,7 @@ int evalVar(const char* name)
                         objNum = *(s16*)currentLifePtr;
                         currentLifePtr+=2;
 
-                        if(worldObjects[objNum].flags2 & 0x1000)
+                        if(ListWorldObjets[objNum].flags2 & 0x1000)
                         {
                             return 1;
                         }
@@ -601,7 +601,7 @@ int evalVar2(const char* name)
 
                 objectNumber = *(s16*)currentLifePtr;
 
-                actorIdx = worldObjects[objectNumber].objIndex;
+                actorIdx = ListWorldObjets[objectNumber].objIndex;
 
                 currentLifePtr+=2;
                 actorPtr = &objectTable[actorIdx];
@@ -616,7 +616,7 @@ int evalVar2(const char* name)
                                 appendFormated("%s:", name);
                             appendFormated("worldObjects[%d].room, ", objectNumber);
 
-                            return(worldObjects[objectNumber].room);
+                            return(ListWorldObjets[objectNumber].room);
                             break;
                         }
                     case 0x24:
@@ -625,7 +625,7 @@ int evalVar2(const char* name)
                                 appendFormated("%s:", name);
                             appendFormated("worldObjects[%d].stage, ", objectNumber);
 
-                            return(worldObjects[objectNumber].stage);
+                            return(ListWorldObjets[objectNumber].stage);
                             break;
                         }
                     default:
@@ -763,7 +763,7 @@ int evalVar2(const char* name)
 						int worldObjectIdx = *(s16*)currentLifePtr;
 						currentLifePtr+=2;
 
-                        int objectIdx = worldObjects[worldObjectIdx].objIndex;
+                        int objectIdx = ListWorldObjets[worldObjectIdx].objIndex;
                         
 						int tempX;
 						int tempY;
@@ -771,11 +771,11 @@ int evalVar2(const char* name)
 
                         if(objectIdx == -1)
                         {
-							if(worldObjects[worldObjectIdx].room == currentRoom)
+							if(ListWorldObjets[worldObjectIdx].room == currentRoom)
 							{
-								tempX = worldObjects[worldObjectIdx].x;
-								tempY = worldObjects[worldObjectIdx].y;
-								tempZ = worldObjects[worldObjectIdx].z;
+								tempX = ListWorldObjets[worldObjectIdx].x;
+								tempY = ListWorldObjets[worldObjectIdx].y;
+								tempZ = ListWorldObjets[worldObjectIdx].z;
 							}
 							else
 							{
@@ -803,7 +803,7 @@ int evalVar2(const char* name)
                     }
                 case 0x10: // found
                     {
-                        if(worldObjects[evalVar()].flags2 & 0x8000)
+                        if(ListWorldObjets[evalVar()].flags2 & 0x8000)
                         {
                             return(1);
                         }
@@ -826,12 +826,12 @@ int evalVar2(const char* name)
                         objNum = *(s16*)currentLifePtr;
                         currentLifePtr+=2;
 
-                        if(worldObjects[objNum].objIndex == -1)
+                        if(ListWorldObjets[objNum].objIndex == -1)
                         {
                             return 0;
                         }
 
-                        return (getPosRel(actorPtr, &objectTable[worldObjects[objNum].objIndex]));
+                        return (getPosRel(actorPtr, &objectTable[ListWorldObjets[objNum].objIndex]));
 
                         break;
                     }
@@ -926,7 +926,7 @@ int evalVar2(const char* name)
                         objNum = *(s16*)currentLifePtr;
                         currentLifePtr+=2;
 
-                        if(worldObjects[objNum].flags2 & 0xC000)
+                        if(ListWorldObjets[objNum].flags2 & 0xC000)
                         {
                             return(1);
                         }
@@ -961,7 +961,7 @@ int evalVar2(const char* name)
                         objNum = *(s16*)currentLifePtr;
                         currentLifePtr+=2;
 
-                        if(worldObjects[objNum].flags2 & 0x1000)
+                        if(ListWorldObjets[objNum].flags2 & 0x1000)
                         {
                             return 1;
                         }
@@ -982,7 +982,7 @@ int evalVar2(const char* name)
                         param2 = *(s16*)currentLifePtr;
                         currentLifePtr+=2;
 
-                        return getMatrix(param1,actorIdx,worldObjects[param2].objIndex);
+                        return getMatrix(param1,actorIdx,ListWorldObjets[param2].objIndex);
                         break;
                     }
                 case 0x26: // hard_mat

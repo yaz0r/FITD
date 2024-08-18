@@ -339,7 +339,7 @@ extern hqrEntryStruct* listMatrix;
 
 extern s16 maxObjects;
 
-extern std::vector<tWorldObject> worldObjects; // may be less
+extern std::vector<tWorldObject> ListWorldObjets; // may be less
 
 extern s16* vars;
 

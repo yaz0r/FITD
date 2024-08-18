@@ -90,7 +90,7 @@ hqrEntryStruct* listMatrix;
 
 s16 maxObjects;
 
-std::vector<tWorldObject> worldObjects;
+std::vector<tWorldObject> ListWorldObjets;
 
 s16* vars;
 

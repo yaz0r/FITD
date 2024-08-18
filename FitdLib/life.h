@@ -138,7 +138,7 @@ extern enumLifeMacro AITD1LifeMacroTable[];
 extern enumLifeMacro AITD2LifeMacroTable[];
 
 void processLife(int lifeNum, bool callFoundLife);
-int createFlow( int mode, int X, int Y, int Z, int stage, int room, int alpha, int beta, int gamma, ZVStruct* zvPtr);
+int InitSpecialObjet( int mode, int X, int Y, int Z, int stage, int room, int alpha, int beta, int gamma, ZVStruct* zvPtr);
 void animMove(int a,int b,int c,int d,int e,int f,int g);
 void doRealZv(tObject* actorPtr);
 void setStage(int newStage, int newRoomLocal, int X, int Y, int Z);

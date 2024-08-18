@@ -27,16 +27,16 @@ void throwObj(int animThrow, int frameThrow, int arg_4, int objToThrowIdx, int t
 
         if (!throwRotated)
         {
-            worldObjects[objToThrowIdx].gamma -= 0x100;
+            ListWorldObjets[objToThrowIdx].gamma -= 0x100;
         }
 
-        worldObjects[objToThrowIdx].flags2 |= 0x1000;
+        ListWorldObjets[objToThrowIdx].flags2 |= 0x1000;
     }
 }
 
 void put(int x, int y, int z, int room, int stage, int alpha, int beta, int gamma, int idx)
 {
-    tWorldObject* objPtr = &worldObjects[idx];
+    tWorldObject* objPtr = &ListWorldObjets[idx];
 
     objPtr->x = x;
     objPtr->y = y;
@@ -81,7 +81,7 @@ int randRange(int min, int max)
     return((rand() % (max - min)) + min);
 }
 
-int createFlow(int mode, int X, int Y, int Z, int stage, int room, int alpha, int beta, int gamma, ZVStruct* zvPtr)
+int InitSpecialObjet(int mode, int X, int Y, int Z, int stage, int room, int alpha, int beta, int gamma, ZVStruct* zvPtr)
 {
     s16 localSpecialTable[4];
     tObject* currentActorPtr;
@@ -137,7 +137,7 @@ int createFlow(int mode, int X, int Y, int Z, int stage, int room, int alpha, in
 
     switch (mode)
     {
-    case 0:
+    case 0: // evaporate
     {
         char* flowPtr;
         int j;
@@ -513,7 +513,7 @@ void processLife(int lifeNum, bool callFoundLife)
             }
             else
             {
-                currentProcessedActorIdx = worldObjects[var_6].objIndex;
+                currentProcessedActorIdx = ListWorldObjets[var_6].objIndex;
 
                 if (currentProcessedActorIdx != -1)
                 {
@@ -539,13 +539,13 @@ void processLife(int lifeNum, bool callFoundLife)
                         ////////////////////////////////////////////////////////////////////////
                     case LM_BODY:
                     {
-                        worldObjects[var_6].body = evalVar();
+                        ListWorldObjets[var_6].body = evalVar();
                         break;
                     }
                     case LM_BODY_RESET:
                     {
-                        worldObjects[var_6].body = evalVar();
-                        worldObjects[var_6].anim = evalVar();
+                        ListWorldObjets[var_6].body = evalVar();
+                        ListWorldObjets[var_6].anim = evalVar();
                         break;
                     }
                     case LM_TYPE:
@@ -553,100 +553,100 @@ void processLife(int lifeNum, bool callFoundLife)
                         lifeTempVar1 = (*(s16*)(currentLifePtr)) & TYPE_MASK;
                         currentLifePtr += 2;
 
-                        lifeTempVar2 = worldObjects[var_6].flags;
+                        lifeTempVar2 = ListWorldObjets[var_6].flags;
 
-                        worldObjects[var_6].flags = (worldObjects[var_6].flags & (~TYPE_MASK)) + lifeTempVar1;
+                        ListWorldObjets[var_6].flags = (ListWorldObjets[var_6].flags & (~TYPE_MASK)) + lifeTempVar1;
                         break;
                     }
                     ////////////////////////////////////////////////////////////////////////
                     case LM_ANIM_ONCE:
                     {
-                        worldObjects[var_6].anim = *(s16*)(currentLifePtr);
+                        ListWorldObjets[var_6].anim = *(s16*)(currentLifePtr);
                         currentLifePtr += 2;
-                        worldObjects[var_6].animInfo = *(s16*)(currentLifePtr);
+                        ListWorldObjets[var_6].animInfo = *(s16*)(currentLifePtr);
                         currentLifePtr += 2;
-                        worldObjects[var_6].animType = ANIM_ONCE;
+                        ListWorldObjets[var_6].animType = ANIM_ONCE;
                         if (g_gameId >= JACK)
-                            worldObjects[var_6].frame = 0;
+                            ListWorldObjets[var_6].frame = 0;
                         break;
                     }
                     case LM_ANIM_REPEAT:
                     {
-                        worldObjects[var_6].anim = *(s16*)(currentLifePtr);
+                        ListWorldObjets[var_6].anim = *(s16*)(currentLifePtr);
                         currentLifePtr += 2;
-                        worldObjects[var_6].animInfo = -1;
-                        worldObjects[var_6].animType = ANIM_REPEAT;
+                        ListWorldObjets[var_6].animInfo = -1;
+                        ListWorldObjets[var_6].animType = ANIM_REPEAT;
                         if (g_gameId >= JACK)
-                            worldObjects[var_6].frame = 0;
+                            ListWorldObjets[var_6].frame = 0;
                         break;
                     }
                     case LM_ANIM_ALL_ONCE:
                     {
-                        worldObjects[var_6].anim = *(s16*)(currentLifePtr);
+                        ListWorldObjets[var_6].anim = *(s16*)(currentLifePtr);
                         currentLifePtr += 2;
-                        worldObjects[var_6].animInfo = *(s16*)(currentLifePtr);
+                        ListWorldObjets[var_6].animInfo = *(s16*)(currentLifePtr);
                         currentLifePtr += 2;
-                        worldObjects[var_6].animType = ANIM_ONCE | ANIM_UNINTERRUPTABLE;
+                        ListWorldObjets[var_6].animType = ANIM_ONCE | ANIM_UNINTERRUPTABLE;
                         if (g_gameId >= JACK)
-                            worldObjects[var_6].frame = 0;
+                            ListWorldObjets[var_6].frame = 0;
                         break;
                     }
                     case	LM_ANIM_RESET:
                     {
                         ASSERT(g_gameId >= JACK);
-                        worldObjects[var_6].anim = *(s16*)(currentLifePtr);
+                        ListWorldObjets[var_6].anim = *(s16*)(currentLifePtr);
                         currentLifePtr += 2;
-                        worldObjects[var_6].animInfo = *(s16*)(currentLifePtr);
+                        ListWorldObjets[var_6].animInfo = *(s16*)(currentLifePtr);
                         currentLifePtr += 2;
-                        worldObjects[var_6].animType = ANIM_ONCE | ANIM_RESET;
-                        worldObjects[var_6].frame = 0;
+                        ListWorldObjets[var_6].animType = ANIM_ONCE | ANIM_RESET;
+                        ListWorldObjets[var_6].frame = 0;
                         break;
                     }
                     ////////////////////////////////////////////////////////////////////////
                     case LM_MOVE: // MOVE
                     {
-                        worldObjects[var_6].trackMode = *(s16*)(currentLifePtr);
+                        ListWorldObjets[var_6].trackMode = *(s16*)(currentLifePtr);
                         currentLifePtr += 2;
 
-                        worldObjects[var_6].trackNumber = *(s16*)(currentLifePtr);
+                        ListWorldObjets[var_6].trackNumber = *(s16*)(currentLifePtr);
                         currentLifePtr += 2;
 
-                        worldObjects[var_6].positionInTrack = 0;
+                        ListWorldObjets[var_6].positionInTrack = 0;
 
                         if (g_gameId > AITD1)
                         {
-                            worldObjects[var_6].mark = -1;
+                            ListWorldObjets[var_6].mark = -1;
                         }
                         break;
                     }
                     case LM_ANGLE:
                     {
-                        worldObjects[var_6].alpha = *(s16*)(currentLifePtr);
+                        ListWorldObjets[var_6].alpha = *(s16*)(currentLifePtr);
                         currentLifePtr += 2;
 
-                        worldObjects[var_6].beta = *(s16*)(currentLifePtr);
+                        ListWorldObjets[var_6].beta = *(s16*)(currentLifePtr);
                         currentLifePtr += 2;
 
-                        worldObjects[var_6].gamma = *(s16*)(currentLifePtr);
+                        ListWorldObjets[var_6].gamma = *(s16*)(currentLifePtr);
                         currentLifePtr += 2;
 
                         break;
                     }
                     case LM_STAGE: // stage
                     {
-                        worldObjects[var_6].stage = *(s16*)(currentLifePtr);
+                        ListWorldObjets[var_6].stage = *(s16*)(currentLifePtr);
                         currentLifePtr += 2;
 
-                        worldObjects[var_6].room = *(s16*)(currentLifePtr);
+                        ListWorldObjets[var_6].room = *(s16*)(currentLifePtr);
                         currentLifePtr += 2;
 
-                        worldObjects[var_6].x = *(s16*)(currentLifePtr);
+                        ListWorldObjets[var_6].x = *(s16*)(currentLifePtr);
                         currentLifePtr += 2;
 
-                        worldObjects[var_6].y = *(s16*)(currentLifePtr);
+                        ListWorldObjets[var_6].y = *(s16*)(currentLifePtr);
                         currentLifePtr += 2;
 
-                        worldObjects[var_6].z = *(s16*)(currentLifePtr);
+                        ListWorldObjets[var_6].z = *(s16*)(currentLifePtr);
                         currentLifePtr += 2;
 
                         //FlagGenereActiveList = 1;
@@ -657,11 +657,11 @@ void processLife(int lifeNum, bool callFoundLife)
                     {
                         if (*(s16*)(currentLifePtr))
                         {
-                            worldObjects[var_6].flags |= 0x20;
+                            ListWorldObjets[var_6].flags |= 0x20;
                         }
                         else
                         {
-                            worldObjects[var_6].flags &= 0xFFDF;
+                            ListWorldObjets[var_6].flags &= 0xFFDF;
                         }
 
                         currentLifePtr += 2;
@@ -671,7 +671,7 @@ void processLife(int lifeNum, bool callFoundLife)
                     ////////////////////////////////////////////////////////////////////////
                     case LM_LIFE:
                     {
-                        worldObjects[var_6].life = *(s16*)(currentLifePtr);
+                        ListWorldObjets[var_6].life = *(s16*)(currentLifePtr);
                         currentLifePtr += 2;
                         break;
                     }
@@ -681,38 +681,38 @@ void processLife(int lifeNum, bool callFoundLife)
                         currentLifePtr += 2;
 
 
-                        if (lifeTempVar1 != worldObjects[var_6].lifeMode)
+                        if (lifeTempVar1 != ListWorldObjets[var_6].lifeMode)
                         {
-                            worldObjects[var_6].lifeMode = lifeTempVar1;
+                            ListWorldObjets[var_6].lifeMode = lifeTempVar1;
                             //FlagGenereActiveList = 1;
                         }
                         break;
                     }
                     case LM_FOUND_NAME: // FOUND_NAME
                     {
-                        worldObjects[var_6].foundName = *(s16*)(currentLifePtr);
+                        ListWorldObjets[var_6].foundName = *(s16*)(currentLifePtr);
                         currentLifePtr += 2;
 
                         break;
                     }
                     case LM_FOUND_BODY: // FOUND_BODY
                     {
-                        worldObjects[var_6].foundBody = *(s16*)(currentLifePtr);
+                        ListWorldObjets[var_6].foundBody = *(s16*)(currentLifePtr);
                         currentLifePtr += 2;
 
                         break;
                     }
                     case LM_FOUND_FLAG: // FOUND_FLAG
                     {
-                        worldObjects[var_6].flags2 &= 0xE000;
-                        worldObjects[var_6].flags2 |= *(s16*)(currentLifePtr);
+                        ListWorldObjets[var_6].flags2 &= 0xE000;
+                        ListWorldObjets[var_6].flags2 |= *(s16*)(currentLifePtr);
                         currentLifePtr += 2;
 
                         break;
                     }
                     case LM_FOUND_WEIGHT:
                     {
-                        worldObjects[var_6].positionInTrack = *(s16*)(currentLifePtr);
+                        ListWorldObjets[var_6].positionInTrack = *(s16*)(currentLifePtr);
                         currentLifePtr += 2;
 
                         break;
@@ -752,7 +752,7 @@ void processLife(int lifeNum, bool callFoundLife)
             {
                 lifeTempVar1 = evalVar();
 
-                worldObjects[currentProcessedActorPtr->indexInWorld].body = lifeTempVar1;
+                ListWorldObjets[currentProcessedActorPtr->indexInWorld].body = lifeTempVar1;
 
                 if (currentProcessedActorPtr->bodyNum != lifeTempVar1)
                 {
@@ -797,8 +797,8 @@ void processLife(int lifeNum, bool callFoundLife)
                 int param1 = evalVar("body");
                 int param2 = evalVar("anim");
 
-                worldObjects[currentProcessedActorPtr->indexInWorld].body = param1;
-                worldObjects[currentProcessedActorPtr->indexInWorld].anim = param2;
+                ListWorldObjets[currentProcessedActorPtr->indexInWorld].body = param1;
+                ListWorldObjets[currentProcessedActorPtr->indexInWorld].anim = param2;
 
                 currentProcessedActorPtr->bodyNum = param1;
 
@@ -1252,9 +1252,18 @@ void processLife(int lifeNum, bool callFoundLife)
             case LM_COPY_ANGLE:
             {
                 appendFormated("LM_COPY_ANGLE ");
-                // TODO !
-                printf("LM_COPY_ANGLE\n");
-                currentLifePtr += 2;
+                int object = readNextArgument("object");
+                int localObjectIndex = ListWorldObjets[object].objIndex;
+                if (localObjectIndex == -1) {
+                    currentProcessedActorPtr->alpha = ListWorldObjets[object].alpha;
+                    currentProcessedActorPtr->beta = ListWorldObjets[object].beta;
+                    currentProcessedActorPtr->gamma = ListWorldObjets[object].gamma;
+                }
+                else {
+                    currentProcessedActorPtr->alpha = objectTable[localObjectIndex].alpha;
+                    currentProcessedActorPtr->beta = objectTable[localObjectIndex].beta;
+                    currentProcessedActorPtr->gamma = objectTable[localObjectIndex].gamma;
+                }
                 break;
             }
             case LM_STAGE: // STAGE
@@ -1302,7 +1311,7 @@ void processLife(int lifeNum, bool callFoundLife)
             case LM_STAGE_LIFE:
             {
                 appendFormated("LM_STAGE_LIFE ");
-                worldObjects[currentProcessedActorPtr->indexInWorld].floorLife = readNextArgument("stageLife");
+                ListWorldObjets[currentProcessedActorPtr->indexInWorld].floorLife = readNextArgument("stageLife");
                 break;
             }
             case LM_LIFE_MODE: // LIFE_MODE
@@ -1341,13 +1350,13 @@ void processLife(int lifeNum, bool callFoundLife)
 
                 deleteObject(lifeTempVar1);
 
-                if (worldObjects[lifeTempVar1].foundBody != -1)
+                if (ListWorldObjets[lifeTempVar1].foundBody != -1)
                 {
-                    if (g_gameId == AITD1) // TODO: check, really usefull ?
+                    if (g_gameId == AITD1) // TODO: check, really useful ?
                     {
-                        worldObjects[lifeTempVar1].flags2 &= 0x7FFF;
+                        ListWorldObjets[lifeTempVar1].flags2 &= 0x7FFF;
                     }
-                    worldObjects[lifeTempVar1].flags2 |= 0x4000;
+                    ListWorldObjets[lifeTempVar1].flags2 |= 0x4000;
                 }
 
                 break;
@@ -1359,9 +1368,9 @@ void processLife(int lifeNum, bool callFoundLife)
 
                 switch (lifeTempVar1)
                 {
-                case 0:
+                case 0: // evaporate
                 {
-                    createFlow(0,
+                    InitSpecialObjet(0,
                         currentProcessedActorPtr->roomX + currentProcessedActorPtr->stepX,
                         currentProcessedActorPtr->roomY + currentProcessedActorPtr->stepY,
                         currentProcessedActorPtr->roomZ + currentProcessedActorPtr->stepZ,
@@ -1373,11 +1382,11 @@ void processLife(int lifeNum, bool callFoundLife)
                         &currentProcessedActorPtr->zv);
                     break;
                 }
-                case 1:
+                case 1: // flow
                 {
                     currentProcessedActorPtr = &objectTable[currentProcessedActorPtr->HIT_BY];
 
-                    createFlow(1,
+                    InitSpecialObjet(1,
                         currentProcessedActorPtr->roomX + currentProcessedActorPtr->stepX + currentProcessedActorPtr->hotPoint.x,
                         currentProcessedActorPtr->roomY + currentProcessedActorPtr->stepY + currentProcessedActorPtr->hotPoint.y,
                         currentProcessedActorPtr->roomZ + currentProcessedActorPtr->stepZ + currentProcessedActorPtr->hotPoint.z,
@@ -1393,9 +1402,9 @@ void processLife(int lifeNum, bool callFoundLife)
 
                     break;
                 }
-                case 4:
+                case 4: // cigar smoke
                 {
-                    createFlow(4,
+                    InitSpecialObjet(4,
                         currentProcessedActorPtr->roomX + currentProcessedActorPtr->stepX,
                         currentProcessedActorPtr->roomY + currentProcessedActorPtr->stepY,
                         currentProcessedActorPtr->roomZ + currentProcessedActorPtr->stepZ,
@@ -1547,7 +1556,7 @@ void processLife(int lifeNum, bool callFoundLife)
             case LM_FOUND_NAME: // FOUND_NAME
             {
                 appendFormated("LM_FOUND_NAME ");
-                worldObjects[currentProcessedActorPtr->indexInWorld].foundName = *(s16*)(currentLifePtr);
+                ListWorldObjets[currentProcessedActorPtr->indexInWorld].foundName = *(s16*)(currentLifePtr);
                 currentLifePtr += 2;
 
                 break;
@@ -1555,7 +1564,7 @@ void processLife(int lifeNum, bool callFoundLife)
             case LM_FOUND_BODY: // FOUND_BODY
             {
                 appendFormated("LM_FOUND_BODY ");
-                worldObjects[currentProcessedActorPtr->indexInWorld].foundBody = *(s16*)(currentLifePtr);
+                ListWorldObjets[currentProcessedActorPtr->indexInWorld].foundBody = *(s16*)(currentLifePtr);
                 currentLifePtr += 2;
 
                 break;
@@ -1563,15 +1572,15 @@ void processLife(int lifeNum, bool callFoundLife)
             case LM_FOUND_FLAG: // FOUND_FLAG
             {
                 appendFormated("LM_FOUND_FLAG ");
-                worldObjects[currentProcessedActorPtr->indexInWorld].flags2 &= 0xE000;
-                worldObjects[currentProcessedActorPtr->indexInWorld].flags2 |= *(s16*)(currentLifePtr);
+                ListWorldObjets[currentProcessedActorPtr->indexInWorld].flags2 &= 0xE000;
+                ListWorldObjets[currentProcessedActorPtr->indexInWorld].flags2 |= *(s16*)(currentLifePtr);
                 currentLifePtr += 2;
                 break;
             }
             case LM_FOUND_WEIGHT: // FOUND_WEIGHT
             {
                 appendFormated("LM_FOUND_WEIGHT ");
-                worldObjects[currentProcessedActorPtr->indexInWorld].positionInTrack = *(s16*)(currentLifePtr);
+                ListWorldObjets[currentProcessedActorPtr->indexInWorld].positionInTrack = *(s16*)(currentLifePtr);
                 currentLifePtr += 2;
 
                 break;
@@ -1579,7 +1588,7 @@ void processLife(int lifeNum, bool callFoundLife)
             case LM_FOUND_LIFE: // FOUND_LIFE
             {
                 appendFormated("LM_FOUND_LIFE ");
-                worldObjects[currentProcessedActorPtr->indexInWorld].foundLife = *(s16*)(currentLifePtr);
+                ListWorldObjets[currentProcessedActorPtr->indexInWorld].foundLife = *(s16*)(currentLifePtr);
                 currentLifePtr += 2;
 
                 break;
@@ -1905,7 +1914,7 @@ void processLife(int lifeNum, bool callFoundLife)
 
                 if (lifeTempVar1 != currentWorldTarget) // same target
                 {
-                    lifeTempVar2 = worldObjects[lifeTempVar1].objIndex;
+                    lifeTempVar2 = ListWorldObjets[lifeTempVar1].objIndex;
 
                     if (lifeTempVar2 != -1)
                     {
@@ -1951,18 +1960,18 @@ void processLife(int lifeNum, bool callFoundLife)
                     else // different stage
                     {
                         currentWorldTarget = lifeTempVar1;
-                        if (worldObjects[lifeTempVar1].stage != g_currentFloor)
+                        if (ListWorldObjets[lifeTempVar1].stage != g_currentFloor)
                         {
                             changeFloor = 1;
-                            newFloor = worldObjects[lifeTempVar1].stage;
-                            newRoom = worldObjects[lifeTempVar1].room;
+                            newFloor = ListWorldObjets[lifeTempVar1].stage;
+                            newRoom = ListWorldObjets[lifeTempVar1].room;
                         }
                         else
                         {
-                            if (currentRoom != worldObjects[lifeTempVar1].room)
+                            if (currentRoom != ListWorldObjets[lifeTempVar1].room)
                             {
                                 needChangeRoom = 1;
-                                newRoom = worldObjects[lifeTempVar1].room;
+                                newRoom = ListWorldObjets[lifeTempVar1].room;
                             }
                         }
                     }

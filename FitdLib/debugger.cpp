@@ -172,7 +172,7 @@ void debugger_draw(void)
 
         ImGui::End();
 
-        if(worldObjects.size())
+        if(ListWorldObjets.size())
         {
             ImGui::Begin("World objects");
 
@@ -181,10 +181,10 @@ void debugger_draw(void)
 
             ImGui::Separator();
 
-            if (selectedWorldObject > worldObjects.size())
-                selectedWorldObject = worldObjects.size() - 1;
+            if (selectedWorldObject > ListWorldObjets.size())
+                selectedWorldObject = ListWorldObjets.size() - 1;
 
-            tWorldObject* pWorldObject = &worldObjects[selectedWorldObject];
+            tWorldObject* pWorldObject = &ListWorldObjets[selectedWorldObject];
 
             if(pWorldObject)
             {

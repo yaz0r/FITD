@@ -98,83 +98,83 @@ int loadSave(int saveNumber)
 
     for(i=0;i<maxObjects;i++)
     {
-        ASSERT(sizeof(worldObjects[i].objIndex) == 2);
-        fread(&worldObjects[i].objIndex,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].objIndex) == 2);
+        fread(&ListWorldObjets[i].objIndex,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].body) == 2);
-        fread(&worldObjects[i].body,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].body) == 2);
+        fread(&ListWorldObjets[i].body,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].flags) == 2);
-        fread(&worldObjects[i].flags,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].flags) == 2);
+        fread(&ListWorldObjets[i].flags,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].typeZV) == 2);
-        fread(&worldObjects[i].typeZV,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].typeZV) == 2);
+        fread(&ListWorldObjets[i].typeZV,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].foundBody) == 2);
-        fread(&worldObjects[i].foundBody,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].foundBody) == 2);
+        fread(&ListWorldObjets[i].foundBody,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].foundName) == 2);
-        fread(&worldObjects[i].foundName,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].foundName) == 2);
+        fread(&ListWorldObjets[i].foundName,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].flags2) == 2);
-        fread(&worldObjects[i].flags2,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].flags2) == 2);
+        fread(&ListWorldObjets[i].flags2,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].foundLife) == 2);
-        fread(&worldObjects[i].foundLife,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].foundLife) == 2);
+        fread(&ListWorldObjets[i].foundLife,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].x) == 2);
-        fread(&worldObjects[i].x,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].x) == 2);
+        fread(&ListWorldObjets[i].x,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].y) == 2);
-        fread(&worldObjects[i].y,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].y) == 2);
+        fread(&ListWorldObjets[i].y,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].z) == 2);
-        fread(&worldObjects[i].z,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].z) == 2);
+        fread(&ListWorldObjets[i].z,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].alpha) == 2);
-        fread(&worldObjects[i].alpha,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].alpha) == 2);
+        fread(&ListWorldObjets[i].alpha,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].beta) == 2);
-        fread(&worldObjects[i].beta,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].beta) == 2);
+        fread(&ListWorldObjets[i].beta,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].gamma) == 2);
-        fread(&worldObjects[i].gamma,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].gamma) == 2);
+        fread(&ListWorldObjets[i].gamma,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].stage) == 2);
-        fread(&worldObjects[i].stage,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].stage) == 2);
+        fread(&ListWorldObjets[i].stage,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].room) == 2);
-        fread(&worldObjects[i].room,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].room) == 2);
+        fread(&ListWorldObjets[i].room,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].lifeMode) == 2);
-        fread(&worldObjects[i].lifeMode,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].lifeMode) == 2);
+        fread(&ListWorldObjets[i].lifeMode,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].life) == 2);
-        fread(&worldObjects[i].life,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].life) == 2);
+        fread(&ListWorldObjets[i].life,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].floorLife) == 2);
-        fread(&worldObjects[i].floorLife,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].floorLife) == 2);
+        fread(&ListWorldObjets[i].floorLife,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].anim) == 2);
-        fread(&worldObjects[i].anim,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].anim) == 2);
+        fread(&ListWorldObjets[i].anim,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].frame) == 2);
-        fread(&worldObjects[i].frame,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].frame) == 2);
+        fread(&ListWorldObjets[i].frame,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].animType) == 2);
-        fread(&worldObjects[i].animType,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].animType) == 2);
+        fread(&ListWorldObjets[i].animType,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].animInfo) == 2);
-        fread(&worldObjects[i].animInfo,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].animInfo) == 2);
+        fread(&ListWorldObjets[i].animInfo,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].trackMode) == 2);
-        fread(&worldObjects[i].trackMode,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].trackMode) == 2);
+        fread(&ListWorldObjets[i].trackMode,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].trackNumber) == 2);
-        fread(&worldObjects[i].trackNumber,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].trackNumber) == 2);
+        fread(&ListWorldObjets[i].trackNumber,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].positionInTrack) == 2);
-        fread(&worldObjects[i].positionInTrack,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].positionInTrack) == 2);
+        fread(&ListWorldObjets[i].positionInTrack,2,1,fHandle);
     }
 
     if(g_gameId == AITD1)
@@ -609,83 +609,83 @@ int makeSaveFile(int entry)
 
     for(i=0;i<maxObjects;i++)
     {
-        ASSERT(sizeof(worldObjects[i].objIndex) == 2);
-        fwrite(&worldObjects[i].objIndex,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].objIndex) == 2);
+        fwrite(&ListWorldObjets[i].objIndex,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].body) == 2);
-        fwrite(&worldObjects[i].body,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].body) == 2);
+        fwrite(&ListWorldObjets[i].body,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].flags) == 2);
-        fwrite(&worldObjects[i].flags,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].flags) == 2);
+        fwrite(&ListWorldObjets[i].flags,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].typeZV) == 2);
-        fwrite(&worldObjects[i].typeZV,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].typeZV) == 2);
+        fwrite(&ListWorldObjets[i].typeZV,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].foundBody) == 2);
-        fwrite(&worldObjects[i].foundBody,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].foundBody) == 2);
+        fwrite(&ListWorldObjets[i].foundBody,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].foundName) == 2);
-        fwrite(&worldObjects[i].foundName,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].foundName) == 2);
+        fwrite(&ListWorldObjets[i].foundName,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].flags2) == 2);
-        fwrite(&worldObjects[i].flags2,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].flags2) == 2);
+        fwrite(&ListWorldObjets[i].flags2,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].foundLife) == 2);
-        fwrite(&worldObjects[i].foundLife,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].foundLife) == 2);
+        fwrite(&ListWorldObjets[i].foundLife,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].x) == 2);
-        fwrite(&worldObjects[i].x,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].x) == 2);
+        fwrite(&ListWorldObjets[i].x,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].y) == 2);
-        fwrite(&worldObjects[i].y,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].y) == 2);
+        fwrite(&ListWorldObjets[i].y,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].z) == 2);
-        fwrite(&worldObjects[i].z,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].z) == 2);
+        fwrite(&ListWorldObjets[i].z,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].alpha) == 2);
-        fwrite(&worldObjects[i].alpha,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].alpha) == 2);
+        fwrite(&ListWorldObjets[i].alpha,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].beta) == 2);
-        fwrite(&worldObjects[i].beta,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].beta) == 2);
+        fwrite(&ListWorldObjets[i].beta,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].gamma) == 2);
-        fwrite(&worldObjects[i].gamma,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].gamma) == 2);
+        fwrite(&ListWorldObjets[i].gamma,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].stage) == 2);
-        fwrite(&worldObjects[i].stage,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].stage) == 2);
+        fwrite(&ListWorldObjets[i].stage,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].room) == 2);
-        fwrite(&worldObjects[i].room,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].room) == 2);
+        fwrite(&ListWorldObjets[i].room,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].lifeMode) == 2);
-        fwrite(&worldObjects[i].lifeMode,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].lifeMode) == 2);
+        fwrite(&ListWorldObjets[i].lifeMode,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].life) == 2);
-        fwrite(&worldObjects[i].life,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].life) == 2);
+        fwrite(&ListWorldObjets[i].life,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].floorLife) == 2);
-        fwrite(&worldObjects[i].floorLife,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].floorLife) == 2);
+        fwrite(&ListWorldObjets[i].floorLife,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].anim) == 2);
-        fwrite(&worldObjects[i].anim,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].anim) == 2);
+        fwrite(&ListWorldObjets[i].anim,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].frame) == 2);
-        fwrite(&worldObjects[i].frame,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].frame) == 2);
+        fwrite(&ListWorldObjets[i].frame,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].animType) == 2);
-        fwrite(&worldObjects[i].animType,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].animType) == 2);
+        fwrite(&ListWorldObjets[i].animType,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].animInfo) == 2);
-        fwrite(&worldObjects[i].animInfo,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].animInfo) == 2);
+        fwrite(&ListWorldObjets[i].animInfo,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].trackMode) == 2);
-        fwrite(&worldObjects[i].trackMode,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].trackMode) == 2);
+        fwrite(&ListWorldObjets[i].trackMode,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].trackNumber) == 2);
-        fwrite(&worldObjects[i].trackNumber,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].trackNumber) == 2);
+        fwrite(&ListWorldObjets[i].trackNumber,2,1,fHandle);
 
-        ASSERT(sizeof(worldObjects[i].positionInTrack) == 2);
-        fwrite(&worldObjects[i].positionInTrack,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].positionInTrack) == 2);
+        fwrite(&ListWorldObjets[i].positionInTrack,2,1,fHandle);
     }
 
     if(g_gameId == AITD1)

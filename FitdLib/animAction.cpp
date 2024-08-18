@@ -101,7 +101,7 @@ void GereFrappe(void)
         {
             int touchedActor;
 
-            createFlow( 3,
+            InitSpecialObjet( 3,
                 currentProcessedActorPtr->roomX + currentProcessedActorPtr->hotPoint.x,
                 currentProcessedActorPtr->roomY + currentProcessedActorPtr->hotPoint.y,
                 currentProcessedActorPtr->roomZ + currentProcessedActorPtr->hotPoint.z,
@@ -123,13 +123,13 @@ void GereFrappe(void)
 
             if(touchedActor == -1) // no one has been touched
             {
-                createFlow( 2, animMoveX, animMoveY, animMoveZ, currentProcessedActorPtr->stage, currentProcessedActorPtr->room, 0, -currentProcessedActorPtr->beta, 0, NULL );
+                InitSpecialObjet( 2, animMoveX, animMoveY, animMoveZ, currentProcessedActorPtr->stage, currentProcessedActorPtr->room, 0, -currentProcessedActorPtr->beta, 0, NULL );
 
                 currentProcessedActorPtr->animActionType = 0;
             }
             else
             {
-                createFlow( 2, animMoveX, animMoveY, animMoveZ, currentProcessedActorPtr->stage, currentProcessedActorPtr->room, 0, -currentProcessedActorPtr->beta, 0, NULL );
+                InitSpecialObjet( 2, animMoveX, animMoveY, animMoveZ, currentProcessedActorPtr->stage, currentProcessedActorPtr->room, 0, -currentProcessedActorPtr->beta, 0, NULL );
 
                 currentProcessedActorPtr->hotPoint.x = animMoveX - currentProcessedActorPtr->roomX;
                 currentProcessedActorPtr->hotPoint.y = animMoveY - currentProcessedActorPtr->roomY;
@@ -150,7 +150,7 @@ void GereFrappe(void)
             {
                 int objIdx = currentProcessedActorPtr->animActionParam;
 
-                tWorldObject* objPtr = &worldObjects[objIdx];
+                tWorldObject* objPtr = &ListWorldObjets[objIdx];
 
                 int x = currentProcessedActorPtr->roomX + currentProcessedActorPtr->hotPoint.x + currentProcessedActorPtr->stepX;
                 int y = currentProcessedActorPtr->roomY + currentProcessedActorPtr->hotPoint.y + currentProcessedActorPtr->stepY;
@@ -220,7 +220,7 @@ void GereFrappe(void)
 
             objIdx = currentProcessedActorPtr->animActionParam;
 
-            actorIdx = worldObjects[objIdx].objIndex;
+            actorIdx = ListWorldObjets[objIdx].objIndex;
 
             if(actorIdx == -1)
                 return;
@@ -243,11 +243,11 @@ void GereFrappe(void)
             actorPtr->_flags |= AF_ANIMATED;
             actorPtr->_flags &= ~AF_BOXIFY;
 
-            worldObjects[objIdx].x = x;
-            worldObjects[objIdx].y = y;
-            worldObjects[objIdx].z = z;
+            ListWorldObjets[objIdx].x = x;
+            ListWorldObjets[objIdx].y = y;
+            ListWorldObjets[objIdx].z = z;
 
-            worldObjects[objIdx].alpha = currentProcessedActorPtr->indexInWorld; // original thrower
+            ListWorldObjets[objIdx].alpha = currentProcessedActorPtr->indexInWorld; // original thrower
 
             actorPtr->dynFlags = 0;
             actorPtr->animActionType = 9;
@@ -266,7 +266,7 @@ void GereFrappe(void)
         }
     case 9: // during throw
         {
-            tWorldObject* objPtr = &worldObjects[currentProcessedActorPtr->indexInWorld];
+            tWorldObject* objPtr = &ListWorldObjets[currentProcessedActorPtr->indexInWorld];
 
             ZVStruct rangeZv;
             ZVStruct rangeZv2;

@@ -172,9 +172,9 @@ void executeFoundLife(int objIdx)
 	if(objIdx == -1)
 		return;
 
-	foundLife = worldObjects[objIdx].foundLife;
+	foundLife = ListWorldObjets[objIdx].foundLife;
 
-	if(worldObjects[objIdx].foundLife == -1)
+	if(ListWorldObjets[objIdx].foundLife == -1)
 		return;
 
 	currentActorPtr = currentProcessedActorPtr;
@@ -190,7 +190,7 @@ void executeFoundLife(int objIdx)
 
 	var_2 = 0;
 
-	actorIdx = worldObjects[objIdx].objIndex;
+	actorIdx = ListWorldObjets[objIdx].objIndex;
 
 	if(actorIdx==-1)
 	{
@@ -1058,94 +1058,94 @@ void initEngine(void)
 	maxObjects = READ_LE_U16(pObjectData);
 	pObjectData+=2;
 
-    worldObjects.resize(maxObjects);
+    ListWorldObjets.resize(maxObjects);
 
 	for(i=0;i<maxObjects;i++)
 	{
-		worldObjects[i].objIndex = READ_LE_U16(pObjectData);
+		ListWorldObjets[i].objIndex = READ_LE_U16(pObjectData);
 		pObjectData+=2;
 
-		worldObjects[i].body = READ_LE_U16(pObjectData);
+		ListWorldObjets[i].body = READ_LE_U16(pObjectData);
 		pObjectData+=2;
 
-		worldObjects[i].flags = READ_LE_U16(pObjectData);
+		ListWorldObjets[i].flags = READ_LE_U16(pObjectData);
 		pObjectData+=2;
 
-		worldObjects[i].typeZV = READ_LE_U16(pObjectData);
+		ListWorldObjets[i].typeZV = READ_LE_U16(pObjectData);
 		pObjectData+=2;
 
-		worldObjects[i].foundBody = READ_LE_U16(pObjectData);
+		ListWorldObjets[i].foundBody = READ_LE_U16(pObjectData);
 		pObjectData+=2;
 
-		worldObjects[i].foundName = READ_LE_U16(pObjectData);
+		ListWorldObjets[i].foundName = READ_LE_U16(pObjectData);
 		pObjectData+=2;
 
-		worldObjects[i].flags2 = READ_LE_U16(pObjectData);
+		ListWorldObjets[i].flags2 = READ_LE_U16(pObjectData);
 		pObjectData+=2;
 
-		worldObjects[i].foundLife = READ_LE_U16(pObjectData);
+		ListWorldObjets[i].foundLife = READ_LE_U16(pObjectData);
 		pObjectData+=2;
 
-		worldObjects[i].x = READ_LE_U16(pObjectData);
+		ListWorldObjets[i].x = READ_LE_U16(pObjectData);
 		pObjectData+=2;
 
-		worldObjects[i].y = READ_LE_U16(pObjectData);
+		ListWorldObjets[i].y = READ_LE_U16(pObjectData);
 		pObjectData+=2;
 
-		worldObjects[i].z = READ_LE_U16(pObjectData);
+		ListWorldObjets[i].z = READ_LE_U16(pObjectData);
 		pObjectData+=2;
 
-		worldObjects[i].alpha = READ_LE_U16(pObjectData);
+		ListWorldObjets[i].alpha = READ_LE_U16(pObjectData);
 		pObjectData+=2;
 
-		worldObjects[i].beta = READ_LE_U16(pObjectData);
+		ListWorldObjets[i].beta = READ_LE_U16(pObjectData);
 		pObjectData+=2;
 
-		worldObjects[i].gamma = READ_LE_U16(pObjectData);
+		ListWorldObjets[i].gamma = READ_LE_U16(pObjectData);
 		pObjectData+=2;
 
-		worldObjects[i].stage = READ_LE_U16(pObjectData);
+		ListWorldObjets[i].stage = READ_LE_U16(pObjectData);
 		pObjectData+=2;
 
-		worldObjects[i].room = READ_LE_U16(pObjectData);
+		ListWorldObjets[i].room = READ_LE_U16(pObjectData);
 		pObjectData+=2;
 
-		worldObjects[i].lifeMode = READ_LE_U16(pObjectData);
+		ListWorldObjets[i].lifeMode = READ_LE_U16(pObjectData);
 		pObjectData+=2;
 
-		worldObjects[i].life = READ_LE_U16(pObjectData);
+		ListWorldObjets[i].life = READ_LE_U16(pObjectData);
 		pObjectData+=2;
 
-		worldObjects[i].floorLife = READ_LE_U16(pObjectData);
+		ListWorldObjets[i].floorLife = READ_LE_U16(pObjectData);
 		pObjectData+=2;
 
-		worldObjects[i].anim = READ_LE_U16(pObjectData);
+		ListWorldObjets[i].anim = READ_LE_U16(pObjectData);
 		pObjectData+=2;
 
-		worldObjects[i].frame = READ_LE_U16(pObjectData);
+		ListWorldObjets[i].frame = READ_LE_U16(pObjectData);
 		pObjectData+=2;
 
-		worldObjects[i].animType = READ_LE_U16(pObjectData);
+		ListWorldObjets[i].animType = READ_LE_U16(pObjectData);
 		pObjectData+=2;
 
-		worldObjects[i].animInfo = READ_LE_U16(pObjectData);
+		ListWorldObjets[i].animInfo = READ_LE_U16(pObjectData);
 		pObjectData+=2;
 
-		worldObjects[i].trackMode = READ_LE_U16(pObjectData);
+		ListWorldObjets[i].trackMode = READ_LE_U16(pObjectData);
 		pObjectData+=2;
 
-		worldObjects[i].trackNumber = READ_LE_U16(pObjectData);
+		ListWorldObjets[i].trackNumber = READ_LE_U16(pObjectData);
 		pObjectData+=2;
 
-		worldObjects[i].positionInTrack = READ_LE_U16(pObjectData);
+		ListWorldObjets[i].positionInTrack = READ_LE_U16(pObjectData);
 		pObjectData+=2;
 
 		if(g_gameId >= JACK)
 		{
-			worldObjects[i].mark = READ_LE_U16(pObjectData);
+			ListWorldObjets[i].mark = READ_LE_U16(pObjectData);
 			pObjectData+=2;
 		}
-		worldObjects[i].flags |= 0x20;
+		ListWorldObjets[i].flags |= 0x20;
 	}
 
 	free(pObjectDataBackup);
@@ -1692,7 +1692,7 @@ void DeleteObjet(int index) // remove actor
 	{
 		if(actorPtr->indexInWorld >= 0)
 		{
-			tWorldObject* objectPtr = &worldObjects[actorPtr->indexInWorld];
+			tWorldObject* objectPtr = &ListWorldObjets[actorPtr->indexInWorld];
 
 			objectPtr->objIndex = -1;
 			actorPtr->indexInWorld = -1;
@@ -2034,7 +2034,7 @@ void updateAllActorAndObjectsAITD2()
 
 	for(int i=0;i<maxObjects;i++)
 	{
-		tWorldObject* currentObject = &worldObjects[i];
+		tWorldObject* currentObject = &ListWorldObjets[i];
 
 		if(currentObject->objIndex != -1)
 		{
@@ -2241,7 +2241,7 @@ void updateAllActorAndObjects()
 		currentActor++;
 	}
 
-	currentObject = &worldObjects[0];
+	currentObject = &ListWorldObjets[0];
 
 	for(i=0;i<maxObjects;i++)
 	{
@@ -2579,7 +2579,7 @@ void DeleteInventoryObjet(int objIdx)
 		numObjInInventoryTable[currentInventory]--;
 	}
 
-	worldObjects[objIdx].flags2 &= 0x7FFF;
+	ListWorldObjets[objIdx].flags2 &= 0x7FFF;
 }
 
 void deleteObject(int objIdx)
@@ -2588,7 +2588,7 @@ void deleteObject(int objIdx)
 	int actorIdx;
 	tObject* actorPtr;
 
-	objPtr = &worldObjects[objIdx];
+	objPtr = &ListWorldObjets[objIdx];
 	actorIdx = objPtr->objIndex;
 
 	if(actorIdx != -1)
@@ -3573,7 +3573,7 @@ void drawFoundObect(int menuState,int objectName,int zoomFactor)
 
 void take(int objIdx)
 {
-	tWorldObject* objPtr = &worldObjects[objIdx];
+	tWorldObject* objPtr = &ListWorldObjets[objIdx];
 
 	if(numObjInInventoryTable[currentInventory] == 0)
 	{
@@ -3626,7 +3626,7 @@ void foundObject(int objIdx, int param)
 		printf("foundObject with param == 2\n");
 	}
 
-	objPtr = &worldObjects[objIdx];
+	objPtr = &ListWorldObjets[objIdx];
 
 	if( param != 0 && (objPtr->flags2 & 0xC000))
 	{
@@ -3647,7 +3647,7 @@ void foundObject(int objIdx, int param)
 	int weight = 0;
 	for(i=0;i<numObjInInventoryTable[currentInventory];i++)
 	{
-		weight += worldObjects[inventoryTable[currentInventory][i]].positionInTrack;
+		weight += ListWorldObjets[inventoryTable[currentInventory][i]].positionInTrack;
 	}
 
 	if(objPtr->positionInTrack + weight > CVars[getCVarsIdx(MAX_WEIGHT_LOADABLE)] || numObjInInventoryTable[currentInventory] +1 == 30)
@@ -4268,7 +4268,7 @@ void processActor2()
 					{
 						int life;
 
-						life = worldObjects[currentProcessedActorPtr->indexInWorld].floorLife;
+						life = ListWorldObjets[currentProcessedActorPtr->indexInWorld].floorLife;
 
 						if(life==-1)
 							return;
@@ -4382,8 +4382,8 @@ int checkLineProjectionWithActors( int actorIdx, int X, int Y, int Z, int beta, 
 
 void PutAtObjet(int objIdx, int objIdxToPutAt)
 {
-	tWorldObject* objPtr = &worldObjects[objIdx];
-	tWorldObject* objPtrToPutAt = &worldObjects[objIdxToPutAt];
+	tWorldObject* objPtr = &ListWorldObjets[objIdx];
+	tWorldObject* objPtrToPutAt = &ListWorldObjets[objIdxToPutAt];
 
 	if(objPtrToPutAt->objIndex != -1)
 	{
@@ -4419,8 +4419,8 @@ void PutAtObjet(int objIdx, int objIdxToPutAt)
 			currentProcessedActorPtr->beta = actorToPutAtPtr->beta;
 			currentProcessedActorPtr->gamma = actorToPutAtPtr->gamma;
 
-			worldObjects[currentProcessedActorPtr->indexInWorld].flags2 |= 0x4000;
-			worldObjects[currentProcessedActorPtr->indexInWorld].flags |= 0x80;
+			ListWorldObjets[currentProcessedActorPtr->indexInWorld].flags2 |= 0x4000;
+			ListWorldObjets[currentProcessedActorPtr->indexInWorld].flags |= 0x80;
 
 			//      FlagGenereActiveList = 1;
 			//      FlagRefreshAux2 = 1;
@@ -4459,8 +4459,8 @@ void PutAtObjet(int objIdx, int objIdxToPutAt)
 			currentProcessedActorPtr->beta = objPtrToPutAt->beta;
 			currentProcessedActorPtr->gamma = objPtrToPutAt->gamma;
 
-			worldObjects[currentProcessedActorPtr->indexInWorld].flags2 |= 0x4000;
-			worldObjects[currentProcessedActorPtr->indexInWorld].flags |= 0x80;
+			ListWorldObjets[currentProcessedActorPtr->indexInWorld].flags2 |= 0x4000;
+			ListWorldObjets[currentProcessedActorPtr->indexInWorld].flags |= 0x80;
 
 			//      FlagGenereActiveList = 1;
 			//      FlagRefreshAux2 = 1;
@@ -4561,8 +4561,8 @@ void throwStoppedAt(int x, int z)
 	currentProcessedActorPtr->zv.ZVZ1 += z2;
 	currentProcessedActorPtr->zv.ZVZ2 += z2;
 
-	worldObjects[currentProcessedActorPtr->indexInWorld].flags2 |= 0x4000;
-	worldObjects[currentProcessedActorPtr->indexInWorld].flags2 &= 0xEFFF;
+	ListWorldObjets[currentProcessedActorPtr->indexInWorld].flags2 |= 0x4000;
+	ListWorldObjets[currentProcessedActorPtr->indexInWorld].flags2 &= 0xEFFF;
 
 	addActorToBgInscrust(currentProcessedActorIdx);
 }
