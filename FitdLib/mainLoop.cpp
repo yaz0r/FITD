@@ -148,7 +148,7 @@ void mainLoop(int allowSystemMenu, int deltaTime)
 
                     if(currentProcessedActorPtr->animActionType)
                     {
-                        processAnimAction();
+                        GereFrappe();
                     }
                 }
 

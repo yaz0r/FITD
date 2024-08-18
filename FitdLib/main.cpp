@@ -1819,7 +1819,7 @@ void getZvRot(char* bodyPtr, ZVStruct* zvPtr, int alpha, int beta, int gamma)
 	int tempY;
 	int tempZ;
 
-	getZvNormal(bodyPtr, zvPtr);
+	GiveZVObjet(bodyPtr, zvPtr);
 
 	for(i=0;i<8;i++)
 	{
@@ -2566,7 +2566,7 @@ int findObjectInInventory(int objIdx)
 	return(-1);
 }
 
-void removeObjFromInventory(int objIdx)
+void DeleteInventoryObjet(int objIdx)
 {
 	int inventoryIdx;
 
@@ -2609,7 +2609,7 @@ void deleteObject(int objIdx)
 	objPtr->room = -1;
 	objPtr->stage = -1;
 
-	removeObjFromInventory(objIdx);
+	DeleteInventoryObjet(objIdx);
 }
 
 #ifdef FITD_DEBUGGER
@@ -3934,7 +3934,7 @@ void handleCollision(ZVStruct* startZv, ZVStruct* zvPtr2, ZVStruct* zvPtr3)
 	}
 }
 
-int checkForHardCol(ZVStruct* zvPtr, roomDataStruct* pRoomData)
+int AsmCheckListCol(ZVStruct* zvPtr, roomDataStruct* pRoomData)
 {
 	u16 i;
 	int hardColVar = 0;
@@ -4326,7 +4326,7 @@ int checkLineProjectionWithActors( int actorIdx, int X, int Y, int Z, int beta, 
 			break;
 		}
 
-		if(checkForHardCol(&localZv, &roomDataTable[room]) <= 0)
+		if(AsmCheckListCol(&localZv, &roomDataTable[room]) <= 0)
 		{
 			foundFlag = -1;
 		}
@@ -4380,7 +4380,7 @@ int checkLineProjectionWithActors( int actorIdx, int X, int Y, int Z, int beta, 
 	return(foundFlag);
 }
 
-void putAt(int objIdx, int objIdxToPutAt)
+void PutAtObjet(int objIdx, int objIdxToPutAt)
 {
 	tWorldObject* objPtr = &worldObjects[objIdx];
 	tWorldObject* objPtrToPutAt = &worldObjects[objIdxToPutAt];
@@ -4389,7 +4389,7 @@ void putAt(int objIdx, int objIdxToPutAt)
 	{
 		tObject* actorToPutAtPtr = &objectTable[objPtrToPutAt->objIndex];
 
-		removeObjFromInventory(objIdx);
+		DeleteInventoryObjet(objIdx);
 
 		if(objPtr->objIndex == -1)
 		{
@@ -4429,7 +4429,7 @@ void putAt(int objIdx, int objIdxToPutAt)
 	}
 	else
 	{
-		removeObjFromInventory(objIdx);
+		DeleteInventoryObjet(objIdx);
 
 		if(objPtr->objIndex == -1)
 		{
@@ -4482,7 +4482,7 @@ void throwStoppedAt(int x, int z)
 
 	bodyPtr = (u8*)HQR_Get(listBody,currentProcessedActorPtr->bodyNum);
 
-	getZvNormal((char*)bodyPtr,&zvLocal);
+	GiveZVObjet((char*)bodyPtr,&zvLocal);
 
 	x2 = x;
 	y2 = (currentProcessedActorPtr->roomY/2000)*2000;
@@ -4508,7 +4508,7 @@ void throwStoppedAt(int x, int z)
 		zvCopy.ZVZ1 += z2;
 		zvCopy.ZVZ2 += z2;
 
-		if(!checkForHardCol(&zvCopy,&roomDataTable[currentProcessedActorPtr->room]))
+		if(!AsmCheckListCol(&zvCopy,&roomDataTable[currentProcessedActorPtr->room]))
 		{
 			foundPosition = 1;
 		}
@@ -4520,7 +4520,7 @@ void throwStoppedAt(int x, int z)
 				zvCopy.ZVY1 += 100; // is the object reachable ? (100 is Carnby height. If hard col at Y + 100, carnby can't reach that spot)
 				zvCopy.ZVY2 += 100;
 
-				if(!checkForHardCol(&zvCopy,&roomDataTable[currentProcessedActorPtr->room]))
+				if(!AsmCheckListCol(&zvCopy,&roomDataTable[currentProcessedActorPtr->room]))
 				{
 					y2 += 2000;
 					foundPosition = 0;
@@ -4552,7 +4552,7 @@ void throwStoppedAt(int x, int z)
 	currentProcessedActorPtr->speed = 0;
 	currentProcessedActorPtr->gamma = 0;
 
-	getZvNormal((char*)bodyPtr,&currentProcessedActorPtr->zv);
+	GiveZVObjet((char*)bodyPtr,&currentProcessedActorPtr->zv);
 
 	currentProcessedActorPtr->zv.ZVX1 += x2;
 	currentProcessedActorPtr->zv.ZVX2 += x2;

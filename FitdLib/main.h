@@ -16,9 +16,9 @@ void createActorList();
 void mainDraw(int mode);
 int checkObjectCollisions(int actorIdx, ZVStruct* zvPtr);
 int checkLineProjectionWithActors( int actorIdx, int X, int Y, int Z, int beta, int room, int param );
-void getZvNormal(char* bodyPtr, ZVStruct* zvPtr);
-int checkForHardCol(ZVStruct* zvPtr, roomDataStruct* pRoomData);
-void removeObjFromInventory(int objIdx);
+void GiveZVObjet(char* bodyPtr, ZVStruct* zvPtr);
+int AsmCheckListCol(ZVStruct* zvPtr, roomDataStruct* pRoomData);
+void DeleteInventoryObjet(int objIdx);
 void walkStep(int angle1, int angle2, int angle3);
 void throwStoppedAt(int x, int z);
 sceZoneStruct* processActor2Sub(int x, int y, int z, roomDataStruct* pRoomData);
@@ -53,7 +53,7 @@ void foundObject(int objIdx, int param);
 void hit(int animNumber,int arg_2,int arg_4,int arg_6,int hitForce,int arg_A);
 int checkZvCollision(ZVStruct* zvPtr1,ZVStruct* zvPtr2);
 void getZvCube(char* bodyPtr, ZVStruct* zvPtr);
-void putAt(int objIdx, int objIdxToPutAt);
+void PutAtObjet(int objIdx, int objIdxToPutAt);
 void SetClip(int left, int top, int right, int bottom);
 
 ///

@@ -17,7 +17,7 @@ void getZvCube(char* bodyPtr, ZVStruct* zvPtr)
     zvPtr->ZVX1 = zvPtr->ZVZ1 = -zvPtr->ZVZ2;
 }
 
-void getZvNormal(char* bodyPtr, ZVStruct* zvPtr)
+void GiveZVObjet(char* bodyPtr, ZVStruct* zvPtr)
 {
     s16* ptr;
 
@@ -50,7 +50,7 @@ void getZvMax(char* bodyPtr, ZVStruct* zvPtr)
     int z1;
     int z2;
 
-    getZvNormal(bodyPtr,zvPtr);
+    GiveZVObjet(bodyPtr,zvPtr);
 
     x1 = zvPtr->ZVX1;
     x2 = zvPtr->ZVX2;

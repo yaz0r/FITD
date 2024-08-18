@@ -1,31 +1,41 @@
 #include "common.h"
 
-void processAnimAction(void)
+#define		NO_FRAPPE			0
+#define		WAIT_FRAPPE_ANIM	1
+#define		FRAPPE_OK			2
+#define		DONE_FRAPPE			3
+#define		WAIT_TIR_ANIM		4
+#define		DO_TIR				5
+#define		WAIT_ANIM_THROW		6
+#define		WAIT_FRAME_THROW	7
+#define		HIT_OBJECT			8
+#define		THROW_OBJECT		9
+#define		WAIT_FRAPPE_FRAME	10
+
+void GereFrappe(void)
 {
     switch(currentProcessedActorPtr->animActionType)
     {
-    case 1: // PRE_HIT
+    case WAIT_FRAPPE_ANIM:
+        if(currentProcessedActorPtr->ANIM == currentProcessedActorPtr->animActionANIM)
         {
-            if(currentProcessedActorPtr->ANIM == currentProcessedActorPtr->animActionANIM)
-            {
-                currentProcessedActorPtr->animActionType = 10;
-            }
-
-            if(currentProcessedActorPtr->ANIM == currentProcessedActorPtr->animActionANIM)
-            {
-                if(currentProcessedActorPtr->FRAME == currentProcessedActorPtr->animActionFRAME)
-                {
-                    currentProcessedActorPtr->animActionType = 2;
-                }
-            }
-            else
-            {
-                currentProcessedActorPtr->animActionType = 0;
-                return;
-            }
-            break;
+            currentProcessedActorPtr->animActionType = WAIT_FRAPPE_FRAME;
         }
-    case 2: // HIT
+        [[fallthrough]];
+    case WAIT_FRAPPE_FRAME:
+        if (currentProcessedActorPtr->ANIM != currentProcessedActorPtr->animActionANIM)
+        {
+            currentProcessedActorPtr->animActionType = NO_FRAPPE;
+            return;
+        }
+
+        if (currentProcessedActorPtr->FRAME == currentProcessedActorPtr->animActionFRAME)
+        {
+            currentProcessedActorPtr->animActionType = FRAPPE_OK;
+        }
+        return;
+
+    case FRAPPE_OK:
         {
             int x;
             int y;
@@ -75,7 +85,7 @@ void processAnimAction(void)
             }
             break;
         }
-    case 4: // PRE_FIRE
+    case 4: // WAIT_TIR_ANIM
         {
             if(currentProcessedActorPtr->ANIM != currentProcessedActorPtr->animActionANIM)
                 return;
@@ -87,7 +97,7 @@ void processAnimAction(void)
 
             break;
         }
-    case 5: // FIRE
+    case 5: // DO_TIR
         {
             int touchedActor;
 
@@ -134,7 +144,7 @@ void processAnimAction(void)
             }
             break;
         }
-    case 6: // PRE_THROW
+    case 6: // WAIT_ANIM_THROW
         {
             if(currentProcessedActorPtr->ANIM == currentProcessedActorPtr->animActionANIM)
             {
@@ -148,7 +158,7 @@ void processAnimAction(void)
 
                 ZVStruct rangeZv;
 
-                getZvNormal(HQR_Get(listBody, objPtr->body),&rangeZv);
+                GiveZVObjet(HQR_Get(listBody, objPtr->body),&rangeZv);
 
                 rangeZv.ZVX1 += x;
                 rangeZv.ZVX2 += x;
@@ -157,26 +167,22 @@ void processAnimAction(void)
                 rangeZv.ZVZ1 += z;
                 rangeZv.ZVZ2 += z;
 
-                if(checkForHardCol(&rangeZv, &roomDataTable[currentProcessedActorPtr->room]))
+                if(AsmCheckListCol(&rangeZv, &roomDataTable[currentProcessedActorPtr->room]))
                 {
                     currentProcessedActorPtr->animActionType = 0;
-                    putAt(objIdx, currentProcessedActorPtr->indexInWorld);
+                    PutAtObjet(objIdx, currentProcessedActorPtr->indexInWorld);
                 }
                 else
                 {
                     if(currentProcessedActorPtr->FRAME == currentProcessedActorPtr->animActionFRAME)
                     {
-                        int x;
-                        int y;
-                        int z;
-
                         currentProcessedActorPtr->animActionType = 7;
 
-                        x = currentProcessedActorPtr->roomX + currentProcessedActorPtr->hotPoint.x + currentProcessedActorPtr->stepX;
-                        y = currentProcessedActorPtr->roomY + currentProcessedActorPtr->hotPoint.y + currentProcessedActorPtr->stepY;
-                        z = currentProcessedActorPtr->roomZ + currentProcessedActorPtr->hotPoint.z + currentProcessedActorPtr->stepZ;
+                        int x = currentProcessedActorPtr->roomX + currentProcessedActorPtr->hotPoint.x + currentProcessedActorPtr->stepX;
+                        int y = currentProcessedActorPtr->roomY + currentProcessedActorPtr->hotPoint.y + currentProcessedActorPtr->stepY;
+                        int z = currentProcessedActorPtr->roomZ + currentProcessedActorPtr->hotPoint.z + currentProcessedActorPtr->stepZ;
 
-                        removeObjFromInventory(objIdx);
+                        DeleteInventoryObjet(objIdx);
 
                         objPtr->x = x;
                         objPtr->y = y;
@@ -225,7 +231,7 @@ void processAnimAction(void)
             actorPtr->roomY = y;
             actorPtr->roomZ = z;
 
-            getZvNormal(HQR_Get(listBody,actorPtr->bodyNum),&actorPtr->zv);
+            GiveZVObjet(HQR_Get(listBody,actorPtr->bodyNum),&actorPtr->zv);
 
             actorPtr->zv.ZVX1 += x;
             actorPtr->zv.ZVX2 += x;
@@ -415,7 +421,7 @@ void processAnimAction(void)
                     }
                 }
 
-                if(checkForHardCol(&rangeZv, &roomDataTable[currentProcessedActorPtr->room]))
+                if(AsmCheckListCol(&rangeZv, &roomDataTable[currentProcessedActorPtr->room]))
                 {
                     currentProcessedActorPtr->hotPoint.x = 0;
                     currentProcessedActorPtr->hotPoint.y = 0;
@@ -434,21 +440,6 @@ void processAnimAction(void)
             objPtr->y = ytemp;
             objPtr->z = ztemp;
 
-            break;
-        }
-    case 10: // PRE_HIT_IN_GOOD_ANIM
-        {
-            if(currentProcessedActorPtr->ANIM == currentProcessedActorPtr->animActionANIM)
-            {
-                if(currentProcessedActorPtr->FRAME == currentProcessedActorPtr->animActionFRAME)
-                {
-                    currentProcessedActorPtr->animActionType = 2;
-                }
-            }
-            else
-            {
-                currentProcessedActorPtr->animActionType = 0;
-            }
             break;
         }
 #ifdef FITD_DEBUGGER

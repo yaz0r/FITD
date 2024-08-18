@@ -49,7 +49,7 @@ void put(int x, int y, int z, int room, int stage, int alpha, int beta, int gamm
     objPtr->beta = beta;
     objPtr->gamma = gamma;
 
-    removeObjFromInventory(idx);
+    DeleteInventoryObjet(idx);
 
     objPtr->flags2 |= 0x4000;
 
@@ -59,7 +59,7 @@ void put(int x, int y, int z, int room, int stage, int alpha, int beta, int gamm
 
 void drop(int worldIdx, int worldSource)
 {
-    putAt(worldIdx, worldSource);
+    PutAtObjet(worldIdx, worldSource);
 }
 
 void fire(int fireAnim, int X, int Y, int Z, int hitForce, int nextAnim)
@@ -1541,7 +1541,7 @@ void processLife(int lifeNum, bool callFoundLife)
                 objIdx2 = *(s16*)currentLifePtr;
                 currentLifePtr += 2;
 
-                putAt(objIdx1, objIdx2);
+                PutAtObjet(objIdx1, objIdx2);
                 break;
             }
             case LM_FOUND_NAME: // FOUND_NAME

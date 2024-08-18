@@ -159,7 +159,7 @@ int copyObjectToActor(int body, int typeZv, int hardZvIdx, s16 objectType, int x
         {
             if(body!=-1)
             {
-                getZvNormal(bodyPtr,zvPtr);
+                GiveZVObjet(bodyPtr,zvPtr);
             }
             else
             {

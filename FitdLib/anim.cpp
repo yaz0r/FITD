@@ -425,7 +425,7 @@ void updateAnimation(void)
 
 		if(currentProcessedActorPtr->dynFlags & 1) // hard collision enabled for actor ?
 		{
-			int numCol = checkForHardCol(&zvLocal, &roomDataTable[currentProcessedActorPtr->room]);
+			int numCol = AsmCheckListCol(&zvLocal, &roomDataTable[currentProcessedActorPtr->room]);
 
 			for(int i=0;i<numCol;i++)
 			{
@@ -473,7 +473,7 @@ void updateAnimation(void)
 		}
 		else // no hard collision -> just update the flag without performing the position update
 		{
-			if(checkForHardCol(&zvLocal, &roomDataTable[currentProcessedActorPtr->room]))
+			if(AsmCheckListCol(&zvLocal, &roomDataTable[currentProcessedActorPtr->room]))
 			{
 				currentProcessedActorPtr->HARD_COL = 1;
 			}
@@ -518,7 +518,7 @@ void updateAnimation(void)
 					localZv2.ZVZ1 += stepZ;
 					localZv2.ZVZ2 += stepZ;
 
-					if(!checkForHardCol(&localZv2, &roomDataTable[currentProcessedActorPtr->room]))
+					if(!AsmCheckListCol(&localZv2, &roomDataTable[currentProcessedActorPtr->room]))
 					{
 						if(checkObjectCollisions(collisionIndex, &localZv2))
 						{
@@ -649,7 +649,7 @@ void updateAnimation(void)
 
 			zvLocal.ZVY2 += 100;
 
-			if(currentProcessedActorPtr->roomY < -10 && !checkForHardCol(&zvLocal,&roomDataTable[currentProcessedActorPtr->room]) && !manageFall(currentProcessedActorIdx,&zvLocal))
+			if(currentProcessedActorPtr->roomY < -10 && !AsmCheckListCol(&zvLocal,&roomDataTable[currentProcessedActorPtr->room]) && !manageFall(currentProcessedActorIdx,&zvLocal))
 			{
 				InitRealValue(0, 2000, 40, &currentProcessedActorPtr->YHandler);
 			}

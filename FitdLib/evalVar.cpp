@@ -144,7 +144,7 @@ int testZvEndAnim(tObject* actorPtr,char* animPtr, int param)
     localZv.ZVZ1 += animMoveZ;
     localZv.ZVZ2 += animMoveZ;
 
-    if(checkForHardCol(&localZv, &roomDataTable[actorPtr->room]))
+    if(AsmCheckListCol(&localZv, &roomDataTable[actorPtr->room]))
     {
         return(0);
     }
@@ -152,7 +152,7 @@ int testZvEndAnim(tObject* actorPtr,char* animPtr, int param)
     localZv.ZVY1 += 100;
     localZv.ZVY2 += 100;
 
-    if(checkForHardCol(&localZv, &roomDataTable[actorPtr->room]))
+    if(AsmCheckListCol(&localZv, &roomDataTable[actorPtr->room]))
     {
         return(1);
     }

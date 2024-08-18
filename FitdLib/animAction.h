@@ -1,1 +1,1 @@
-void processAnimAction(void);
+void GereFrappe(void);
