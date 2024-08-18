@@ -106,7 +106,10 @@ int FitdInit(int argc, char* argv[])
     flags |= SDL_WINDOW_FULLSCREEN;
 #endif
 
-    int resolution[2] = { 1280, 960 };
+    // Game is running in dos resolution 13h, ie 320x200x256, but is displayed in 4:3, so pixel are not square (1.6:1)
+    // We still need to create a 4:3 window for the actual display on screen.
+    int scale = 4;
+    int resolution[2] = { 320 * scale, 240 * scale };
 
     gWindowBGFX = SDL_CreateWindow("FITD", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, resolution[0], resolution[1], flags);
     
