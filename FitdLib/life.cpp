@@ -96,6 +96,7 @@ int createFlow(int mode, int X, int Y, int Z, int stage, int room, int alpha, in
     {
         if (currentActorPtr->indexInWorld == -1)
             break;
+        currentActorPtr++;
     }
 
     if (i == NUM_MAX_OBJECT) // no free actor entry, abort
