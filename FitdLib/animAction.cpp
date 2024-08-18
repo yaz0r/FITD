@@ -241,7 +241,7 @@ void processAnimAction(void)
             worldObjects[objIdx].y = y;
             worldObjects[objIdx].z = z;
 
-            worldObjects[objIdx].alpha = currentProcessedActorPtr->indexInWorld; // hu ?
+            worldObjects[objIdx].alpha = currentProcessedActorPtr->indexInWorld; // original thrower
 
             actorPtr->dynFlags = 0;
             actorPtr->animActionType = 9;
