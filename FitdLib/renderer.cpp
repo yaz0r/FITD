@@ -471,7 +471,7 @@ int AnimNuage(int x,int y,int z,int alpha,int beta,int gamma, sBody* pBody)
             *(outPtr++) = (s16)Y;
             *(outPtr++) = (s16)Z;
 #else
-            if(Y>10000) // depth clamp
+            if(Y>10000) // height clamp
             {
                 *(outPtr++) = -10000;
                 *(outPtr++) = -10000;
@@ -638,7 +638,7 @@ int RotateNuage(int x,int y,int z,int alpha,int beta,int gamma, sBody* pBody)
         *(outPtr++) = Y;
         *(outPtr++) = Z;
 #else
-        if(Y>10000) // depth clamp
+        if(Y>10000) // height clamp
         {
             *(outPtr++) = -10000;
             *(outPtr++) = -10000;
