@@ -1195,11 +1195,11 @@ void processLife(int lifeNum, bool callFoundLife)
                 appendFormated("LM_MANUAL_ROT ");
                 if (g_gameId == AITD1)
                 {
-                    manualRot(240);
+                    GereManualRot(240);
                 }
                 else
                 {
-                    manualRot(90);
+                    GereManualRot(90);
                 }
                 break;
             }

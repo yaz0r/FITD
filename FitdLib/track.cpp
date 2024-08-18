@@ -71,7 +71,7 @@ int computeAngleModificatorToPosition(int x1,int z1, int beta, int x2, int z2)
     }
 }
 
-void manualRot(int param)
+void GereManualRot(int param)
 {
     if(localJoyD&4)
     {
@@ -86,7 +86,7 @@ void manualRot(int param)
         {
             int oldBeta = currentProcessedActorPtr->beta;
 
-            if(currentProcessedActorPtr->speed != 0)
+            if(currentProcessedActorPtr->speed == 0)
             {
                 InitRealValue(oldBeta,oldBeta+0x100,param/2,&currentProcessedActorPtr->rotate);
             }
@@ -111,7 +111,7 @@ void manualRot(int param)
         {
             int oldBeta = currentProcessedActorPtr->beta;
 
-            if(currentProcessedActorPtr->speed != 0)
+            if(currentProcessedActorPtr->speed == 0)
             {
                 InitRealValue(oldBeta,oldBeta-0x100,param/2,&currentProcessedActorPtr->rotate);
             }
@@ -171,7 +171,7 @@ void processTrack(void)
     {
     case 1: // manual
         {
-            manualRot(60);
+            GereManualRot(60);
             if(localJoyD&1) // forward
             {
                 if(timer - lastTimeForward < 10 && currentProcessedActorPtr->speed != 4) // start running ?
@@ -732,7 +732,7 @@ void processTrack2(void)
     {
     case 1: // manual
         {
-            manualRot(60);
+            GereManualRot(60);
             if(localJoyD&1) // forward
             {
                 if(timer - lastTimeForward < 10 && currentProcessedActorPtr->speed != 4)

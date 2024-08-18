@@ -3,6 +3,6 @@
 
 void processTrack(void);
 void processTrack2(void);
-void manualRot(int param);
+void GereManualRot(int param);
 
 #endif
