@@ -23,7 +23,7 @@ jobs:
         build_type: [Release]
         c_compiler: [gcc, clang, cl]
         include:
-          - os: windows-latest
+          - os: windows-2025
             c_compiler: cl
             cpp_compiler: cl
           - os: ubuntu-latest
@@ -33,9 +33,9 @@ jobs:
             c_compiler: clang
             cpp_compiler: clang++
         exclude:
-          - os: windows-latest
+          - os: windows-2025
             c_compiler: gcc
-          - os: windows-latest
+          - os: windows-2025
             c_compiler: clang
           - os: ubuntu-latest
             c_compiler: cl
@@ -47,7 +47,7 @@ jobs:
 
     - name: Install linux dependencies
       if: ${{ matrix.os == 'ubuntu-latest' }}
-      run: sudo apt install libx11-dev libopengl-dev libglx-dev
+      run: sudo apt install libx11-dev libopengl-dev libglx-dev mesa-common-dev
 
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
