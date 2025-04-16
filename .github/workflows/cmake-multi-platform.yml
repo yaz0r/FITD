@@ -45,9 +45,9 @@ jobs:
       with:
         submodules: recursive
 
-    - name: Install libx11-dev
+    - name: Install linux dependencies
       if: ${{ matrix.os == 'ubuntu-latest' }}
-      run: sudo apt install libx11-dev
+      run: sudo apt install libx11-dev libopengl-dev libglx-dev
 
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
