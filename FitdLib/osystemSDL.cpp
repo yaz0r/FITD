@@ -20,9 +20,10 @@ email                : yaz0r@yaz0r.net
 #include "bgfxGlue.h"
 #include <SDL.h>
 #include <SDL_thread.h>
+#include <SDL_mutex.h>
 #include "osystem.h"
 #include "osystemAL.h"
-#include <backends/imgui_impl_sdl.h>
+#include <backends/imgui_impl_sdl3.h>
 
 void detectGame(void);
 void renderGameWindow();
@@ -75,8 +76,8 @@ extern "C" {
     int FitdMain(void* unkused);
 }
 
-SDL_semaphore* startOfRender = NULL;
-SDL_semaphore* endOfRender = NULL;
+SDL_Semaphore* startOfRender = NULL;
+SDL_Semaphore* endOfRender = NULL;
 
 //SDL_sem* emptyCount = NULL;
 //SDL_sem* fullCount = NULL;
@@ -93,14 +94,9 @@ int FitdInit(int argc, char* argv[])
 
     osystem_init();
 
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_JOYSTICK) != 0)
-    {
-        assert(false);
-    }
-
     unsigned int flags = 0;
     flags |= SDL_WINDOW_RESIZABLE;
-    flags |= SDL_WINDOW_ALLOW_HIGHDPI;
+    //flags |= SDL_WINDOW_ALLOW_HIGHDPI;
 
 #ifdef __IPHONEOS__
     flags |= SDL_WINDOW_FULLSCREEN;
@@ -111,7 +107,7 @@ int FitdInit(int argc, char* argv[])
     int scale = 4;
     int resolution[2] = { 320 * scale, 240 * scale };
 
-    gWindowBGFX = SDL_CreateWindow("FITD", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, resolution[0], resolution[1], flags);
+    gWindowBGFX = SDL_CreateWindow("FITD", resolution[0], resolution[1], flags);
     
     char version[256];
 
@@ -120,9 +116,7 @@ int FitdInit(int argc, char* argv[])
     printf(version);
 
     detectGame();
-    
-    createBgfxInitParams();
-    
+        
     SDL_CreateThread(FitdMain, "FitdMainThread", NULL);
 
     unsigned long int t_start = SDL_GetTicks();
@@ -159,8 +153,6 @@ int FitdInit(int argc, char* argv[])
             t_lastUpdate = t_sinceStart;
         }
 
-        readKeyboard();
-
         osystemAL_udpate();
 
         SDL_PumpEvents();
@@ -170,28 +162,15 @@ int FitdInit(int argc, char* argv[])
         // Don't process events on first frame to avoid race condition with the init code
         if(!bFirstFrame)
         {
-            SDL_Event event;
-            while (SDL_PollEvent(&event))
-            {
-                ImGui_ImplSDL2_ProcessEvent(&event);
-
-                switch (event.type)
-                {
-                case SDL_QUIT:
-                    gCloseApp = true;
-                    break;
-                default:
-                    break;
-                }
-            }
+            readKeyboard();
         }
         else {
             bFirstFrame = false;
         }
         
-        SDL_SemPost(startOfRender);
+        SDL_SignalSemaphore(startOfRender);
 
-        SDL_SemWait(endOfRender);
+        SDL_WaitSemaphore(endOfRender);
         
         //SDL_RenderPresent(SDL_GetRenderer(gWindowBGFX));
     }
@@ -205,7 +184,7 @@ u32 lastFrameTime = 0;
 
 u32 osystem_startOfFrame()
 {
-    SDL_SemWait(startOfRender);
+    SDL_WaitSemaphore(startOfRender);
 
     StartFrame();
     osystem_startFrame();
@@ -257,7 +236,7 @@ void osystem_endOfFrame()
     if (bFirst)
         bFirst = false;
 
-    SDL_SemPost(endOfRender);
+    SDL_SignalSemaphore(endOfRender);
     //SDL_SemPost(emptyCount);
 
 }
@@ -279,10 +258,7 @@ int fileExists(const char* name)
 void osystem_init()  // that's the constructor of the system dependent
 // object used for the SDL port
 {
-    const unsigned char *keyboard;
-    int size;
-
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
+    if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
         fprintf(stderr, "Couldn't initialize SDL: %s\n", SDL_GetError());
         assert(0);
@@ -293,10 +269,6 @@ void osystem_init()  // that's the constructor of the system dependent
     // SDL_EnableUNICODE (SDL_ENABLE); // not much used in fact
 
     SDL_PumpEvents();
-
-    keyboard = SDL_GetKeyboardState(&size);
-
-    //keyboard[SDLK_RETURN] = 0;
 
     int screen_width = 800;
     int screen_height = 600;

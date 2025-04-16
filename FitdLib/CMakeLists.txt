@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.9)
 
 include_directories(
     "."
+    "${THIRD_PARTY}/SDL/include/SDL3"
     "${THIRD_PARTY}/SDL/include"
     "${THIRD_PARTY}/imgui"
     "${THIRD_PARTY}/soloud.cmake/soloud/include"
@@ -32,7 +33,7 @@ set(SOURCES
  "${THIRD_PARTY}/imgui/imgui_draw.cpp"
  "${THIRD_PARTY}/imgui/imgui_tables.cpp"
  "${THIRD_PARTY}/imgui/imgui_widgets.cpp"
- "${THIRD_PARTY}/imgui/backends/imgui_impl_sdl.cpp"
+ "${THIRD_PARTY}/imgui/backends/imgui_impl_sdl3.cpp"
 )
 
 function(assign_source_group)

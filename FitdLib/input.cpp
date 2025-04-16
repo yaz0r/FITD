@@ -1,5 +1,6 @@
 #include "common.h"
 #include <SDL.h>
+#include <backends/imgui_impl_sdl3.h>
 
 extern float nearVal;
 extern float farVal;
@@ -10,7 +11,7 @@ extern bool debuggerVar_debugMenuDisplayed;
 
 void handleKeyDown(SDL_Event& event)
 {
-    switch (event.key.keysym.scancode)
+    switch (event.key.key)
     {
     case SDL_SCANCODE_GRAVE:
         debuggerVar_debugMenuDisplayed ^= 1;
@@ -23,7 +24,7 @@ void readKeyboard(void)
     SDL_Event event;
     int size;
     int j;
-    const unsigned char *keyboard;
+    const bool *keyboard;
 
     JoyD = 0;
     Click = 0;
@@ -31,11 +32,13 @@ void readKeyboard(void)
 
     while (SDL_PollEvent(&event)) {
 
+        ImGui_ImplSDL3_ProcessEvent(&event);
+
         switch (event.type) {
-        case SDL_KEYDOWN:
+        case SDL_EVENT_KEY_DOWN:
             handleKeyDown(event);
             break;
-        case SDL_QUIT:
+        case SDL_EVENT_QUIT:
             cleanupAndExit();
             break;
         }

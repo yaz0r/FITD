@@ -6,7 +6,7 @@
 	url = https://github.com/ocornut/imgui.git
 [submodule "ThirdParty/soloud"]
 	path = ThirdParty/soloud.cmake/soloud
-	url = https://github.com/jarikomppa/soloud.git
+	url = https://github.com/yaz0r/soloud.git
 [submodule "ThirdParty/bgfx.cmake"]
 	path = ThirdParty/bgfx.cmake
 	url = https://github.com/bkaradzic/bgfx.cmake.git

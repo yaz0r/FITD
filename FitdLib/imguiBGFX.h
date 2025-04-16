@@ -88,7 +88,7 @@ namespace ImGui
 		, const ImVec4& _tintCol = ImVec4(1.0f, 1.0f, 1.0f, 1.0f)
 	)
 	{
-		return ImageButton(toId(_handle, _flags, _mip), _size, _uv0, _uv1, _framePadding, _bgCol, _tintCol);
+		return ImageButton("image", toId(_handle, _flags, _mip), _size, _uv0, _uv1, _bgCol, _tintCol);
 	}
 
 	// Helper function for passing bgfx::TextureHandle to ImGui::ImageButton.
