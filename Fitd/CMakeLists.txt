@@ -36,7 +36,7 @@ set( CMAKE_EXE_LINKER_FLAGS_SHIPPING "${CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO} /
 
 add_executable (Fitd ${SOURCES})
 
-TARGET_LINK_LIBRARIES(Fitd SDL3-static soloud FitdLib bgfx zlibstatic ${EXTRA_LIBS})
+TARGET_LINK_LIBRARIES(Fitd FitdLib bgfx zlibstatic SDL3-static soloud ${EXTRA_LIBS})
 
 set_target_properties(Fitd PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/data/AITD1_CD")
 set_target_properties(Fitd PROPERTIES WIN32_EXECUTABLE FALSE)
