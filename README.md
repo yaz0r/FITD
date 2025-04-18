@@ -17,7 +17,7 @@ Rendering is being rewritten to bgfx, for better portability. There is still som
 * Set fitd working directory to where the game files live
 * Hit F5
 ### Visual Studio Code
-Currently builds on Linux but does not work. Untested on Windows & macOs, but will almost certainly build if either using the Dev Container or having the needed dependancies installed locally.
+Currently builds on Linux but errors on running. Untested on Windows & macOs, but will almost certainly build if either using the Dev Container or having the needed dependancies installed locally.
 #### Dev Container - requires Docker to be installed locally
 1. Clone the repo with recursive submodules enabled (`git clone --recurse-submodules -j8 https://github.com/yaz0r/FITD.git`)
 2. Open Visual Studio Code
