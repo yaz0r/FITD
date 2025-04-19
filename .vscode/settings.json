@@ -1,0 +1,11 @@
+{
+	"dotnet.defaultSolution": "disable",
+	"explorer.excludeGitIgnore": false,
+	"cSpell.enabled": false,
+	"makefile.makefilePath": "build",
+	"files.associations": {
+		"*.asmdef": "json",
+		"chrono": "cpp",
+		"typeinfo": "cpp"
+	}
+}
