@@ -6,6 +6,17 @@
 	"files.associations": {
 		"*.asmdef": "json",
 		"chrono": "cpp",
-		"typeinfo": "cpp"
-	}
+		"typeinfo": "cpp",
+		"charconv": "cpp",
+		"array": "cpp",
+		"bitset": "cpp",
+		"string_view": "cpp",
+		"format": "cpp",
+		"initializer_list": "cpp",
+		"span": "cpp",
+		"string": "cpp"
+	},
+	"C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+	"editor.tabSize": 4,
+	"C_Cpp.formatting": "vcFormat"
 }

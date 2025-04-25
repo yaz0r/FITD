@@ -19,8 +19,22 @@ else
 	logger "Failed to get dir" 1
 fi
 
-readonly DATA_DIR="$MY_DIR/data"
+# TODO: Support Game Switching w/ arguments
+DATA_DIR="$MY_DIR/data"
 if [ -d "$DATA_DIR" ]; then
+	if [ -d "$DATA_DIR/AITD1_CD" ]; then
+		readonly DATA_DIR="$DATA_DIR/AITD1_CD"
+	elif [ -d "$DATA_DIR/AITD1_FLOPPY" ]; then
+		readonly DATA_DIR="$DATA_DIR/AITD1_FLOPPY"
+	elif [ -d "$DATA_DIR/AITD2" ]; then
+		readonly DATA_DIR="$DATA_DIR/AITD2"
+	elif [ -d "$DATA_DIR/AITD3" ]; then
+		readonly DATA_DIR="$DATA_DIR/AITD3"
+	elif [ -d "$DATA_DIR/TIMEGATE" ]; then
+		readonly DATA_DIR="$DATA_DIR/TIMEGATE"
+	else
+		logger "Game data directory found but no game folders were found. Expected a \"AITD1_CD\", \"AITD2\", \"AITD3\", or \"TIMEGATE\" folder. Assuming game data is in placed directly in the data directory."
+	fi
 	logger "Game data directory found: $DATA_DIR"
 else
 	logger "Game data Directory \"$DATA_DIR\" not found!" 1

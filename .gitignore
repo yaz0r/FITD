@@ -1,6 +1,6 @@
 build/vs2019
-FitdLib/shaders/generated
 build/vs2022
+FitdLib/shaders/generated
 data
 build/.cmake/**
 build/CMakeFiles/**
