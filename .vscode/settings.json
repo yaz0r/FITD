@@ -18,5 +18,6 @@
 	},
 	"C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
 	"editor.tabSize": 4,
-	"C_Cpp.formatting": "vcFormat"
+	"editor.insertSpaces": true,
+	"C_Cpp.formatting": "vcFormat",
 }
