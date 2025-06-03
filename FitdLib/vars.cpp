@@ -29,7 +29,7 @@ char* PtrFont;
 
 char* PtrCadre;
 
-unsigned char currentGamePalette[256*3];
+palette_t currentGamePalette;
 
 //OSystem osystem;
 

@@ -291,8 +291,8 @@ void AITD2_ReadBook(int index, int type)
 	case 0: // READ_MESSAGE
 		{
 			LoadPak("ITD_RESS", AITD2_LETTRE, aux);
-			unsigned char lpalette[0x300];
-			copyPalette((unsigned char*)aux+64000,lpalette);
+			palette_t lpalette;
+			copyPalette(aux+64000,lpalette);
 			convertPaletteIfRequired(lpalette);
 			copyPalette(lpalette,currentGamePalette);
 			setPalette(lpalette);
@@ -304,8 +304,8 @@ void AITD2_ReadBook(int index, int type)
 	case 1: // READ_BOOK
 		{
 			LoadPak("ITD_RESS", AITD2_LIVRE, aux);
-			unsigned char lpalette[0x300];
-			copyPalette((unsigned char*)aux+64000,lpalette);
+            palette_t lpalette;
+			copyPalette(aux+64000,lpalette);
 			convertPaletteIfRequired(lpalette);
 			copyPalette(lpalette,currentGamePalette);
 			setPalette(lpalette);
@@ -317,8 +317,8 @@ void AITD2_ReadBook(int index, int type)
 	case 2: // READ_CARNET
 		{
 			LoadPak("ITD_RESS", AITD2_CARNET, aux);
-			unsigned char lpalette[0x300];
-			copyPalette((unsigned char*)aux+64000,lpalette);
+            palette_t lpalette;
+			copyPalette(aux+64000,lpalette);
 			convertPaletteIfRequired(lpalette);
 			copyPalette(lpalette,currentGamePalette);
 			setPalette(lpalette);

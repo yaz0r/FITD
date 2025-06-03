@@ -284,8 +284,6 @@ extern char* PtrFont;
 
 extern char* PtrCadre;
 
-extern unsigned char currentGamePalette[0x300];
-
 //extern OSystem osystem;
 extern unsigned char frontBuffer[320*200];
 extern char rgbaBuffer[320*200*4];

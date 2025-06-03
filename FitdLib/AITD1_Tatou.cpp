@@ -16,17 +16,18 @@ int make3dTatou(void)
 {
     char* tatou2d;
     char* tatou3d;
-    unsigned char* tatouPal;
     int time;
     int deltaTime;
     int rotation;
     int unk1;
-    unsigned char paletteBackup[768];
     unsigned int localChrono;
+    palette_t tatouPal;
+    palette_t paletteBackup;
 
     tatou2d = CheckLoadMallocPak("ITD_RESS",AITD1_TATOU_MCG);
     tatou3d = CheckLoadMallocPak("ITD_RESS",AITD1_TATOU_3DO);
-    tatouPal = (unsigned char*)CheckLoadMallocPak("ITD_RESS",AITD1_TATOU_PAL);
+    char* tatouPalRaw = CheckLoadMallocPak("ITD_RESS",AITD1_TATOU_PAL);
+    copyPalette(tatouPalRaw, tatouPal);
 
     time = 8920;
     deltaTime = 50;
@@ -58,15 +59,18 @@ int make3dTatou(void)
 		//timeGlobal++;
 		timer = timeGlobal;
 
-        if(evalChrono(&localChrono)<=180) // avant eclair
+        if(evalChrono(&localChrono)<=180) 
         {
+            // before lightning strike
             if(key || Click)
             {
                 break;
             }
         }
-        else // eclair
+        else
         {
+            // lightning strike
+
             /*  LastSample = -1;
             LastPriority = -1; */
 
@@ -95,8 +99,10 @@ int make3dTatou(void)
 			osystem_CopyBlockPhys((unsigned char*)frontBuffer,0,0,320,200);
 
 
-            while(key==0 && Click == 0 && JoyD == 0) // boucle de rotation du tatou
+            while(key==0 && Click == 0 && JoyD == 0)
             {
+                // Armadillo rotation loop
+
                 process_events();
 
                 time+=deltaTime-25;
@@ -121,7 +127,6 @@ int make3dTatou(void)
         }
     }while(1);
 
-    free(tatouPal);
     free(tatou3d);
     free(tatou2d);
 
@@ -133,13 +138,13 @@ int make3dTatou(void)
         }
 
         FadeOutPhys(32,0);
-        copyPalette((unsigned char*)paletteBackup,currentGamePalette);
+        copyPalette(paletteBackup,currentGamePalette);
         return(1);
     }
     else
     {
         FadeOutPhys(16,0);
-        copyPalette((unsigned char*)paletteBackup,currentGamePalette);
+        copyPalette(paletteBackup,currentGamePalette);
         return(0);
     }
 

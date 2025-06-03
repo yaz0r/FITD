@@ -582,7 +582,7 @@ void fillBox(int x1, int y1, int x2, int y2, char color) // fast recode. No RE
 
 void loadPalette(void)
 {
-	unsigned char localPalette[768];
+    palette_t localPalette;
 
 	if(g_gameId == AITD2)
 	{
@@ -592,7 +592,7 @@ void loadPalette(void)
 	{
 		LoadPak("ITD_RESS",3,aux);
 	}
-	copyPalette((unsigned char*)aux,currentGamePalette);
+	copyPalette(aux,currentGamePalette);
 
 	copyPalette(currentGamePalette,localPalette);
 	//  fadeInSub1(localPalette);
@@ -1335,11 +1335,15 @@ void loadCamera(int cameraIdx)
 		}
 		else
 		{
-			memcpy(currentGamePalette,defaultPalette,0x30);
-			convertPaletteIfRequired((unsigned char*)currentGamePalette);
+            for (int i = 0; i < 16; i++) {
+                currentGamePalette[i][0] = defaultPalette[i * 3 + 0];
+                currentGamePalette[i][1] = defaultPalette[i * 3 + 1];
+                currentGamePalette[i][2] = defaultPalette[i * 3 + 2];
+            }
+			convertPaletteIfRequired(currentGamePalette);
 		}
 
-		osystem_setPalette(currentGamePalette);
+		osystem_setPalette(&currentGamePalette);
 	}
 }
 
