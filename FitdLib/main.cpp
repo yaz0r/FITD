@@ -1327,7 +1327,7 @@ void loadCamera(int cameraIdx)
 
 	if(g_gameId >= JACK)
 	{
-		copyPalette((unsigned char*)aux+64000,currentGamePalette);
+		copyPalette(aux+64000,currentGamePalette);
 
 		if(g_gameId == AITD3)
 		{
