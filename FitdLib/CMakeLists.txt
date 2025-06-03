@@ -49,49 +49,31 @@ function(assign_source_group)
     endforeach()
 endfunction(assign_source_group)
 
-macro(addShaderProgramPermutation vsname psname varyingname platform api profileVS profilePS)
-    _bgfx_shaderc_parse(CLI FILE shaders/${vsname}.sc BIN2C ${vsname}_${api} OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/shaders/generated/${vsname}_${api}.h VERTEX ${platform} VARYINGDEF shaders/${varyingname}.sc INCLUDES ${BGFX_DIR}/src PROFILE ${profileVS})
-    _bgfx_shaderc_parse(CLI FILE shaders/${psname}.sc BIN2C ${psname}_${api} OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/shaders/generated/${psname}_${api}.h FRAGMENT ${platform} VARYINGDEF shaders/${varyingname}.sc INCLUDES ${BGFX_DIR}/src PROFILE ${profilePS})
+macro(addShaderProgramPermutation vsname psname varyingname)
+    bgfx_compile_shaders(SHADERS shaders/${vsname}.sc AS_HEADERS OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/shaders/generated TYPE VERTEX VARYING_DEF ${CMAKE_CURRENT_SOURCE_DIR}/shaders/${varyingname}.sc INCLUDE_DIRS ${BGFX_DIR}/src AS_HEADERS)
+    bgfx_compile_shaders(SHADERS shaders/${psname}.sc AS_HEADERS OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/shaders/generated TYPE FRAGMENT VARYING_DEF ${CMAKE_CURRENT_SOURCE_DIR}/shaders/${varyingname}.sc INCLUDE_DIRS ${BGFX_DIR}/src AS_HEADERS)
     #shaderc(FILE shaders/${vsname}.sc BIN2C ${vsname}_${api} OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/shaders/generated/${vsname}_${api}.debug.h DEBUG VERTEX ${platform} VARYINGDEF shaders/${varyingname}.sc INCLUDES ${BGFX_DIR}/src PROFILE ${profileVS})
     #shaderc(FILE shaders/${psname}.sc BIN2C ${psname}_${api} OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/shaders/generated/${psname}_${api}.debug.h DEBUG FRAGMENT ${platform} VARYINGDEF shaders/${varyingname}.sc INCLUDES ${BGFX_DIR}/src PROFILE ${profilePS})
-    set(SOURCES
-        ${SOURCES}
-        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/generated/${vsname}_${api}.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/generated/${psname}_${api}.h
+    #set(SOURCES
+     #   ${SOURCES}
+    #    ${CMAKE_CURRENT_SOURCE_DIR}/shaders/generated/${vsname}_${api}.h
+     #   ${CMAKE_CURRENT_SOURCE_DIR}/shaders/generated/${psname}_${api}.h
         #${CMAKE_CURRENT_SOURCE_DIR}/shaders/generated/${vsname}_${api}.debug.h
         #${CMAKE_CURRENT_SOURCE_DIR}/shaders/generated/${psname}_${api}.debug.h
-    )
+    #)
 endmacro()
 
 macro(addShaderProgram vsname psname varyingname)
 
-set(SOURCES
-    ${SOURCES}
-    shaders/${vsname}.sc
-    shaders/${psname}.sc
-    shaders/${varyingname}.sc
-)
+    set(SOURCES
+        ${SOURCES}
+        shaders/${vsname}.sc
+        shaders/${psname}.sc
+        shaders/${varyingname}.sc
+    )
 
-IF(${CMAKE_SYSTEM_NAME} MATCHES iOS|tvOS)
-    addShaderProgramPermutation(${vsname} ${psname} ${varyingname} IOS glsl 430 430)
-    addShaderProgramPermutation(${vsname} ${psname} ${varyingname} IOS metal metal metal)
-endif()
-
-IF(${CMAKE_SYSTEM_NAME} MATCHES Darwin)
-    addShaderProgramPermutation(${vsname} ${psname} ${varyingname} OSX glsl 430 430)
-    addShaderProgramPermutation(${vsname} ${psname} ${varyingname} OSX mtl metal metal)
-endif()
-
-IF(${CMAKE_SYSTEM_NAME} MATCHES Windows)
-    addShaderProgramPermutation(${vsname} ${psname} ${varyingname} WINDOWS dx11 vs_5_0 ps_5_0)
-    addShaderProgramPermutation(${vsname} ${psname} ${varyingname} WINDOWS glsl 430 430)
-    addShaderProgramPermutation(${vsname} ${psname} ${varyingname} WINDOWS spv spirv spirv)
-endif()
-
-IF(${CMAKE_SYSTEM_NAME} MATCHES Linux)
-    addShaderProgramPermutation(${vsname} ${psname} ${varyingname} WINDOWS glsl 430 430)
-    addShaderProgramPermutation(${vsname} ${psname} ${varyingname} WINDOWS spv spirv spirv)
-endif()
+    addShaderProgramPermutation(${vsname} ${psname} ${varyingname})
+    addShaderProgramPermutation(${vsname} ${psname} ${varyingname})
 
 endmacro()
 
