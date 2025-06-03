@@ -1,25 +1,5 @@
 #include "common.h"
 
-void convertPaletteIfRequired(unsigned char* lpalette)
-{
-    if(g_gameId >= JACK && g_gameId < AITD3)
-    {
-        int i;
-        unsigned char* ptr2 = lpalette;
-        for(i=0;i<256;i++)
-        {
-            int j;
-            for(j=0;j<3;j++)
-            {
-                unsigned int composante = *(ptr2);
-                composante*=255;
-                composante/=63;
-                *(ptr2++) = composante&0xFF;
-            }
-        }
-    }
-}
-
 const char* sequenceListAITD2[]=
 {
     "BATL",
@@ -156,7 +136,6 @@ void playSequence(int sequenceIdx, int fadeStart, int fadeOutVar)
     int var_4 = 1;
     int quitPlayback = 0;
     int nextFrame = 1;
-    unsigned char localPalette[0x300];
 
     char buffer[256];
     if (g_gameId == AITD2)
@@ -194,7 +173,8 @@ void playSequence(int sequenceIdx, int fadeStart, int fadeOutVar)
 
             if(!currentFrameId) // first frame
             {
-                memcpy(localPalette,logicalScreen,0x300); // copy palette
+                palette_t localPalette;
+                copyPalette(logicalScreen, localPalette);  // copy palette
                 memcpy(aux,logicalScreen+0x300,64000);
                 nextFrame = READ_LE_U16(logicalScreen+64768);
 
@@ -213,7 +193,7 @@ void playSequence(int sequenceIdx, int fadeStart, int fadeOutVar)
                     flipOtherPalette(palette);
                     } */
 
-                    osystem_setPalette(localPalette);
+                    osystem_setPalette(&localPalette);
                     copyPalette(localPalette,currentGamePalette);
                 }
             }

@@ -20,7 +20,8 @@ void JACK_ReadBook(int index, int type)
 		{
 			unsigned char* pImage = (unsigned char*)loadPak("ITD_RESS", JACK_LIVRE);
 			memcpy(aux, pImage, 320*200);
-			unsigned char* lpalette = pImage+320*200; 
+            palette_t lpalette;
+            copyPalette(aux + 64000, lpalette);
 			convertPaletteIfRequired(lpalette);
 			copyPalette(lpalette,currentGamePalette);
 			setPalette(lpalette);

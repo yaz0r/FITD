@@ -1643,8 +1643,8 @@ void processLife(int lifeNum, bool callFoundLife)
 
                 FadeOutPhys(32, 0);
                 LoadPak("ITD_RESS", lifeTempVar1, aux);
-                unsigned char lpalette[0x300];
-                copyPalette((unsigned char*)aux + 64000, lpalette);
+                palette_t lpalette;
+                copyPalette(aux + 64000, lpalette);
                 convertPaletteIfRequired(lpalette);
                 copyPalette(lpalette, currentGamePalette);
                 setPalette(lpalette);
@@ -2004,8 +2004,8 @@ void processLife(int lifeNum, bool callFoundLife)
                 if (g_gameId > AITD1)
                 {
                     FadeOutPhys(0x10, 0);
-                    unsigned char lpalette[0x300];
-                    copyPalette((unsigned char*)aux + 64000, lpalette);
+                    palette_t lpalette;
+                    copyPalette(aux + 64000, lpalette);
                     convertPaletteIfRequired(lpalette);
                     copyPalette(lpalette, currentGamePalette);
                     setPalette(lpalette);

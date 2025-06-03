@@ -147,6 +147,7 @@ typedef signed long S32;
 #include "fmopl.h"
 #include "main.h"
 #include "sequence.h"
+#include "palette.h"
 
 // include game specific stuff
 #include "AITD1.h"

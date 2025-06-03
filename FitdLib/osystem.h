@@ -10,7 +10,8 @@
 #include "debugFont.h"
 #endif
 
-extern "C"{
+#include "palette.h"
+
 #endif
 
 #define byte char
@@ -49,6 +50,7 @@ extern "C"{
 	void osystem_putpixel(int x, int y, int pixel);
 	void osystem_setColor(byte i, byte R, byte G, byte B);
 	void osystem_setPalette(unsigned byte * palette);
+    void osystem_setPalette(palette_t* palette);
 	void osystem_setPalette320x200(byte * palette);
 	void osystem_flip(unsigned char *videoBuffer);
 	void osystem_draw320x200BufferToScreen(unsigned char *videoBuffer);
@@ -57,7 +59,6 @@ extern "C"{
 	void osystem_drawText(int X, int Y, char *text);
 	void osystem_drawTextColor(int X, int Y, char *string, unsigned char R, unsigned char G, unsigned char B);
 	void osystem_drawLine(int X1,int X2,int Y1,int Y2,unsigned char color, unsigned char* palette);
-	void osystem_getPalette(unsigned char* palette);
 	void osystem_playSampleFromName(char* sampleName);
 	void osystem_playSample(char* samplePtr,int size);
 	//    void getMouseStatus(mouseStatusStruct * mouseData);
@@ -89,9 +90,5 @@ extern "C"{
 
 	int osystem_playTrack(int trackId);
 	void osystem_playAdlib();
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

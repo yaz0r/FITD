@@ -208,9 +208,15 @@ void osystem_setPalette(u8* palette)
     bgfx::updateTexture2D(g_paletteTexture, 0, 0, 0, 0, 3, 256, bgfx::copy(RGB_Pal, 256 * 3));
 }
 
-void osystem_getPalette(unsigned char* palette)
+void osystem_setPalette(palette_t* palette)
 {
-    memcpy(palette, RGB_Pal, 256 * 3);
+    for (int i = 0; i < 256; i++) {
+        for (int j = 0; j < 3; j++) {
+            RGB_Pal[i * 3 + j] = palette->at(i)[j];
+        }
+    }
+
+    bgfx::updateTexture2D(g_paletteTexture, 0, 0, 0, 0, 3, 256, bgfx::copy(RGB_Pal, 256 * 3));
 }
 
 struct s_vertexData

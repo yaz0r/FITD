@@ -22,56 +22,13 @@ void blitScreenTatou(void)
 	*/
 }
 
-void copyPalette(unsigned char* source, unsigned char* dest)
-{
-    int i;
-
-    for(i=0;i<768;i++)
-    {
-        dest[i] = source[i];
-    }
-}
-
 void FastCopyScreen(void* source, void* dest)
 {
 	memcpy(dest, source, 64000);
 }
 
-void paletteFill(void* palette, unsigned char r, unsigned char g, unsigned b)
-{
-    unsigned char* paletteLocal = (unsigned char*) palette;
-    int offset = 0;
-    int i;
-
-    r<<=1;
-    g<<=1;
-    b<<=1;
-
-    for(i=0;i<256;i++)
-    {
-        paletteLocal[offset] = r;
-        paletteLocal[offset+1] = g;
-        paletteLocal[offset+2] = b;
-        offset += 3;
-    }
-}
-
-void computePalette(unsigned char* inPalette, unsigned char* outPalette, int coef)
-{
-    int i;
-
-    for(i=0;i<256;i++)
-    {
-        *(outPalette++) = ((*(inPalette++))*coef)>> 8;
-        *(outPalette++) = ((*(inPalette++))*coef)>> 8;
-        *(outPalette++) = ((*(inPalette++))*coef)>> 8;
-    }
-}
-
 void FadeInPhys(int step,int start)
 {
-    unsigned char localPalette[0x300];
-
     freezeTime();
 
     if(fadeState == 2) // only used for the ending ?
@@ -82,6 +39,7 @@ void FadeInPhys(int step,int start)
         for(int i=0;i<256;i+=step)
         {
 			process_events();
+            palette_t localPalette;
             computePalette(currentGamePalette,localPalette,i);
             setPalette(localPalette);
 			osystem_refreshFrontTextureBuffer();
@@ -96,13 +54,12 @@ void FadeInPhys(int step,int start)
 
 void FadeOutPhys(int var1, int var2)
 {
-    unsigned char localPalette[0x300];
-
     freezeTime();
 
     for(int i=256;i>=0;i-=var1)
     {
 		process_events();
+        palette_t localPalette;
 		computePalette(currentGamePalette,localPalette,i);
 		setPalette(localPalette);
 		osystem_refreshFrontTextureBuffer();
@@ -110,11 +67,6 @@ void FadeOutPhys(int var1, int var2)
     }
 
     unfreezeTime();
-}
-
-void setPalette(void* sourcePal)
-{
-	osystem_setPalette((unsigned char*)sourcePal);
 }
 
 #ifdef PCLIKE
