@@ -45,6 +45,10 @@ jobs:
       with:
         submodules: recursive
 
+    - name: Update linux apt
+      if: ${{ matrix.os == 'ubuntu-latest' }}
+      run: sudo apt update
+
     - name: Install linux dependencies
       if: ${{ matrix.os == 'ubuntu-latest' }}
       run: sudo apt install libx11-dev libopengl-dev libglx-dev mesa-common-dev build-essential git make
