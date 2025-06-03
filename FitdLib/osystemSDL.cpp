@@ -113,7 +113,7 @@ int FitdInit(int argc, char* argv[])
 
     getVersion(version);
 
-    printf(version);
+    printf("%s", version);
 
     detectGame();
         
@@ -258,7 +258,7 @@ int fileExists(const char* name)
 void osystem_init()  // that's the constructor of the system dependent
 // object used for the SDL port
 {
-    if (SDL_Init(SDL_INIT_VIDEO) < 0)
+    if (!SDL_Init(SDL_INIT_VIDEO))
     {
         fprintf(stderr, "Couldn't initialize SDL: %s\n", SDL_GetError());
         assert(0);
