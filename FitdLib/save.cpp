@@ -553,15 +553,18 @@ int makeSaveFile(int entry)
 
 	if(g_gameId == AITD1)
 	{
+        // For safety, destroy special objects before mallocs
 		for(i=0;i<NUM_MAX_OBJECT;i++)
 		{
-			if(objectTable[i].indexInWorld == -1);
-
-			if(objectTable[i].ANIM == 4 )
-			{
-				CVars[getCVarsIdx(FOG_FLAG)] = 0;
-				HQ_Free_Malloc(HQ_Memory,objectTable[i].FRAME);
-			}
+            if (objectTable[i].indexInWorld == -2) // Special objects
+            {
+                objectTable[i].indexInWorld = -1;
+                if (objectTable[i].ANIM == 4)
+                {
+                    CVars[getCVarsIdx(FOG_FLAG)] = 0;
+                    HQ_Free_Malloc(HQ_Memory, objectTable[i].FRAME);
+                }
+            }
 		}
 	}
 
