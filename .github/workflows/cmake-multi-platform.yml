@@ -42,7 +42,7 @@ jobs:
             c_compiler: clang
           - os: ubuntu-latest
             c_compiler: cl
-          - os: macos-2025
+          - os: macos-latest
             c_compiler: gcc
           - os: macos-latest
             c_compiler: cl
