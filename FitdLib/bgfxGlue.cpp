@@ -134,7 +134,7 @@ void createBgfxInitParams()
     }
 #elif BX_PLATFORM_OSX
     initparam.platformData.ndt = NULL;
-    initparam.platformData.nwh = cbSetupMetalLayer(wmi.info.cocoa.window);
+    initparam.platformData.nwh = cbSetupMetalLayer((void*)SDL_GetPointerProperty(SDL_GetWindowProperties(gWindowBGFX), SDL_PROP_WINDOW_COCOA_WINDOW_POINTER, NULL));
 #elif BX_PLATFORM_WINDOWS
     initparam.platformData.ndt = NULL;
     initparam.platformData.nwh = (HWND)SDL_GetPointerProperty(SDL_GetWindowProperties(gWindowBGFX), SDL_PROP_WINDOW_WIN32_HWND_POINTER, NULL);
