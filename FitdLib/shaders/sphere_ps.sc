@@ -1,8 +1,7 @@
 $input v_texcoord0, v_sphereParams, v_screenSpacePosition
 
 #include "bgfx_shader.sh"
-
-USAMPLER2D(s_paletteTexture, 1);
+#include "palette.sh"
 
 void main()
 {
@@ -17,16 +16,11 @@ void main()
     int material = int(v_sphereParams.w);
 
     if(material == 0) { // flat
-        int colorOffset = (bank << 4) + color;
-        gl_FragColor.r = float(texelFetch(s_paletteTexture, ivec2(0, colorOffset), 0).r) / 255.f;
-        gl_FragColor.g = float(texelFetch(s_paletteTexture, ivec2(1, colorOffset), 0).r) / 255.f;
-        gl_FragColor.b = float(texelFetch(s_paletteTexture, ivec2(2, colorOffset), 0).r) / 255.f;
-        gl_FragColor.w = 1.f;
-    } else if(material == 2) { // transparent
-        int colorOffset = (bank << 4) + color;
-        gl_FragColor.r = float(texelFetch(s_paletteTexture, ivec2(0, colorOffset), 0).r) / 255.f;
-        gl_FragColor.g = float(texelFetch(s_paletteTexture, ivec2(1, colorOffset), 0).r) / 255.f;
-        gl_FragColor.b = float(texelFetch(s_paletteTexture, ivec2(2, colorOffset), 0).r) / 255.f;
+        gl_FragColor = getColor(bank, color);
+    } else if(material == 1) { // TODO!
+        gl_FragColor = getColor(bank, color);
+     } else if(material == 2) { // transparent
+        gl_FragColor = getColor(bank, color);
         gl_FragColor.w = 0.5f;
     } else if(material == 3) { // marbre
         vec2 normalizedPosition = (v_screenSpacePosition.xy - sphereCenter.xy) / sphereSize;
@@ -34,13 +28,12 @@ void main()
         float distanceToCircleOnScanline = cos(angle) - normalizedPosition.x; // value is in 0/2 range
         distanceToCircleOnScanline /= 2.f; // remap to 0 / 1
         color = int((1.f - distanceToCircleOnScanline) * 15.f);
-
-        int colorOffset = (bank << 4) + color;
-        gl_FragColor.r = float(texelFetch(s_paletteTexture, ivec2(0, colorOffset), 0).r) / 255.f;
-        gl_FragColor.g = float(texelFetch(s_paletteTexture, ivec2(1, colorOffset), 0).r) / 255.f;
-        gl_FragColor.b = float(texelFetch(s_paletteTexture, ivec2(2, colorOffset), 0).r) / 255.f;
-        gl_FragColor.w = 1.f;
-    } else {
+        gl_FragColor = getColor(bank, color);
+     } else if(material == 4) { // TODO!
+        gl_FragColor = getColor(bank, color);
+     } else if(material == 6) { // TODO!
+        gl_FragColor = getColor(bank, color);
+     } else {
         gl_FragColor.r = 1.f;
         gl_FragColor.g = 0.f;
         gl_FragColor.b = 0.f;
