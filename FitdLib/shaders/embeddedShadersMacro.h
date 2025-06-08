@@ -109,7 +109,7 @@
 			/*BGFX_EMBEDDED_SHADER_PSSL (bgfx::RendererType::Agc,        _name)*/              \
 			/*BGFX_EMBEDDED_SHADER_DX9BC(bgfx::RendererType::Direct3D9,  _name)*/              \
 			BGFX_EMBEDDED_SHADER_DXBC (bgfx::RendererType::Direct3D11, _name)              \
-			/*BGFX_EMBEDDED_SHADER_DXBC (bgfx::RendererType::Direct3D12, _name)*/              \
+			BGFX_EMBEDDED_SHADER_DXBC (bgfx::RendererType::Direct3D12, _name)              \
 			/*BGFX_EMBEDDED_SHADER_PSSL (bgfx::RendererType::Gnm,        _name)*/              \
 			BGFX_EMBEDDED_SHADER_METAL(bgfx::RendererType::Metal,      _name)              \
 			/*BGFX_EMBEDDED_SHADER_NVN  (bgfx::RendererType::Nvn,        _name)*/              \
