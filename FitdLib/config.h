@@ -48,7 +48,8 @@
 
 #define HAS_YM3812 1
 
-#if defined(HAS_STDINT) || AITD_UE4
+#include <stdint.h>
+
 typedef uint8_t u8;
 typedef uint16_t u16;
 typedef uint32_t u32;
@@ -56,15 +57,6 @@ typedef uint32_t u32;
 typedef int8_t s8;
 typedef int16_t s16;
 typedef int32_t s32;
-#else
-typedef unsigned char u8;
-typedef unsigned short int u16;
-typedef unsigned long int u32;
-
-typedef signed char s8;
-typedef signed short int s16;
-typedef signed long int s32;
-#endif
 
 #include <stdlib.h>
 #include <stdio.h>
