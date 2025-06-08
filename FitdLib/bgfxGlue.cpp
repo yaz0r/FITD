@@ -145,21 +145,32 @@ int initBgfxGlue(int argc, char* argv[])
 {
     createBgfxInitParams();
     //initparam.type = bgfx::RendererType::OpenGL;
-    initparam.type = bgfx::RendererType::Vulkan;
+    //initparam.type = bgfx::RendererType::Vulkan;
+    initparam.type = bgfx::RendererType::Direct3D12;
     bgfx::init(initparam);
 
     imguiCreate();
 
     ImGuiIO& io = ImGui::GetIO();
     //io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
-
-#if BX_PLATFORM_WINDOWS
-    ImGui_ImplSDL3_InitForD3D(gWindowBGFX);
-#elif BX_PLATFORM_OSX
-    ImGui_ImplSDL3_InitForMetal(gWindowBGFX);
-#else
-    ImGui_ImplSDL3_InitForVulkan(gWindowBGFX);
-#endif
+    if ((bgfx::getRendererType() == bgfx::RendererType::Direct3D11) || (bgfx::getRendererType() == bgfx::RendererType::Direct3D12)) {
+        ImGui_ImplSDL3_InitForD3D(gWindowBGFX);
+    }
+    else
+    if (bgfx::getRendererType() == bgfx::RendererType::Metal) {
+        ImGui_ImplSDL3_InitForMetal(gWindowBGFX);
+    }
+    else
+    if (bgfx::getRendererType() == bgfx::RendererType::OpenGL) {
+        ImGui_ImplSDL3_InitForOpenGL(gWindowBGFX, SDL_GL_GetCurrentContext());
+    }
+    else
+    if (bgfx::getRendererType() == bgfx::RendererType::Vulkan) {
+        ImGui_ImplSDL3_InitForVulkan(gWindowBGFX);
+    }
+    else {
+        ImGui_ImplSDL3_InitForOther(gWindowBGFX);
+    }
 
     return true;
 }
