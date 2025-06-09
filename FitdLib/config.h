@@ -3,6 +3,7 @@
 #if __cplusplus
 #include <vector>
 #include <string>
+#include <format>
 #endif
 
 #ifdef __APPLE__

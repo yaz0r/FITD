@@ -40,7 +40,7 @@ void copyPalette(void* source, palette_t& dest)
 
 void convertPaletteIfRequired(palette_t& lpalette)
 {
-    if (g_gameId >= JACK && g_gameId < AITD3)
+    if (g_gameId >= JACK && g_gameId <= AITD3)
     {
         for (int i = 0; i < 256; i++)
         {

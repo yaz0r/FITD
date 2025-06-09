@@ -103,9 +103,9 @@ void renderInventoryObject(int arg)
     if(arg!=-1)
     {
         u8 buffer[256];
-        ExtSetFont(PtrFont,4);
+        SetFont(PtrFont,4);
         sprintf((char*)buffer,"%d",vars[arg]);
-        renderText(statusLeft+4,statusTop+4,logicalScreen,buffer);
+        PrintFont(statusLeft+4,statusTop+4,logicalScreen,buffer);
     }
 
 	switch(g_gameId)
