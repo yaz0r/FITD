@@ -3,7 +3,7 @@
 int timerSaved = false;
 unsigned int timerSavedValue = 0;
 
-void freezeTime(void)
+void SaveTimerAnim(void)
 {
     if(timerSaved==0)
     {
@@ -12,7 +12,7 @@ void freezeTime(void)
 	timerSaved++;
 }
 
-void unfreezeTime(void)
+void RestoreTimerAnim(void)
 {
 	assert(timerSaved);
 	timerSaved--;

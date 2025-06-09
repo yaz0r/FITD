@@ -52,7 +52,7 @@ void convertPaletteIfRequired(palette_t& lpalette)
     }
 }
 
-void computePalette(palette_t& inPalette, palette_t& outPalette, int coef)
+void SetLevelDestPal(palette_t& inPalette, palette_t& outPalette, int coef)
 {
     for (int i = 0; i < 256; i++)
     {

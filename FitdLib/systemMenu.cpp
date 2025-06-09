@@ -56,7 +56,7 @@ void processSystemMenu(void)
     int exitMenu = 0;
     int currentSelectedEntry;
 
-    freezeTime();
+    SaveTimerAnim();
     //pauseShaking();
 
     if(lightOff)
@@ -104,7 +104,7 @@ void processSystemMenu(void)
                         if(restoreSave(46,1))
                         {
                             flagInitView = 2;
-                            unfreezeTime();
+                            RestoreTimerAnim();
                             //updateShaking();
                             return;
                         }
@@ -157,5 +157,5 @@ void processSystemMenu(void)
 	}
 	localKey = localClick = localJoyD = 0;
 	flagInitView = 2;
-	unfreezeTime();
+	RestoreTimerAnim();
 }

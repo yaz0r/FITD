@@ -10,7 +10,7 @@ extern "C" {
     extern char homePath[512];
 }
 
-typedef struct pakInfoStruct // warning: allignement unsafe
+typedef struct pakInfoStruct // warning: alignment unsafe
 {
     s32 discSize;
     s32 uncompressedSize;
@@ -92,6 +92,7 @@ int LoadPak(const char* name, int index, char* ptr)
 
     memcpy(ptr,lptr,getPakSize(name,index));
 
+
     free(lptr);
 
     return(1);
@@ -138,15 +139,12 @@ int getPakSize(const char* name, int index)
         fseek(fileHandle,(index+1)*4,SEEK_SET);
 
         fread(&fileOffset,4,1,fileHandle);
-#ifdef MACOSX
         fileOffset = READ_LE_U32(&fileOffset);
-#endif
+
         fseek(fileHandle,fileOffset,SEEK_SET);
 
         fread(&additionalDescriptorSize,4,1,fileHandle);
-#ifdef MACOSX
         additionalDescriptorSize = READ_LE_U32(&additionalDescriptorSize);
-#endif
 
         readPakInfo(&pakInfo,fileHandle);
 
@@ -225,19 +223,14 @@ char* loadPak(const char* name, int index)
         fseek(fileHandle,(index+1)*4,SEEK_SET);
 
         fread(&fileOffset,4,1,fileHandle);
-
-#ifdef MACOSX
         fileOffset = READ_LE_U32(&fileOffset);
-#endif
 
         fseek(fileHandle,fileOffset,SEEK_SET);
 
         fread(&additionalDescriptorSize,4,1,fileHandle);
-
-#ifdef MACOSX
         additionalDescriptorSize = READ_LE_U32(&additionalDescriptorSize);
-#endif
-		if(additionalDescriptorSize)
+
+        if(additionalDescriptorSize)
 		{
 			fseek(fileHandle, additionalDescriptorSize-4, SEEK_CUR);
 		}
@@ -328,18 +321,13 @@ void dumpPak(const char* name)
             fseek(fileHandle, (index + 1) * 4, SEEK_SET);
 
             fread(&fileOffset, 4, 1, fileHandle);
-
-#ifdef MACOSX
             fileOffset = READ_LE_U32(&fileOffset);
-#endif
 
             fseek(fileHandle, fileOffset, SEEK_SET);
 
             fread(&additionalDescriptorSize, 4, 1, fileHandle);
-
-#ifdef MACOSX
             additionalDescriptorSize = READ_LE_U32(&additionalDescriptorSize);
-#endif
+
             if (additionalDescriptorSize)
             {
                 fseek(fileHandle, additionalDescriptorSize - 4, SEEK_CUR);

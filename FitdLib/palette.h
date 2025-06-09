@@ -7,6 +7,6 @@ void setPalette(palette_t& palette);
 void copyPalette(void* source, palette_t& dest);
 void copyPalette(palette_t& source, palette_t& dest);
 void convertPaletteIfRequired(palette_t& lpalette);
-void computePalette(palette_t& inPalette, palette_t& outPalette, int coef);
+void SetLevelDestPal(palette_t& inPalette, palette_t& outPalette, int coef);
 
 extern palette_t currentGamePalette;

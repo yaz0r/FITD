@@ -16,10 +16,10 @@ int make3dTatou(void)
 {
     char* tatou2d;
     char* tatou3d;
-    int time;
+    int zoom;
     int deltaTime;
-    int rotation;
-    int unk1;
+    int beta;
+    int alpha;
     unsigned int localChrono;
     palette_t tatouPal;
     palette_t paletteBackup;
@@ -29,10 +29,10 @@ int make3dTatou(void)
     char* tatouPalRaw = CheckLoadMallocPak("ITD_RESS",AITD1_TATOU_PAL);
     copyPalette(tatouPalRaw, tatouPal);
 
-    time = 8920;
+    zoom = 8920;
     deltaTime = 50;
-    rotation = 256;
-    unk1 = 8;
+    beta = 256;
+    alpha = 8;
 
     setupCameraProjection(160,100,128,500,490);
 
@@ -85,7 +85,7 @@ int make3dTatou(void)
 
             clearScreenTatou();
 
-            setCameraTarget(0,0,0,unk1,rotation,0,time);
+            setCameraTarget(0,0,0,alpha,beta,0,zoom);
 
             AffObjet(0,0,0,0,0,0,tatou3d);
 
@@ -105,16 +105,16 @@ int make3dTatou(void)
 
                 process_events();
 
-                time+=deltaTime-25;
+                zoom += deltaTime;
 
-                if(time>16000)
+                if(zoom>16000)
                     break;
 
-                rotation -=8;
+                beta -=8;
 
                 clearScreenTatou();
 
-                setCameraTarget(0,0,0,unk1,rotation,0,time);
+                setCameraTarget(0,0,0,alpha,beta,0,zoom);
 
                 AffObjet(0,0,0,0,0,0,tatou3d);
 
