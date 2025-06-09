@@ -194,7 +194,7 @@ void debugger_draw(void)
                 InputS16("typeZV", &pWorldObject->typeZV);
                 InputS16("foundBody", &pWorldObject->foundBody);
                 InputS16("foundName", &pWorldObject->foundName);
-                InputS16("flags2", &pWorldObject->flags2);
+                InputS16("flags2", &pWorldObject->foundFlag);
                 InputS16("foundLife", &pWorldObject->foundLife);
                 InputS16("x", &pWorldObject->x);
                 InputS16("y", &pWorldObject->y);

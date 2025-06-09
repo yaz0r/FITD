@@ -288,20 +288,20 @@ void allocTextes(void)
 
             if (fileExists(tempString))
             {
-                strcpy(languageNameString, languageNameTable[i].c_str());
+                languageNameString = languageNameTable[i].c_str();
                 break;
             }
         }
 	}
 
-	if(!languageNameString[0])
+	if(!languageNameString.length())
 	{
 		printf("Unable to detect language file..\n");
 		assert(0);
 	}
 
-	systemTextes = (u8*)CheckLoadMallocPak(languageNameString, 0); // todo: use real language name
-	textLength = getPakSize(languageNameString, 0);
+	systemTextes = (u8*)CheckLoadMallocPak(languageNameString.c_str(), 0); // todo: use real language name
+	textLength = getPakSize(languageNameString.c_str(), 0);
 
 	for(currentIndex=0;currentIndex<NUM_MAX_TEXT_ENTRY;currentIndex++)
 	{
@@ -627,12 +627,12 @@ int Lire(int index, int startx, int top, int endx, int bottom, int demoMode, int
 
 	maxStringWidth = endx - startx + 4;
 
-	int textIndexMalloc = HQ_Malloc(HQ_Memory,getPakSize(languageNameString,index)+300);
+	int textIndexMalloc = HQ_Malloc(HQ_Memory,getPakSize(languageNameString.c_str(),index)+300);
 	textPtr = (u8*)HQ_PtrMalloc(HQ_Memory, textIndexMalloc);
 
-	if(!LoadPak( languageNameString, index, (char*)textPtr))
+	if(!LoadPak( languageNameString.c_str(), index, (char*)textPtr))
 	{
-		fatalError(1, languageNameString );
+		fatalError(1, languageNameString.c_str() );
 	}
 
     ptrpage.fill(nullptr);
@@ -692,7 +692,7 @@ int Lire(int index, int startx, int top, int endx, int bottom, int demoMode, int
                     }
                     case 'C': // center
                     {
-                        line_type &= 0xFFFE;
+                        line_type &= ~1;
                         line_type |= 8;
                         break;
                     }
@@ -760,7 +760,7 @@ int Lire(int index, int startx, int top, int endx, int bottom, int demoMode, int
 
                 // eval the character that caused the 'end of word' state
                 if (var_1C3 == 26) {
-                    line_type &= 0xFFFE;
+                    line_type &= ~1;
                     line_type |= 4;
                     lastPageReached = true;
                     break;
@@ -771,13 +771,13 @@ int Lire(int index, int startx, int top, int endx, int bottom, int demoMode, int
                     if (*ptrt == 0xD)
                     {
                         ptrt += 2;
-                        line_type &= 0xFFFE;
+                        line_type &= ~1;
                         line_type |= 2;
                         break;
                     }
                     if (*ptrt == '#')
                     {
-                        line_type &= 0xFFFE;
+                        line_type &= ~1;
                         break;
                     }
                 }
@@ -1003,7 +1003,7 @@ extern "C" {
 	extern char homePath[512];
 }
 
-void initEngine(void)
+void LoadWorld(void)
 {
 	u8* pObjectData;
 	u8* pObjectDataBackup;
@@ -1016,11 +1016,12 @@ void initEngine(void)
 	strcpy(objectPath, homePath);
 	strcat(objectPath, "OBJETS.ITD");
 	fHandle = fopen(objectPath,"rb");
-	if(!fHandle)
-		fatalError(0,"OBJETS.ITD");
+    if (!fHandle) {
+        fatalError(0, "OBJETS.ITD");
+    }
 
 	fseek(fHandle,0,SEEK_END);
-	objectDataSize= ftell(fHandle);
+	objectDataSize = ftell(fHandle);
 	fseek(fHandle,0,SEEK_SET);
 
 	pObjectDataBackup = pObjectData = (u8*)malloc(objectDataSize);
@@ -1054,7 +1055,7 @@ void initEngine(void)
 		ListWorldObjets[i].foundName = READ_LE_U16(pObjectData);
 		pObjectData+=2;
 
-		ListWorldObjets[i].flags2 = READ_LE_U16(pObjectData);
+		ListWorldObjets[i].foundFlag = READ_LE_U16(pObjectData);
 		pObjectData+=2;
 
 		ListWorldObjets[i].foundLife = READ_LE_U16(pObjectData);
@@ -2561,7 +2562,7 @@ void DeleteInventoryObjet(int objIdx)
 		numObjInInventoryTable[currentInventory]--;
 	}
 
-	ListWorldObjets[objIdx].flags2 &= 0x7FFF;
+	ListWorldObjets[objIdx].foundFlag &= 0x7FFF;
 }
 
 void deleteObject(int objIdx)
@@ -3584,8 +3585,8 @@ void take(int objIdx)
 		DeleteObjet(objPtr->objIndex);
 	}
 
-	objPtr->flags2 &= 0xBFFF;
-	objPtr->flags2 |= 0x8000;
+	objPtr->foundFlag &= 0xBFFF;
+	objPtr->foundFlag |= 0x8000;
 
 	objPtr->room = -1;
 	objPtr->stage = -1;
@@ -3610,7 +3611,7 @@ void foundObject(int objIdx, int param)
 
 	objPtr = &ListWorldObjets[objIdx];
 
-	if( param != 0 && (objPtr->flags2 & 0xC000))
+	if( param != 0 && (objPtr->foundFlag & 0xC000))
 	{
 		return;
 	}
@@ -4384,7 +4385,7 @@ void PutAtObjet(int objIdx, int objIdxToPutAt)
 			objPtr->beta = actorToPutAtPtr->beta;
 			objPtr->gamma = actorToPutAtPtr->gamma;
 
-			objPtr->flags2 |= 0x4000;
+			objPtr->foundFlag |= 0x4000;
 			objPtr->flags |= 0x80;
 
 			//      FlagGenereActiveList = 1;
@@ -4401,7 +4402,7 @@ void PutAtObjet(int objIdx, int objIdxToPutAt)
 			currentProcessedActorPtr->beta = actorToPutAtPtr->beta;
 			currentProcessedActorPtr->gamma = actorToPutAtPtr->gamma;
 
-			ListWorldObjets[currentProcessedActorPtr->indexInWorld].flags2 |= 0x4000;
+			ListWorldObjets[currentProcessedActorPtr->indexInWorld].foundFlag |= 0x4000;
 			ListWorldObjets[currentProcessedActorPtr->indexInWorld].flags |= 0x80;
 
 			//      FlagGenereActiveList = 1;
@@ -4424,7 +4425,7 @@ void PutAtObjet(int objIdx, int objIdxToPutAt)
 			objPtr->beta = objPtrToPutAt->beta;
 			objPtr->gamma = objPtrToPutAt->gamma;
 
-			objPtr->flags2 |= 0x4000;
+			objPtr->foundFlag |= 0x4000;
 			objPtr->flags |= 0x80;
 
 			//      FlagGenereActiveList = 1;
@@ -4441,7 +4442,7 @@ void PutAtObjet(int objIdx, int objIdxToPutAt)
 			currentProcessedActorPtr->beta = objPtrToPutAt->beta;
 			currentProcessedActorPtr->gamma = objPtrToPutAt->gamma;
 
-			ListWorldObjets[currentProcessedActorPtr->indexInWorld].flags2 |= 0x4000;
+			ListWorldObjets[currentProcessedActorPtr->indexInWorld].foundFlag |= 0x4000;
 			ListWorldObjets[currentProcessedActorPtr->indexInWorld].flags |= 0x80;
 
 			//      FlagGenereActiveList = 1;
@@ -4543,15 +4544,15 @@ void throwStoppedAt(int x, int z)
 	currentProcessedActorPtr->zv.ZVZ1 += z2;
 	currentProcessedActorPtr->zv.ZVZ2 += z2;
 
-	ListWorldObjets[currentProcessedActorPtr->indexInWorld].flags2 |= 0x4000;
-	ListWorldObjets[currentProcessedActorPtr->indexInWorld].flags2 &= 0xEFFF;
+	ListWorldObjets[currentProcessedActorPtr->indexInWorld].foundFlag |= 0x4000;
+	ListWorldObjets[currentProcessedActorPtr->indexInWorld].foundFlag &= 0xEFFF;
 
 	addActorToBgInscrust(currentProcessedActorIdx);
 }
 
 void startGame(int startupFloor, int startupRoom, int allowSystemMenu)
 {
-	initEngine();
+	LoadWorld();
 	initVars();
 
 	loadFloor(startupFloor);

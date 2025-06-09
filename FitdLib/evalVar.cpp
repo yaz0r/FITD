@@ -362,7 +362,7 @@ int evalVar(const char* name)
                     }
                 case 0x10: // found
                     {
-                        if(ListWorldObjets[evalVar()].flags2 & 0x8000)
+                        if(ListWorldObjets[evalVar()].foundFlag & 0x8000)
                         {
                             return(1);
                         }
@@ -485,7 +485,7 @@ int evalVar(const char* name)
                         objNum = *(s16*)currentLifePtr;
                         currentLifePtr+=2;
 
-                        if(ListWorldObjets[objNum].flags2 & 0xC000)
+                        if(ListWorldObjets[objNum].foundFlag & 0xC000)
                         {
                             return(1);
                         }
@@ -539,7 +539,7 @@ int evalVar(const char* name)
                         objNum = *(s16*)currentLifePtr;
                         currentLifePtr+=2;
 
-                        if(ListWorldObjets[objNum].flags2 & 0x1000)
+                        if(ListWorldObjets[objNum].foundFlag & 0x1000)
                         {
                             return 1;
                         }
@@ -803,7 +803,7 @@ int evalVar2(const char* name)
                     }
                 case 0x10: // found
                     {
-                        if(ListWorldObjets[evalVar()].flags2 & 0x8000)
+                        if(ListWorldObjets[evalVar()].foundFlag & 0x8000)
                         {
                             return(1);
                         }
@@ -926,7 +926,7 @@ int evalVar2(const char* name)
                         objNum = *(s16*)currentLifePtr;
                         currentLifePtr+=2;
 
-                        if(ListWorldObjets[objNum].flags2 & 0xC000)
+                        if(ListWorldObjets[objNum].foundFlag & 0xC000)
                         {
                             return(1);
                         }
@@ -961,7 +961,7 @@ int evalVar2(const char* name)
                         objNum = *(s16*)currentLifePtr;
                         currentLifePtr+=2;
 
-                        if(ListWorldObjets[objNum].flags2 & 0x1000)
+                        if(ListWorldObjets[objNum].foundFlag & 0x1000)
                         {
                             return 1;
                         }

@@ -30,7 +30,7 @@ void throwObj(int animThrow, int frameThrow, int arg_4, int objToThrowIdx, int t
             ListWorldObjets[objToThrowIdx].gamma -= 0x100;
         }
 
-        ListWorldObjets[objToThrowIdx].flags2 |= 0x1000;
+        ListWorldObjets[objToThrowIdx].foundFlag |= 0x1000;
     }
 }
 
@@ -51,7 +51,7 @@ void put(int x, int y, int z, int room, int stage, int alpha, int beta, int gamm
 
     DeleteInventoryObjet(idx);
 
-    objPtr->flags2 |= 0x4000;
+    objPtr->foundFlag |= 0x4000;
 
     /*  FlagGenereActiveList = 1;
     FlagRefreshAux2 = 1; */
@@ -704,8 +704,8 @@ void processLife(int lifeNum, bool callFoundLife)
                     }
                     case LM_FOUND_FLAG: // FOUND_FLAG
                     {
-                        ListWorldObjets[var_6].flags2 &= 0xE000;
-                        ListWorldObjets[var_6].flags2 |= *(s16*)(currentLifePtr);
+                        ListWorldObjets[var_6].foundFlag &= 0xE000;
+                        ListWorldObjets[var_6].foundFlag |= *(s16*)(currentLifePtr);
                         currentLifePtr += 2;
 
                         break;
@@ -1290,7 +1290,7 @@ void processLife(int lifeNum, bool callFoundLife)
                 }
                 else
                 {
-                    currentProcessedActorPtr->dynFlags &= 0xFFFE;
+                    currentProcessedActorPtr->dynFlags &= ~1;
                 }
 
                 break;
@@ -1354,9 +1354,9 @@ void processLife(int lifeNum, bool callFoundLife)
                 {
                     if (g_gameId == AITD1) // TODO: check, really useful ?
                     {
-                        ListWorldObjets[lifeTempVar1].flags2 &= 0x7FFF;
+                        ListWorldObjets[lifeTempVar1].foundFlag &= ~0x8000;
                     }
-                    ListWorldObjets[lifeTempVar1].flags2 |= 0x4000;
+                    ListWorldObjets[lifeTempVar1].foundFlag |= 0x4000;
                 }
 
                 break;
@@ -1572,8 +1572,8 @@ void processLife(int lifeNum, bool callFoundLife)
             case LM_FOUND_FLAG: // FOUND_FLAG
             {
                 appendFormated("LM_FOUND_FLAG ");
-                ListWorldObjets[currentProcessedActorPtr->indexInWorld].flags2 &= 0xE000;
-                ListWorldObjets[currentProcessedActorPtr->indexInWorld].flags2 |= *(s16*)(currentLifePtr);
+                ListWorldObjets[currentProcessedActorPtr->indexInWorld].foundFlag &= 0xE000;
+                ListWorldObjets[currentProcessedActorPtr->indexInWorld].foundFlag |= *(s16*)(currentLifePtr);
                 currentLifePtr += 2;
                 break;
             }
