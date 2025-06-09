@@ -34,13 +34,7 @@ void HQ_Free_Malloc(hqrEntryStruct* hqrPtr, int index);
 
 void playSequence(int sequenceIdx, int fadeStart, int fadeOutVar);
 
-#ifndef WIN32
-extern "C" {
-#endif
-int fileExists(const char* name);
-#ifndef WIN32
-}
-#endif
+bool fileExists(const char* name);
 
 void OpenProgram(void);
 void freeAll(void);

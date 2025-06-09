@@ -241,7 +241,7 @@ void osystem_endOfFrame()
 
 }
 
-int fileExists(const char* name)
+bool fileExists(const char* name)
 {
     FILE* fHandle;
 

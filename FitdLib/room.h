@@ -50,7 +50,7 @@ struct rectTestStruct
 struct cameraMaskStruct
 {
 	u16 numTestRect;
-	rectTestStruct* rectTests;
+	std::vector<rectTestStruct> rectTests;
 };
 
 struct cameraViewedRoomStruct
@@ -65,9 +65,9 @@ struct cameraViewedRoomStruct
   s16 lightZ;
 
   u16 numMask;
-  cameraMaskStruct* masks;
+  std::vector<cameraMaskStruct> masks;
   u16 numCoverZones;
-  cameraZoneEntryStruct* coverZones;
+  std::vector<cameraZoneEntryStruct> coverZones;
 };
 
 struct cameraDataStruct
@@ -85,7 +85,7 @@ struct cameraDataStruct
   s16 focal3;
 
   u16 numViewedRooms;
-  cameraViewedRoomStruct* viewedRoomTable;
+  std::vector<cameraViewedRoomStruct> viewedRoomTable;
 };
 
 struct roomDataStruct
@@ -93,22 +93,22 @@ struct roomDataStruct
   u32 numCameraInRoom;
 
   u32 numHardCol;
-  hardColStruct* hardColTable;
+  std::vector<hardColStruct> hardColTable;
 
   u32 numSceZone;
-  sceZoneStruct* sceZoneTable;
+  std::vector<sceZoneStruct> sceZoneTable;
 
   s32 worldX;
   s32 worldY;
   s32 worldZ;
 
-  u16* cameraIdxTable;
+  std::vector<u16> cameraIdxTable;
 };
 typedef struct roomDataStruct roomDataStruct;
 
 extern cameraDataStruct* cameraDataTable[NUM_MAX_CAMERA_IN_ROOM];
 extern cameraViewedRoomStruct* currentCameraZoneList[NUM_MAX_CAMERA_IN_ROOM];
-extern roomDataStruct* roomDataTable;
+extern std::vector<roomDataStruct> roomDataTable;
 
 roomDefStruct* getRoomData(int roomNumber);
 void loadRoom(int roomNumber);

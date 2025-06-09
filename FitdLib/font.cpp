@@ -21,7 +21,7 @@ s16 fontSm9 = 0x80;
 
 unsigned char flagTable[]= {0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01};
 
-void ExtSetFont(char* fontData, int color)
+void SetFont(char* fontData, int color)
 {
     s16 tempDx;
     s16 tempAxFlip;
@@ -90,7 +90,7 @@ int ExtGetSizeFont(u8* string)
     return(width);
 }
 
-void renderText(int x, int y, char* surface, u8* string)
+void PrintFont(int x, int y, char* surface, u8* string)
 {
     unsigned char character;
 
@@ -192,11 +192,11 @@ void SelectedMessage(int x, int y, int index, int color1, int color2)
 
     textPtr = entryPtr->textPtr;
 
-    ExtSetFont(PtrFont,color2);
-    renderText(x,y+1,logicalScreen,textPtr);
+    SetFont(PtrFont,color2);
+    PrintFont(x,y+1,logicalScreen,textPtr);
 
-    ExtSetFont(PtrFont,color1);
-    renderText(x,y,logicalScreen,textPtr);
+    SetFont(PtrFont,color1);
+    PrintFont(x,y,logicalScreen,textPtr);
 
 }
 
@@ -211,7 +211,7 @@ void SimpleMessage(int x, int y, int index, int color)
 
     u8* textPtr = entryPtr->textPtr;
 
-    ExtSetFont(PtrFont,color);
+    SetFont(PtrFont,color);
 
-    renderText(x,y+1,logicalScreen,textPtr);
+    PrintFont(x,y+1,logicalScreen,textPtr);
 }

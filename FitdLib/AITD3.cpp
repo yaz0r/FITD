@@ -36,7 +36,7 @@
 void startAITD3()
 {
 	g_gameUseCDA = true;
-	//startGame(1,0,0);
+	startGame(1,0,0);
 	
 	while(1)
 	{

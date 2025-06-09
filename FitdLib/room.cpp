@@ -13,7 +13,7 @@ etageVar1 -> table for camera data
 
 */
 
-roomDataStruct* roomDataTable = NULL;
+std::vector<roomDataStruct> roomDataTable;
 cameraDataStruct* cameraDataTable[NUM_MAX_CAMERA_IN_ROOM];
 cameraViewedRoomStruct* currentCameraZoneList[NUM_MAX_CAMERA_IN_ROOM];
 
@@ -24,32 +24,13 @@ roomDefStruct* getRoomData(int roomNumber)
 
 int getNumberOfRoom()
 {
-    int i;
-    int j = 0;
+    if (g_currentFloorRoomRawData) {
+        int numMax = (((READ_LE_U32(g_currentFloorRoomRawData)) / 4));
 
-    if(g_gameId >= AITD3)
-    {
-        char buffer[256];
-
-        if(g_gameId == AITD3)
+        int j = 0;
+        for (int i = 0; i < numMax; i++)
         {
-            sprintf(buffer,"SAL%02d",g_currentFloor);
-        }
-        else
-        {
-            sprintf(buffer,"ETAGE%02d",g_currentFloor);
-        }
-
-        return PAK_getNumFiles(buffer);
-    }
-    else
-    {
-
-        int numMax = (((READ_LE_U32(g_currentFloorRoomRawData))/4));
-
-        for(i=0;i<numMax;i++)
-        {
-            if(g_currentFloorRoomRawDataSize >= READ_LE_U32(g_currentFloorRoomRawData + i * 4))
+            if (g_currentFloorRoomRawDataSize >= READ_LE_U32(g_currentFloorRoomRawData + i * 4))
             {
                 j++;
             }
@@ -58,8 +39,22 @@ int getNumberOfRoom()
                 return j;
             }
         }
+        return j;
     }
-    return j;
+    else {
+        if (fileExists(std::format("ETAGE{:02d}.PAK", g_currentFloor).c_str())) {
+            return PAK_getNumFiles(std::format("ETAGE{:02d}", g_currentFloor).c_str());
+        }
+        else if (fileExists(std::format("SAL{:02d}.PAK", g_currentFloor).c_str())) {
+            return PAK_getNumFiles(std::format("SAL{:02d}", g_currentFloor).c_str());
+        }
+        else {
+            assert(0);
+        }
+    }
+
+    assert(false);
+    return 0;
 }
 
 void loadRoom(int roomNumber)
@@ -122,7 +117,7 @@ void loadRoom(int roomNumber)
     {
         unsigned int currentCameraIdx = roomDataTable[currentRoom].cameraIdxTable[i]; // indexes are between the roomDefStruct and the first zone data
 
-        ASSERT(currentCameraIdx<=g_currentFloorNumCamera);
+        ASSERT(currentCameraIdx <= g_currentFloorCameraData.size());
 
         if(oldCameraIdx == currentCameraIdx)
         {

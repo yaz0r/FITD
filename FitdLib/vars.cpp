@@ -55,9 +55,11 @@ char localClick;
 
 const std::vector<std::string> languageNameTable =
 {
+    "TEXTES",
+    "ENGLISH",
+    "USA",
     "FRANCAIS",
     "ITALIANO",
-    "ENGLISH",
     "ESPAGNOL",
     "DEUTSCH",
 };

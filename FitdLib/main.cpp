@@ -278,11 +278,6 @@ void allocTextes(void)
 	}
 
 	// setup languageNameString
-	if(g_gameId == AITD3)
-	{
-		strcpy(languageNameString,"TEXTES");
-	}
-	else
 	{
         for (int i=0; i<languageNameTable.size(); i++)
         {
@@ -411,36 +406,15 @@ void OpenProgram(void)
 	switch(g_gameId)
 	{
 	case AITD3:
-		{
-#ifdef TARGET_OS_IPHONE
-			PtrFont = CheckLoadMallocPak("ITD_RESS",1);
-#else
-			FILE* fHandle = fopen("font.bin", "rb");
-			fseek(fHandle, 0, SEEK_END);
-			int fontSize = ftell(fHandle);
-			PtrFont = (char*)malloc(fontSize);
-			fseek(fHandle, 0, SEEK_SET);
-			fread(PtrFont, fontSize, 1, fHandle);
-			fclose(fHandle);
-#endif
-			break;
-		}
+        PtrFont = CheckLoadMallocPak("ITD_RESS", 1);
+        break;
 	case JACK:
 	case AITD2:
-		{
-			PtrFont = CheckLoadMallocPak("ITD_RESS",1);
-			/*
-			int fontSize = getPakSize("ITD_RESS",1);
-			FILE* fhandle = fopen("font.bin", "wb+");
-			fwrite(fontData, fontSize, 1, fhandle);
-			fclose(fhandle);*/
-			break;
-		}
+		PtrFont = CheckLoadMallocPak("ITD_RESS", 1);
+		break;
 	case AITD1:
-		{
-			PtrFont = CheckLoadMallocPak("ITD_RESS",5);
-			break;
-		}
+		PtrFont = CheckLoadMallocPak("ITD_RESS", 5);
+		break;
     case TIMEGATE:
         PtrFont = CheckLoadMallocPak("ITD_RESS", 2);
         break;
@@ -448,7 +422,7 @@ void OpenProgram(void)
 		assert(0);
 	}
 
-	ExtSetFont(PtrFont, 14);
+	SetFont(PtrFont, 14);
 
 	if(g_gameId == AITD1)
 	{
@@ -649,7 +623,7 @@ int Lire(int index, int startx, int top, int endx, int bottom, int demoMode, int
 	int maxStringWidth;
 	u8* textPtr;
 
-	ExtSetFont(PtrFont, color);
+	SetFont(PtrFont, color);
 
 	maxStringWidth = endx - startx + 4;
 
@@ -826,7 +800,7 @@ int Lire(int index, int startx, int top, int endx, int bottom, int demoMode, int
             }
 
             for (int i = 0; i < numWordInLine; i++) {
-                renderText(currentTextX, currentTextY, logicalScreen, currentText->textPtr);
+                PrintFont(currentTextX, currentTextY, logicalScreen, currentText->textPtr);
                 currentTextX += currentText->width + interWordSpace; // add inter word space
                 currentText++;
             }
@@ -1322,7 +1296,7 @@ void loadCamera(int cameraIdx)
 
 	if(g_gameId == AITD3)
 	{
-		memmove(aux,aux+4,64000+0x300);
+		//memmove(aux,aux+4,64000+0x300);
 	}
 
 	if(g_gameId >= JACK)
@@ -1331,7 +1305,11 @@ void loadCamera(int cameraIdx)
 
 		if(g_gameId == AITD3)
 		{
-			//memcpy(palette,defaultPaletteAITD3,0x30);
+            for (int i = 0; i < 16; i++) {
+                currentGamePalette[i][0] = defaultPaletteAITD3[i * 3 + 0];
+                currentGamePalette[i][1] = defaultPaletteAITD3[i * 3 + 1];
+                currentGamePalette[i][2] = defaultPaletteAITD3[i * 3 + 2];
+            }
 		}
 		else
 		{
@@ -1340,8 +1318,8 @@ void loadCamera(int cameraIdx)
                 currentGamePalette[i][1] = defaultPalette[i * 3 + 1];
                 currentGamePalette[i][2] = defaultPalette[i * 3 + 2];
             }
-			convertPaletteIfRequired(currentGamePalette);
 		}
+        convertPaletteIfRequired(currentGamePalette);
 
 		osystem_setPalette(&currentGamePalette);
 	}
@@ -2754,7 +2732,7 @@ void drawMaskZone(cameraMaskStruct* maskZonePtr)
 {
 	for(int i=0; i<maskZonePtr->numTestRect; i++)
 	{
-		drawAAQuad(maskZonePtr->rectTests->zoneX1*10, maskZonePtr->rectTests->zoneX2*10, maskZonePtr->rectTests->zoneZ1*10, maskZonePtr->rectTests->zoneZ2*10);
+		drawAAQuad(maskZonePtr->rectTests[i].zoneX1*10, maskZonePtr->rectTests[i].zoneX2*10, maskZonePtr->rectTests[i].zoneZ1*10, maskZonePtr->rectTests[i].zoneZ2*10);
 	}
 }
 
@@ -3942,7 +3920,7 @@ int AsmCheckListCol(ZVStruct* zvPtr, roomDataStruct* pRoomData)
 {
 	u16 i;
 	int hardColVar = 0;
-	hardColStruct* pCurrentEntry = pRoomData->hardColTable;
+	hardColStruct* pCurrentEntry = pRoomData->hardColTable.data();
 
 #ifdef FITD_DEBUGGER
 	if(debuggerVar_noHardClip)
@@ -4163,7 +4141,7 @@ sceZoneStruct* processActor2Sub(int x, int y, int z, roomDataStruct* pRoomData)
 	u32 i;
 	sceZoneStruct* pCurrentZone;  
 
-	pCurrentZone = pRoomData->sceZoneTable;
+	pCurrentZone = pRoomData->sceZoneTable.data();
 
 	for(i=0;i<pRoomData->numSceZone;i++)
 	{
@@ -4761,14 +4739,14 @@ int drawTextOverlay(void)
 				{
 					if(currentMessage->time<26)
 					{
-						ExtSetFont(PtrFont,16);
+						SetFont(PtrFont,16);
 					}
 					else
 					{
-						ExtSetFont(PtrFont,16+(currentMessage->time-26)/2);
+						SetFont(PtrFont,16+(currentMessage->time-26)/2);
 					}
 
-					renderText(X,var_10+1,logicalScreen,currentMessage->string->textPtr);
+					PrintFont(X,var_10+1,logicalScreen,currentMessage->string->textPtr);
 				}
 
 				var_10 -= 16;
