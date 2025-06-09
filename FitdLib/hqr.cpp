@@ -416,7 +416,7 @@ char* HQR_Get(hqrEntryStruct* hqrPtr, int index)
         char* ptr;
         int i;
 
-        freezeTime();
+        SaveTimerAnim();
         size = getPakSize(hqrPtr->string,index);
 
 		if(size == 0)
@@ -457,7 +457,7 @@ char* HQR_Get(hqrEntryStruct* hqrPtr, int index)
         hqrPtr->numUsedEntry++;
         hqrPtr->sizeFreeData -= size;
 
-        unfreezeTime();
+        RestoreTimerAnim();
 
         return(ptr);
     }

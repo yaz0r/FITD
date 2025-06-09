@@ -1639,7 +1639,7 @@ void processLife(int lifeNum, bool callFoundLife)
                 lifeTempVar8 = *(s16*)(currentLifePtr);
                 currentLifePtr += 2;
 
-                freezeTime();
+                SaveTimerAnim();
 
                 FadeOutPhys(32, 0);
                 LoadPak("ITD_RESS", lifeTempVar1, aux);
@@ -1653,7 +1653,7 @@ void processLife(int lifeNum, bool callFoundLife)
 
                 flagInitView = 2;
 
-                unfreezeTime();
+                RestoreTimerAnim();
 
                 break;
             }
@@ -1997,7 +1997,7 @@ void processLife(int lifeNum, bool callFoundLife)
                     sampleId = readNextArgument("sampleId");
                 }
 
-                freezeTime();
+                SaveTimerAnim();
 
                 LoadPak("ITD_RESS", pictureIndex, aux);
 
@@ -2034,7 +2034,7 @@ void processLife(int lifeNum, bool callFoundLife)
                         break;
                 } while (!key && !Click);
 
-                unfreezeTime();
+                RestoreTimerAnim();
 
                 flagInitView = 1;
 
@@ -2051,7 +2051,7 @@ void processLife(int lifeNum, bool callFoundLife)
                 u16 fadeEntry;
                 u16 fadeOut;
 
-                freezeTime();
+                SaveTimerAnim();
 
                 sequenceIdx = *(u16*)(currentLifePtr);
                 currentLifePtr += 2;
@@ -2064,7 +2064,7 @@ void processLife(int lifeNum, bool callFoundLife)
 
                 playSequence(sequenceIdx, fadeEntry, fadeOut);
 
-                unfreezeTime();
+                RestoreTimerAnim();
 
                 break;
             }

@@ -29,7 +29,7 @@ void FastCopyScreen(void* source, void* dest)
 
 void FadeInPhys(int step,int start)
 {
-    freezeTime();
+    SaveTimerAnim();
 
     if(fadeState == 2) // only used for the ending ?
     {
@@ -40,7 +40,7 @@ void FadeInPhys(int step,int start)
         {
 			process_events();
             palette_t localPalette;
-            computePalette(currentGamePalette,localPalette,i);
+            SetLevelDestPal(currentGamePalette,localPalette,i);
             setPalette(localPalette);
 			osystem_refreshFrontTextureBuffer();
 			osystem_drawBackground();
@@ -49,24 +49,24 @@ void FadeInPhys(int step,int start)
 
     fadeState = 1;
 
-    unfreezeTime();
+    RestoreTimerAnim();
 }
 
-void FadeOutPhys(int var1, int var2)
+void FadeOutPhys(int step, int var2)
 {
-    freezeTime();
+    SaveTimerAnim();
 
-    for(int i=256;i>=0;i-=var1)
+    for(int i=256;i>=0;i-=step)
     {
 		process_events();
         palette_t localPalette;
-		computePalette(currentGamePalette,localPalette,i);
+		SetLevelDestPal(currentGamePalette,localPalette,i);
 		setPalette(localPalette);
 		osystem_refreshFrontTextureBuffer();
 		osystem_drawBackground();
     }
 
-    unfreezeTime();
+    RestoreTimerAnim();
 }
 
 #ifdef PCLIKE

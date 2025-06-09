@@ -588,7 +588,7 @@ void turnPageBackward()
 
 void readBook(int index, int type)
 {
-	freezeTime();
+	SaveTimerAnim();
 
 	switch(g_gameId)
 	{
@@ -606,7 +606,7 @@ void readBook(int index, int type)
 
 	}
 
-	unfreezeTime();
+	RestoreTimerAnim();
 }
 
 int Lire(int index, int startx, int top, int endx, int bottom, int demoMode, int color, int shadow)
@@ -2372,7 +2372,7 @@ void setupCamera()
 	int z;
 	cameraDataStruct* pCamera;
 
-	freezeTime();
+	SaveTimerAnim();
 
 	currentCamera = startGameVar1;
 
@@ -2442,7 +2442,7 @@ void setupCamera()
 	}
 
 	flagInitView = 0;
-	unfreezeTime();
+	RestoreTimerAnim();
 }
 
 s16 computeDistanceToPoint(int x1, int z1, int x2, int z2)
@@ -3624,7 +3624,7 @@ void foundObject(int objIdx, int param)
 
 	objPtr->trackNumber = 0;
 
-	freezeTime();
+	SaveTimerAnim();
 	//  setupShaking(1000); // probably to remove the shaking when in foundObject screen
 
 	int weight = 0;
@@ -3721,7 +3721,7 @@ void foundObject(int objIdx, int param)
 		//    menuWaitVSync();
 	}
 
-	unfreezeTime();
+	RestoreTimerAnim();
 
 	if(var_6 == 1)
 	{

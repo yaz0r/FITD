@@ -201,7 +201,7 @@ void processInventory(void)
 
     statusVar1 = 0;
 
-    freezeTime();
+    SaveTimerAnim();
     //pauseShaking();
 
     if(lightOff!=0)
@@ -421,7 +421,7 @@ void processInventory(void)
         //osystem_flip(NULL);
     }
 
-    unfreezeTime();
+    RestoreTimerAnim();
 
     flagInitView = 1;
 

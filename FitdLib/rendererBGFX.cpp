@@ -520,15 +520,10 @@ void osystem_startFrame()
 
 unsigned char frontBuffer[320 * 200];
 unsigned char physicalScreen[320 * 200];
-unsigned char physicalScreenRGB[320 * 200 * 3];
 
 void osystem_CopyBlockPhys(unsigned char* videoBuffer, int left, int top, int right, int bottom)
 {
-    unsigned char* out = physicalScreenRGB;
     unsigned char* in = (unsigned char*)&videoBuffer[0] + left + top * 320;
-
-    int i;
-    int j;
 
     while ((right - left) % 4)
     {
@@ -540,19 +535,13 @@ void osystem_CopyBlockPhys(unsigned char* videoBuffer, int left, int top, int ri
         bottom++;
     }
 
-    for (i = top; i < bottom; i++)
+    for (int i = top; i < bottom; i++)
     {
         in = (unsigned char*)&videoBuffer[0] + left + i * 320;
         unsigned char* out2 = physicalScreen + left + i * 320;
-        for (j = left; j < right; j++)
+        for (int j = left; j < right; j++)
         {
-            unsigned char color = *(in++);
-
-            *(out++) = RGB_Pal[color * 3];
-            *(out++) = RGB_Pal[color * 3 + 1];
-            *(out++) = RGB_Pal[color * 3 + 2];
-
-            *(out2++) = color;
+			*(out2++) = *(in++);
         }
     }
 
@@ -561,21 +550,6 @@ void osystem_CopyBlockPhys(unsigned char* videoBuffer, int left, int top, int ri
 
 void osystem_refreshFrontTextureBuffer()
 {
-    unsigned char* out = physicalScreenRGB;
-    unsigned char* in = physicalScreen;
-
-    int i;
-    int j;
-
-    for (i = 0; i < 200 * 320; i++)
-    {
-        unsigned char color = *(in++);
-        *(out++) = RGB_Pal[color * 3];
-        *(out++) = RGB_Pal[color * 3 + 1];
-        *(out++) = RGB_Pal[color * 3 + 2];
-    }
-
-    bgfx::updateTexture2D(g_backgroundTexture, 0, 0, 0, 0, 320, 200, bgfx::copy(physicalScreen, 320 * 200));
 }
 
 void osystem_initBuffer()

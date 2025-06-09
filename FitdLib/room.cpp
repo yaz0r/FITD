@@ -66,7 +66,7 @@ void loadRoom(int roomNumber)
     int oldCameraIdx;
     roomDefStruct* roomDataPtr;
 
-    freezeTime();
+    SaveTimerAnim();
 
     ASSERT(roomNumber >=0);
 
@@ -187,5 +187,5 @@ void loadRoom(int roomNumber)
     startGameVar1 = newNumCamera;
     flagInitView = 1;
     needChangeRoom = 0;
-    unfreezeTime();
+    RestoreTimerAnim();
 }
