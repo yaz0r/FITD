@@ -61,7 +61,7 @@ int loadSave(int saveNumber)
         return(0);
     }
 
-    initEngine();
+    LoadWorld();
     initVars();
 
     fseek(fHandle,8,SEEK_SET);
@@ -116,8 +116,8 @@ int loadSave(int saveNumber)
         ASSERT(sizeof(ListWorldObjets[i].foundName) == 2);
         fread(&ListWorldObjets[i].foundName,2,1,fHandle);
 
-        ASSERT(sizeof(ListWorldObjets[i].flags2) == 2);
-        fread(&ListWorldObjets[i].flags2,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].foundFlag) == 2);
+        fread(&ListWorldObjets[i].foundFlag,2,1,fHandle);
 
         ASSERT(sizeof(ListWorldObjets[i].foundLife) == 2);
         fread(&ListWorldObjets[i].foundLife,2,1,fHandle);
@@ -630,8 +630,8 @@ int makeSaveFile(int entry)
         ASSERT(sizeof(ListWorldObjets[i].foundName) == 2);
         fwrite(&ListWorldObjets[i].foundName,2,1,fHandle);
 
-        ASSERT(sizeof(ListWorldObjets[i].flags2) == 2);
-        fwrite(&ListWorldObjets[i].flags2,2,1,fHandle);
+        ASSERT(sizeof(ListWorldObjets[i].foundFlag) == 2);
+        fwrite(&ListWorldObjets[i].foundFlag,2,1,fHandle);
 
         ASSERT(sizeof(ListWorldObjets[i].foundLife) == 2);
         fwrite(&ListWorldObjets[i].foundLife,2,1,fHandle);

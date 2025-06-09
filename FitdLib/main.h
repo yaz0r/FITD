@@ -22,7 +22,7 @@ void DeleteInventoryObjet(int objIdx);
 void walkStep(int angle1, int angle2, int angle3);
 void throwStoppedAt(int x, int z);
 sceZoneStruct* processActor2Sub(int x, int y, int z, roomDataStruct* pRoomData);
-void initEngine(void);
+void LoadWorld(void);
 void initVars();
 void configureHqrHero(hqrEntryStruct* hqrPtr, const char* name);
 void flushScreen(void);

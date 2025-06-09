@@ -193,7 +193,7 @@ void GereFrappe(void)
                         objPtr->alpha = currentProcessedActorPtr->alpha;
                         objPtr->beta = currentProcessedActorPtr->beta+0x200; 
 
-                        objPtr->flags2 &= 0xBFFF;
+                        objPtr->foundFlag &= 0xBFFF;
                         objPtr->flags |= 0x85;
                         objPtr->flags &= 0xFFDF;
 

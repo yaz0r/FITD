@@ -64,7 +64,7 @@ const std::vector<std::string> languageNameTable =
     "DEUTSCH",
 };
 
-char languageNameString[20] = "";
+std::string languageNameString;
 
 regularTextEntryStruct textTable[NUM_MAX_TEXT];
 

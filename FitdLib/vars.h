@@ -205,7 +205,7 @@ struct tWorldObject
     s16 typeZV;
     s16 foundBody;
     s16 foundName;
-    s16 flags2;
+    s16 foundFlag;
     s16 foundLife;
     s16 x;
     s16 y;
@@ -308,7 +308,7 @@ extern char localKey;
 extern char localJoyD;
 extern char localClick;
 
-extern char languageNameString[];
+extern std::string languageNameString;
 extern const std::vector<std::string> languageNameTable;
 
 extern regularTextEntryStruct textTable[40];

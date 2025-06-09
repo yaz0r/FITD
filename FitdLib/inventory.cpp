@@ -325,7 +325,7 @@ void processInventory(void)
 
                 currentFoundBody = HQR_Get(listBody,currentFoundBodyIdx);
 
-                var_C = ListWorldObjets[selectedWorldObjectIdx].flags2;
+                var_C = ListWorldObjets[selectedWorldObjectIdx].foundFlag;
 
                 numInventoryActions = 0;
                 numActionForObject = 0;
