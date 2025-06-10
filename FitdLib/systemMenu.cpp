@@ -103,7 +103,7 @@ void processSystemMenu(void)
                     case 2: // load
                         if(restoreSave(46,1))
                         {
-                            flagInitView = 2;
+                            FlagInitView = 2;
                             RestoreTimerAnim();
                             //updateShaking();
                             return;
@@ -156,6 +156,6 @@ void processSystemMenu(void)
 		process_events();
 	}
 	localKey = localClick = localJoyD = 0;
-	flagInitView = 2;
+	FlagInitView = 2;
 	RestoreTimerAnim();
 }

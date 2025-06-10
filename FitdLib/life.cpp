@@ -785,7 +785,7 @@ void processLife(int lifeNum, bool callFoundLife)
                     }
                     else
                     {
-                        flagInitView = 1;
+                        FlagInitView = 1;
                     }
                 }
                 break;
@@ -820,7 +820,7 @@ void processLife(int lifeNum, bool callFoundLife)
                 }
                 else
                 {
-                    flagInitView = 1;
+                    FlagInitView = 1;
                 }
                 break;
             }
@@ -1615,7 +1615,7 @@ void processLife(int lifeNum, bool callFoundLife)
                     FadeOutPhys(4, 0);
                 }
 
-                flagInitView = 2;
+                FlagInitView = 2;
 
                 break;
             }
@@ -1651,7 +1651,7 @@ void processLife(int lifeNum, bool callFoundLife)
                 turnPageFlag = false;
                 Lire(lifeTempVar2 + 1, lifeTempVar3, lifeTempVar4, lifeTempVar5, lifeTempVar6, 0, lifeTempVar7, lifeTempVar8);
 
-                flagInitView = 2;
+                FlagInitView = 2;
 
                 RestoreTimerAnim();
 
@@ -2036,7 +2036,7 @@ void processLife(int lifeNum, bool callFoundLife)
 
                 RestoreTimerAnim();
 
-                flagInitView = 1;
+                FlagInitView = 1;
 
                 if (g_gameId > AITD1)
                 {

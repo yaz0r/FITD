@@ -125,7 +125,7 @@ void readKeyboard(void)
             case SDL_SCANCODE_Y:
                 debuggerVar_topCamera = false;
                 backgroundMode = backgroundModeEnum_2D;
-                flagInitView = 1;
+                FlagInitView = 1;
                 break;
             case SDL_SCANCODE_C:
                 debuggerVar_noHardClip = !debuggerVar_noHardClip;

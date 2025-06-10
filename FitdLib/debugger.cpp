@@ -126,7 +126,7 @@ void debugger_draw(void)
 
     if(debuggerVar_debugMenuDisplayed)
     {
-		cameraDataStruct* pCamera = cameraDataTable[currentCamera];
+		cameraDataStruct* pCamera = cameraDataTable[NumCamera];
 
         ImGui::Begin("Camera");
         if (pCamera)

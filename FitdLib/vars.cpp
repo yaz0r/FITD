@@ -124,7 +124,7 @@ char* g_currentFloorRoomRawData = NULL;
 char* g_currentFloorCameraRawData = NULL;
 
 int changeFloor;
-s16 currentCamera;
+s16 NumCamera;
 s16 g_currentFloor;
 int needChangeRoom;
 
@@ -132,14 +132,14 @@ char* cameraPtr;
 roomDefStruct* pCurrentRoomData;
 
 s16 currentRoom;
-int flagInitView;
+int FlagInitView;
 int numCameraInRoom;
 int numCameraZone;
 char* cameraZoneData;
 int numRoomZone;
 char* roomZoneData;
 char* room_PtrCamera[NUM_MAX_CAMERA_IN_ROOM];
-int startGameVar1;
+int NewNumCamera;
 
 int transformX;
 int transformY;

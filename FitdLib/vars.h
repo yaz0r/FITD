@@ -369,21 +369,21 @@ extern char* g_currentFloorRoomRawData;
 extern char* g_currentFloorCameraRawData;
 
 extern int changeFloor;
-extern s16 currentCamera;
+extern s16 NumCamera;
 extern s16 g_currentFloor;
 extern int needChangeRoom;
 
 extern char* cameraPtr;
 extern roomDefStruct* pCurrentRoomData;
 extern s16 currentRoom;
-extern int flagInitView;
+extern int FlagInitView;
 extern int numCameraInRoom;
 extern int numCameraZone;
 extern char* cameraZoneData;
 extern int numRoomZone;
 extern char* roomZoneData;
 extern char* room_PtrCamera[NUM_MAX_CAMERA_IN_ROOM];
-extern int startGameVar1;
+extern int NewNumCamera;
 
 extern int transformX;
 extern int transformY;

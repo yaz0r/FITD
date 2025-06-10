@@ -252,5 +252,5 @@ void playSequence(int sequenceIdx, int fadeStart, int fadeOutVar)
         }
     }
 
-	flagInitView = 2;
+	FlagInitView = 2;
 }

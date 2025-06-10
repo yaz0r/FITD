@@ -4,7 +4,7 @@ u32 g_currentFloorRoomRawDataSize = 0;
 u32 g_currentFloorCameraRawDataSize;
 std::vector<cameraDataStruct> g_currentFloorCameraData;
 
-void loadFloor(int floorNumber)
+void LoadEtage(int floorNumber)
 {
     int i;
     int expectedNumberOfRoom;
@@ -36,7 +36,7 @@ void loadFloor(int floorNumber)
         }
     }
 
-    currentCamera = -1;
+    NumCamera = -1;
     needChangeRoom = 1;
     changeFloor = 0;
 

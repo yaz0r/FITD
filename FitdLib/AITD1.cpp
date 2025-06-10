@@ -316,7 +316,7 @@ void startAITD1()
     while (1)
     {
 #ifndef AITD_UE4
-        int startupMenuResult = processStartupMenu();
+        int startupMenuResult = MainMenu();
 #else
         int startupMenuResult = 0;
 #endif
@@ -372,11 +372,11 @@ void startAITD1()
 
                 //          updateShaking();
 
-                flagInitView = 2;
+                FlagInitView = 2;
 
-                setupCamera();
+                InitView();
 
-                mainLoop(1, 1);
+                PlayWorld(1, 1);
 
                 //          freeScene();
 

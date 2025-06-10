@@ -4,7 +4,7 @@
 extern std::vector<cameraDataStruct> g_currentFloorCameraData;
 extern u32 g_currentFloorRoomRawDataSize;
 
-void loadFloor(int floorNumber);
+void LoadEtage(int floorNumber);
 
 #endif
 

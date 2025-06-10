@@ -6,10 +6,10 @@ extern int input5;
 void menuWaitVSync();
 void AffSpfI(int x, int y, int param, char* gfx);
 void processActor2();
-void loadFloor(int floorNumber);
-void loadRoom(int roomNumber);
+void LoadEtage(int floorNumber);
+void ChangeSalle(int roomNumber);
 void executeFoundLife(int objIdx);
-void setupCamera();
+void InitView();
 void checkIfCameraChangeIsRequired(void);
 void updateAllActorAndObjects();
 void createActorList();
@@ -39,7 +39,7 @@ bool fileExists(const char* name);
 void OpenProgram(void);
 void freeAll(void);
 void startGame(int startupEtage, int startupRoom, int allowSystemMenu);
-void fillBox(int x1, int y1, int x2, int y2, char color); // fast recode. No RE
+void AffRect(int x1, int y1, int x2, int y2, char color); // fast recode. No RE
 void copyZv(ZVStruct* source, ZVStruct* dest);
 void getZvRelativePosition(ZVStruct* zvPtr, int startRoom, int destRoom);
 void take(int objIdx);

@@ -37,11 +37,7 @@ void updatePendingEvents(void)
     }
 }
 
-extern "C" {
-    void mainLoop(int allowSystemMenu, int deltaTime);
-}
-
-void mainLoop(int allowSystemMenu, int deltaTime)
+void PlayWorld(int allowSystemMenu, int deltaTime)
 {
     bool bLoop = true;
 
@@ -197,13 +193,13 @@ void mainLoop(int allowSystemMenu, int deltaTime)
 
         if(changeFloor)
         {
-            loadFloor(newFloor);
+            LoadEtage(newFloor);
         }
 
         if(needChangeRoom)
         {
-			loadRoom(newRoom);
-            setupCamera();
+			ChangeSalle(newRoom);
+            InitView();
         }
         else
         {
@@ -212,9 +208,9 @@ void mainLoop(int allowSystemMenu, int deltaTime)
             {
                 int tempCurrentCamera;
 
-                tempCurrentCamera = currentCamera;
+                tempCurrentCamera = NumCamera;
 
-                currentCamera = startGameVar1;
+                NumCamera = NewNumCamera;
 
 				currentProcessedActorPtr = objectTable;
                 for(currentProcessedActorIdx = 0; currentProcessedActorIdx < NUM_MAX_OBJECT; currentProcessedActorIdx++)
@@ -244,15 +240,15 @@ void mainLoop(int allowSystemMenu, int deltaTime)
                 if(giveUp)
                     break;
 
-                currentCamera = tempCurrentCamera;
+                NumCamera = tempCurrentCamera;
             }
-            if(flagInitView
+            if(FlagInitView
 #ifdef FITD_DEBUGGER
                || debuggerVar_topCamera
 #endif
                )
             {
-                setupCamera();
+                InitView();
             }
         }
 

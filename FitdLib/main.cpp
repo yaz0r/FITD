@@ -533,7 +533,7 @@ textEntryStruct* getTextFromIdx(int index)
 	return(NULL);
 }
 
-void fillBox(int x1, int y1, int x2, int y2, char color) // fast recode. No RE
+void AffRect(int x1, int y1, int x2, int y2, char color) // fast recode. No RE
 {
 	int width = x2 - x1 + 1;
 	int height = y2 - y1 + 1;
@@ -1356,9 +1356,9 @@ void loadMask(int cameraIdx)
 
 	g_MaskPtr = (unsigned char*)loadPak(name,cameraIdx);
 
-	for(int i=0; i<cameraDataTable[currentCamera]->numViewedRooms; i++)
+	for(int i=0; i<cameraDataTable[NumCamera]->numViewedRooms; i++)
 	{
-		cameraViewedRoomStruct* pRoomView = &cameraDataTable[currentCamera]->viewedRoomTable[i];
+		cameraViewedRoomStruct* pRoomView = &cameraDataTable[NumCamera]->viewedRoomTable[i];
 		unsigned char* pViewedRoomMask = g_MaskPtr + READ_LE_U32(g_MaskPtr + i*4);
 
 		for(int j=0; j<pRoomView->numMask; j++)
@@ -1419,11 +1419,11 @@ extern unsigned char* polyBackBuffer;
 
 void createAITD1Mask()
 {
-	for(int viewedRoomIdx=0; viewedRoomIdx<cameraDataTable[currentCamera]->numViewedRooms; viewedRoomIdx++)
+	for(int viewedRoomIdx=0; viewedRoomIdx<cameraDataTable[NumCamera]->numViewedRooms; viewedRoomIdx++)
 	{
-		cameraViewedRoomStruct* pcameraViewedRoomData = &cameraDataTable[currentCamera]->viewedRoomTable[viewedRoomIdx];
+		cameraViewedRoomStruct* pcameraViewedRoomData = &cameraDataTable[NumCamera]->viewedRoomTable[viewedRoomIdx];
 
-		char* data2 = room_PtrCamera[currentCamera] + pcameraViewedRoomData->offsetToMask;
+		char* data2 = room_PtrCamera[NumCamera] + pcameraViewedRoomData->offsetToMask;
 		char* data = data2;
 		data+=2;
 
@@ -1646,11 +1646,11 @@ void setupCameraSub1()
 	}
 
 	// visibility list: add room seen by the current camera
-	for(j=0;j<cameraDataTable[currentCamera]->numViewedRooms;j++)
+	for(j=0;j<cameraDataTable[NumCamera]->numViewedRooms;j++)
 	{
-		if(!isInViewList(cameraDataTable[currentCamera]->viewedRoomTable[j].viewedRoomIdx))
+		if(!isInViewList(cameraDataTable[NumCamera]->viewedRoomTable[j].viewedRoomIdx))
 		{
-			*(dataTabPos++) = (char)cameraDataTable[currentCamera]->viewedRoomTable[j].viewedRoomIdx;
+			*(dataTabPos++) = (char)cameraDataTable[NumCamera]->viewedRoomTable[j].viewedRoomIdx;
 			*(dataTabPos) = -1;
 		}
 	}
@@ -1920,11 +1920,11 @@ s16 cameraVisibilityVar = 0;
 
 int IsInCamera(int roomNumber)
 {
-	int numZone = cameraDataTable[currentCamera]->numViewedRooms;
+	int numZone = cameraDataTable[NumCamera]->numViewedRooms;
 
 	for(int i=0;i<numZone;i++)
 	{
-		if(cameraDataTable[currentCamera]->viewedRoomTable[i].viewedRoomIdx == roomNumber)
+		if(cameraDataTable[NumCamera]->viewedRoomTable[i].viewedRoomIdx == roomNumber)
 		{
 			cameraVisibilityVar = i;
 			return(1);
@@ -2325,9 +2325,9 @@ int checkActorInRoom(int room)
 {
 	int i;
 
-	for(i=0;i<cameraDataTable[currentCamera]->numViewedRooms;i++)
+	for(i=0;i<cameraDataTable[NumCamera]->numViewedRooms;i++)
 	{
-		if(cameraDataTable[currentCamera]->viewedRoomTable[i].viewedRoomIdx == room)
+		if(cameraDataTable[NumCamera]->viewedRoomTable[i].viewedRoomIdx == room)
 		{
 			return(1);
 		}
@@ -2365,7 +2365,7 @@ void createActorList()
 	}
 }
 
-void setupCamera()
+void InitView()
 {
 	int x;
 	int y;
@@ -2374,14 +2374,14 @@ void setupCamera()
 
 	SaveTimerAnim();
 
-	currentCamera = startGameVar1;
+	NumCamera = NewNumCamera;
 
-	assert(startGameVar1 < roomDataTable[currentRoom].numCameraInRoom);
+	assert(NewNumCamera < roomDataTable[currentRoom].numCameraInRoom);
 
-	loadCamera(roomDataTable[currentRoom].cameraIdxTable[startGameVar1]);
+	loadCamera(roomDataTable[currentRoom].cameraIdxTable[NewNumCamera]);
 	if(g_gameId >= JACK)
 	{  
-		loadMask(roomDataTable[currentRoom].cameraIdxTable[startGameVar1]);
+		loadMask(roomDataTable[currentRoom].cameraIdxTable[NewNumCamera]);
 	}
 	else
 	{
@@ -2389,7 +2389,7 @@ void setupCamera()
 	}
 	cameraBackgroundChanged = true;
 
-	pCamera = cameraDataTable[currentCamera];
+	pCamera = cameraDataTable[NumCamera];
 
 	SetAngleCamera(pCamera->alpha,pCamera->beta,pCamera->gamma);
 
@@ -2429,7 +2429,7 @@ void setupCamera()
 	setupCameraSub4();
 	/*  setupCameraSub5();
 	*/
-	if(flagInitView==2)
+	if(FlagInitView==2)
 	{
 		flagRedraw = 2;
 	}
@@ -2441,7 +2441,7 @@ void setupCamera()
 		}
 	}
 
-	flagInitView = 0;
+	FlagInitView = 0;
 	RestoreTimerAnim();
 }
 
@@ -2740,7 +2740,7 @@ void drawMaskZone(cameraMaskStruct* maskZonePtr)
 void drawMaskZones()
 {
 	{
-		cameraDataStruct* pCamera = cameraDataTable[currentCamera];
+		cameraDataStruct* pCamera = cameraDataTable[NumCamera];
 
 		for(int j=0;j<pCamera->numViewedRooms;j++)
 		{
@@ -3069,7 +3069,7 @@ void drawBgOverlay(tObject* actorPtr)
 
 	SetClip(BBox3D1, BBox3D2, BBox3D3, BBox3D4);
 
-	cameraDataStruct* pCamera = cameraDataTable[currentCamera];
+	cameraDataStruct* pCamera = cameraDataTable[NumCamera];
 
 	// look for the correct room data of that camera
 	cameraViewedRoomStruct* pcameraViewedRoomData = NULL;
@@ -3088,7 +3088,7 @@ void drawBgOverlay(tObject* actorPtr)
 
 	if(g_gameId == AITD1)
 	{
-		data2 = room_PtrCamera[currentCamera] + pcameraViewedRoomData->offsetToMask;
+		data2 = room_PtrCamera[NumCamera] + pcameraViewedRoomData->offsetToMask;
 		data = data2;
 		data+=2;
 
@@ -3746,7 +3746,7 @@ void foundObject(int objIdx, int param)
 		//setupShaking(-600);
 	}
 
-	flagInitView = 1;
+	FlagInitView = 1;
 }
 
 void hardColSuB1Sub1(int flag)
@@ -4071,10 +4071,10 @@ int findBestCamera(void)
 
 void checkIfCameraChangeIsRequired(void)
 {
-	int localCurrentCam = currentCamera;
+	int localCurrentCam = NumCamera;
 	int newCamera;
 
-	if(currentCamera!=-1)
+	if(NumCamera!=-1)
 	{
 		tObject* actorPtr;
 		int zvx1;
@@ -4090,7 +4090,7 @@ void checkIfCameraChangeIsRequired(void)
 		zvz1 = actorPtr->zv.ZVZ1/10;
 		zvz2 = actorPtr->zv.ZVZ2/10;
 
-		if(isInPoly(zvx1,zvx2,zvz1,zvz2,currentCameraZoneList[currentCamera])) // is still in current camera zone ?
+		if(isInPoly(zvx1,zvx2,zvz1,zvz2,currentCameraZoneList[NumCamera])) // is still in current camera zone ?
 		{
 			return;
 		}
@@ -4107,10 +4107,10 @@ void checkIfCameraChangeIsRequired(void)
 		localCurrentCam = newCamera;
 	}
 
-	if(currentCamera != localCurrentCam)
+	if(NumCamera != localCurrentCam)
 	{
-		startGameVar1 = localCurrentCam;
-		flagInitView = 1;
+		NewNumCamera = localCurrentCam;
+		FlagInitView = 1;
 	}
 
 #ifdef FITD_DEBUGGER
@@ -4218,7 +4218,7 @@ void processActor2()
 							needChangeRoom = 1;
 							newRoom = (short)pCurrentZone->parameter;
 							if(g_gameId > AITD1)
-								loadRoom(newRoom);
+								ChangeSalle(newRoom);
 						}
 						else
 						{
@@ -4555,18 +4555,18 @@ void startGame(int startupFloor, int startupRoom, int allowSystemMenu)
 	LoadWorld();
 	initVars();
 
-	loadFloor(startupFloor);
+	LoadEtage(startupFloor);
 
-	currentCamera = -1;
+	NumCamera = -1;
 
-	loadRoom(startupRoom);
+	ChangeSalle(startupRoom);
 
-	startGameVar1 = 0;
-	flagInitView = 2;
+	NewNumCamera = 0;
+	FlagInitView = 2;
 
-	setupCamera();
+	InitView();
 
-	mainLoop(allowSystemMenu, 1);
+	PlayWorld(allowSystemMenu, 1);
 
 	/*freeScene();
 

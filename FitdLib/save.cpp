@@ -78,8 +78,8 @@ int loadSave(int saveNumber)
     ASSERT(sizeof(g_currentFloor) == 2);
     fread(&g_currentFloor,2,1,fHandle);
 
-    ASSERT(sizeof(currentCamera) == 2);
-    fread(&currentCamera,2,1,fHandle);
+    ASSERT(sizeof(NumCamera) == 2);
+    fread(&NumCamera,2,1,fHandle);
 
     ASSERT(sizeof(currentWorldTarget) == 2);
     fread(&currentWorldTarget,2,1,fHandle);
@@ -239,11 +239,11 @@ int loadSave(int saveNumber)
 
     //timerFreeze = 1;
 
-    var_E = currentCamera;
+    var_E = NumCamera;
 
-    loadFloor(g_currentFloor);
-    currentCamera = -1;
-    loadRoom(currentRoom);
+    LoadEtage(g_currentFloor);
+    NumCamera = -1;
+    ChangeSalle(currentRoom);
     var_16 = currentMusic;
     currentMusic = -1;
     playMusic(var_16);
@@ -504,7 +504,7 @@ int loadSave(int saveNumber)
         }
     }
 
-    startGameVar1 = var_E;
+    NewNumCamera = var_E;
 
     return(1);
 }
@@ -592,8 +592,8 @@ int makeSaveFile(int entry)
     ASSERT(sizeof(g_currentFloor) == 2);
     fwrite(&g_currentFloor,2,1,fHandle);
 
-    ASSERT(sizeof(currentCamera) == 2);
-    fwrite(&currentCamera,2,1,fHandle);
+    ASSERT(sizeof(NumCamera) == 2);
+    fwrite(&NumCamera,2,1,fHandle);
 
     ASSERT(sizeof(currentWorldTarget) == 2);
     fwrite(&currentWorldTarget,2,1,fHandle);

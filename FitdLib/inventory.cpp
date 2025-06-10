@@ -30,7 +30,7 @@ int DrawListObjets(int startIdx, int selectIdx, int selectColor)
 	else
 	{
 		SetClip(27,25,292,98);
-		fillBox(27,25,292,98,0);
+		AffRect(27,25,292,98,0);
 
 		WindowX1 = 30;
 		WindowY1 = 27;
@@ -55,7 +55,7 @@ int DrawListObjets(int startIdx, int selectIdx, int selectColor)
 			{
 				if(selectColor == 15)
 				{
-					fillBox(0xA,y,0x135,y+0x10,0x64);
+					AffRect(0xA,y,0x135,y+0x10,0x64);
 				}
 
 				SelectedMessage(160,y,objPtr->foundName,selectColor,4);
@@ -93,7 +93,7 @@ int DrawListObjets(int startIdx, int selectIdx, int selectColor)
 void renderInventoryObject(int arg)
 {
     SetClip(statusLeft,statusTop,statusRight,statusBottom);
-    fillBox(statusLeft,statusTop,statusRight,statusBottom,0);
+    AffRect(statusLeft,statusTop,statusRight,statusBottom,0);
 
     statusVar1 -= 8;
 
@@ -132,7 +132,7 @@ void drawInventoryActions(int arg)
 	else
 	{
 		SetClip(162,100,292,174);
-		fillBox(162,100,292,174, 0);
+		AffRect(162,100,292,174, 0);
 
 		WindowX1 = 166;
 		WindowY1 = 104;
@@ -148,7 +148,7 @@ void drawInventoryActions(int arg)
         {
 			if(g_gameId <= JACK)
 			{
-				fillBox(170,y,309,y+16,100);
+				AffRect(170,y,309,y+16,100);
 				SelectedMessage(240,y,inventoryActionTable[i],15,4);
 			}
 			else
@@ -423,7 +423,7 @@ void processInventory(void)
 
     RestoreTimerAnim();
 
-    flagInitView = 1;
+    FlagInitView = 1;
 
     while(Click || key || JoyD)
     {

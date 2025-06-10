@@ -57,7 +57,7 @@ int getNumberOfRoom()
     return 0;
 }
 
-void loadRoom(int roomNumber)
+void ChangeSalle(int roomNumber)
 {
     int i;
     int cameraVar0;
@@ -70,7 +70,7 @@ void loadRoom(int roomNumber)
 
     ASSERT(roomNumber >=0);
 
-    if(currentCamera == -1)
+    if(NumCamera == -1)
     {
         oldCameraIdx = -1;
     }
@@ -80,7 +80,7 @@ void loadRoom(int roomNumber)
         cameraVar1 = roomDataTable[currentRoom].worldY;
         cameraVar2 = roomDataTable[currentRoom].worldZ;
 
-        oldCameraIdx = roomDataTable[currentRoom].cameraIdxTable[currentCamera];
+        oldCameraIdx = roomDataTable[currentRoom].cameraIdxTable[NumCamera];
     }
 
     if(g_gameId < AITD3)
@@ -184,8 +184,8 @@ void loadRoom(int roomNumber)
         }
     }
 
-    startGameVar1 = newNumCamera;
-    flagInitView = 1;
+    NewNumCamera = newNumCamera;
+    FlagInitView = 1;
     needChangeRoom = 0;
     RestoreTimerAnim();
 }

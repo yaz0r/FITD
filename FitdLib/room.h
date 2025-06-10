@@ -111,7 +111,7 @@ extern cameraViewedRoomStruct* currentCameraZoneList[NUM_MAX_CAMERA_IN_ROOM];
 extern std::vector<roomDataStruct> roomDataTable;
 
 roomDefStruct* getRoomData(int roomNumber);
-void loadRoom(int roomNumber);
+void ChangeSalle(int roomNumber);
 int getNumberOfRoom();
 
 #endif

@@ -1,30 +1,38 @@
 #include "common.h"
 
-void drawStartupMenu(int selectedEntry)
+void DrawMenu(int selectedEntry)
 {
+    if (g_gameId == AITD3) {
+        LoadPak("ITD_RESS", 13, logicalScreen);
+    }
+    else {
+        AffBigCadre(160, 100, 320, 80);
+    }
+    
     int currentY = 76;
-    int currentTextNum = 0;
 
-    AffBigCadre(160,100,320,80);
-
-    while(currentTextNum<3)
+    for(int i=0; i<3; i++)
     {
-        if(currentTextNum == selectedEntry) // hilight selected entry
+        if(i == selectedEntry) // highlight selected entry
         {
-            fillBox(10,currentY,309,currentY+16,100);
-            SelectedMessage(160,currentY,currentTextNum+11,15,4);
+            if (g_gameId == AITD3) {
+                SelectedMessage(160, currentY+1, i + 11, 1, 4);
+            }
+            else {
+                AffRect(10, currentY, 309, currentY + 16, 100);
+                SelectedMessage(160, currentY, i + 11, 15, 4);
+            }
         }
         else
         {
-            SimpleMessage(160,currentY,currentTextNum+11,4);
+            SimpleMessage(160,currentY,i+11,4);
         }
 
         currentY+=16; // next line
-        currentTextNum++; // next text
     }
 }
 
-int processStartupMenu(void)
+int MainMenu(void)
 {
     int currentSelectedEntry = 0;
     unsigned int chrono;
@@ -32,7 +40,17 @@ int processStartupMenu(void)
 
     flushScreen();
 
-    drawStartupMenu(0);
+    if (g_gameId == AITD3) {
+        LoadPak("ITD_RESS", 47, aux);
+
+        palette_t lpalette;
+        copyPalette(aux, lpalette);
+        convertPaletteIfRequired(lpalette);
+        copyPalette(lpalette, currentGamePalette);
+        setPalette(lpalette);
+    }
+
+    DrawMenu(0);
 
     osystem_startFrame();
     osystem_stopFrame();
@@ -64,7 +82,7 @@ int processStartupMenu(void)
                 currentSelectedEntry = 2;
             }
 
-            drawStartupMenu(currentSelectedEntry);
+            DrawMenu(currentSelectedEntry);
             osystem_flip(NULL);
             //      menuWaitVSync();
 
@@ -86,7 +104,7 @@ int processStartupMenu(void)
                 currentSelectedEntry = 0;
             }
 
-            drawStartupMenu(currentSelectedEntry);
+            DrawMenu(currentSelectedEntry);
             //menuWaitVSync();
             osystem_flip(NULL);
 

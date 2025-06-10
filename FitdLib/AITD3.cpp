@@ -40,7 +40,7 @@ void startAITD3()
 	
 	while(1)
 	{
-		int startupMenuResult = processStartupMenu();
+		int startupMenuResult = MainMenu();
 
 		switch(startupMenuResult)
 		{
@@ -62,11 +62,11 @@ void startAITD3()
 				{
 					//          updateShaking();
 
-					flagInitView = 2;
+					FlagInitView = 2;
 
-					setupCamera();
+					InitView();
 
-					mainLoop(1, 1);
+					PlayWorld(1, 1);
 
 					//          freeScene();
 

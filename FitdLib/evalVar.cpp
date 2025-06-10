@@ -453,7 +453,7 @@ int evalVar(const char* name)
                     }
                 case 0x1B:
                     {
-                        return(*(u16*)(((currentCamera+6)*2)+cameraPtr));
+                        return(*(u16*)(((NumCamera+6)*2)+cameraPtr));
                         break;
                     }
                 case 0x1C:
@@ -894,7 +894,7 @@ int evalVar2(const char* name)
                     }
                 case 0x1B:
                     {
-                        return(cameraDataTable[currentCamera]-&g_currentFloorCameraData[0]);
+                        return(cameraDataTable[NumCamera]-&g_currentFloorCameraData[0]);
                         break;
                     }
                 case 0x1C:

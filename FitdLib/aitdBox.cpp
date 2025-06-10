@@ -166,7 +166,7 @@ void AffBigCadre(int x, int y, int width, int height)
     WindowX2 = right - 9;
     WindowY2 = bottom - 9;
 
-    fillBox(WindowX1,WindowY1,WindowX2,WindowY2,0);
+    AffRect(WindowX1,WindowY1,WindowX2,WindowY2,0);
     SetClip(WindowX1,WindowY1,WindowX2,WindowY2);
 
 }
