@@ -147,6 +147,9 @@ int initBgfxGlue(int argc, char* argv[])
     //initparam.type = bgfx::RendererType::OpenGL;
     //initparam.type = bgfx::RendererType::Vulkan;
     //initparam.type = bgfx::RendererType::Direct3D12;
+#if BX_CONFIG_DEBUG
+    initparam.debug = true;
+#endif
     bgfx::init(initparam);
 
     imguiCreate();

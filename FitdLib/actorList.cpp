@@ -65,8 +65,8 @@ int sortCompareFunction(const void* param1, const void* param2)
 
         if(flag == 0)
         {
-            distance1 = computeDistanceToPoint(translateX,translateZ,(actor1ZvPtr->ZVX1+actor1ZvPtr->ZVX2)/2,(actor1ZvPtr->ZVZ1+actor1ZvPtr->ZVZ2)/2);
-            distance2 = computeDistanceToPoint(translateX,translateZ,(actor2ZvPtr->ZVX1+actor2ZvPtr->ZVX2)/2,(actor2ZvPtr->ZVZ1+actor2ZvPtr->ZVZ2)/2);
+            distance1 = GiveDistance2D(translateX,translateZ,(actor1ZvPtr->ZVX1+actor1ZvPtr->ZVX2)/2,(actor1ZvPtr->ZVZ1+actor1ZvPtr->ZVZ2)/2);
+            distance2 = GiveDistance2D(translateX,translateZ,(actor2ZvPtr->ZVX1+actor2ZvPtr->ZVX2)/2,(actor2ZvPtr->ZVZ1+actor2ZvPtr->ZVZ2)/2);
         }
         else
         {

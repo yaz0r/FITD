@@ -9,34 +9,34 @@ void* getSaveEntry(int index)
     return(saveTable[index].ptr);
 }
 
-void loadInterpolatedValue(interpolatedValue* pRotateStruct, FILE* fHandle)
+void loadInterpolatedValue(RealValue* pRotateStruct, FILE* fHandle)
 {
-    ASSERT(sizeof(pRotateStruct->oldAngle) == 2);
-    fread(&pRotateStruct->oldAngle,2,1,fHandle);
+    ASSERT(sizeof(pRotateStruct->startValue) == 2);
+    fread(&pRotateStruct->startValue,2,1,fHandle);
 
-    ASSERT(sizeof(pRotateStruct->newAngle) == 2);
-    fread(&pRotateStruct->newAngle,2,1,fHandle);
+    ASSERT(sizeof(pRotateStruct->endValue) == 2);
+    fread(&pRotateStruct->endValue,2,1,fHandle);
 
-    ASSERT(sizeof(pRotateStruct->param) == 2);
-    fread(&pRotateStruct->param,2,1,fHandle);
+    ASSERT(sizeof(pRotateStruct->numSteps) == 2);
+    fread(&pRotateStruct->numSteps,2,1,fHandle);
 
-    ASSERT(sizeof(pRotateStruct->timeOfRotate) == 4);
-    fread(&pRotateStruct->timeOfRotate,2,1,fHandle);
+    ASSERT(sizeof(pRotateStruct->memoTicks) == 4);
+    fread(&pRotateStruct->memoTicks,2,1,fHandle);
 }
 
-void saveInterpolatedValue(interpolatedValue* pRotateStruct, FILE* fHandle)
+void saveInterpolatedValue(RealValue* pRotateStruct, FILE* fHandle)
 {
-    ASSERT(sizeof(pRotateStruct->oldAngle) == 2);
-    fwrite(&pRotateStruct->oldAngle,2,1,fHandle);
+    ASSERT(sizeof(pRotateStruct->startValue) == 2);
+    fwrite(&pRotateStruct->startValue,2,1,fHandle);
 
-    ASSERT(sizeof(pRotateStruct->newAngle) == 2);
-    fwrite(&pRotateStruct->newAngle,2,1,fHandle);
+    ASSERT(sizeof(pRotateStruct->endValue) == 2);
+    fwrite(&pRotateStruct->endValue,2,1,fHandle);
 
-    ASSERT(sizeof(pRotateStruct->param) == 2);
-    fwrite(&pRotateStruct->param,2,1,fHandle);
+    ASSERT(sizeof(pRotateStruct->numSteps) == 2);
+    fwrite(&pRotateStruct->numSteps,2,1,fHandle);
 
-    ASSERT(sizeof(pRotateStruct->timeOfRotate) == 4);
-    fwrite(&pRotateStruct->timeOfRotate,2,1,fHandle);
+    ASSERT(sizeof(pRotateStruct->memoTicks) == 4);
+    fwrite(&pRotateStruct->memoTicks,2,1,fHandle);
 }
 
 int loadSave(int saveNumber)

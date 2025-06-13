@@ -2445,7 +2445,7 @@ void InitView()
 	RestoreTimerAnim();
 }
 
-s16 computeDistanceToPoint(int x1, int z1, int x2, int z2)
+s16 GiveDistance2D(int x1, int z1, int x2, int z2)
 {
 	//int axBackup = x1;
 	x1 -= x2;
@@ -2470,49 +2470,49 @@ s16 computeDistanceToPoint(int x1, int z1, int x2, int z2)
 	}
 }
 
-void InitRealValue(s16 beta, s16 newBeta, s16 param, interpolatedValue* rotatePtr)
+void InitRealValue(s16 startValue, s16 endValue, s16 time, RealValue* realValue)
 {
-	rotatePtr->oldAngle = beta;
-	rotatePtr->newAngle = newBeta;
-	rotatePtr->param = param;
-	rotatePtr->timeOfRotate = timer;
+	realValue->startValue = startValue;
+	realValue->endValue = endValue;
+	realValue->numSteps = time;
+	realValue->memoTicks = timer;
 }
 
-s16 updateActorRotation(interpolatedValue* rotatePtr)
+s16 updateActorRotation(RealValue* rotatePtr)
 {
 	int timeDif;
 	int angleDif;
 
-	if(!rotatePtr->param)
-		return(rotatePtr->newAngle);
+	if(!rotatePtr->numSteps)
+		return(rotatePtr->endValue);
 
-	timeDif = timer - rotatePtr->timeOfRotate;
+	timeDif = timer - rotatePtr->memoTicks;
 
-	if(timeDif>rotatePtr->param)
+	if(timeDif>rotatePtr->numSteps)
 	{
-		rotatePtr->param = 0;
-		return(rotatePtr->newAngle);
+		rotatePtr->numSteps = 0;
+		return(rotatePtr->endValue);
 	}
 
-	angleDif = (rotatePtr->newAngle&0x3FF) - (rotatePtr->oldAngle&0x3FF);
+	angleDif = (rotatePtr->endValue&0x3FF) - (rotatePtr->startValue&0x3FF);
 
 	if(angleDif<=0x200)
 	{
 		if(angleDif>=-0x200)
 		{
-			int angle = (rotatePtr->newAngle&0x3FF) - (rotatePtr->oldAngle&0x3FF);
-			return (rotatePtr->oldAngle&0x3FF) + (angle*timeDif)/rotatePtr->param;
+			int angle = (rotatePtr->endValue&0x3FF) - (rotatePtr->startValue&0x3FF);
+			return (rotatePtr->startValue&0x3FF) + (angle*timeDif)/rotatePtr->numSteps;
 		}
 		else
 		{
-			s16 angle = ((rotatePtr->newAngle&0x3FF)+0x400) - ((rotatePtr->oldAngle&0x3FF));
-			return (((rotatePtr->oldAngle&0x3FF)) + ((angle*timeDif)/rotatePtr->param));
+			s16 angle = ((rotatePtr->endValue&0x3FF)+0x400) - ((rotatePtr->startValue&0x3FF));
+			return (((rotatePtr->startValue&0x3FF)) + ((angle*timeDif)/rotatePtr->numSteps));
 		}
 	}
 	else
 	{
-		int angle = (rotatePtr->newAngle&0x3FF) - ((rotatePtr->oldAngle&0x3FF)+0x400);
-		return ((angle*timeDif)/rotatePtr->param) + ((rotatePtr->oldAngle&0x3FF));
+		int angle = (rotatePtr->endValue&0x3FF) - ((rotatePtr->startValue&0x3FF)+0x400);
+		return ((angle*timeDif)/rotatePtr->numSteps) + ((rotatePtr->startValue&0x3FF));
 	}
 }
 

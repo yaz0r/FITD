@@ -11,7 +11,7 @@ sequenceParamStruct sequenceParams[NUM_MAX_SEQUENCE_PARAM];
 
 void resetRotateParam(void)
 {
-    currentProcessedActorPtr->rotate.param = 0;
+    currentProcessedActorPtr->rotate.numSteps = 0;
 }
 
 void throwObj(int animThrow, int frameThrow, int arg_4, int objToThrowIdx, int throwRotated, int throwForce, int animNext)
@@ -887,6 +887,20 @@ void processLife(int lifeNum, bool callFoundLife)
 
                 break;
             }
+            case LM_DO_MAX_ZV:
+            {
+                appendFormated("LM_DO_MAX_ZV ");
+                getZvMax(HQR_Get(listBody, currentProcessedActorPtr->bodyNum), &currentProcessedActorPtr->zv);
+
+                currentProcessedActorPtr->zv.ZVX1 += currentProcessedActorPtr->roomX;
+                currentProcessedActorPtr->zv.ZVX2 += currentProcessedActorPtr->roomX;
+                currentProcessedActorPtr->zv.ZVY1 += currentProcessedActorPtr->roomY;
+                currentProcessedActorPtr->zv.ZVY2 += currentProcessedActorPtr->roomY;
+                currentProcessedActorPtr->zv.ZVZ1 += currentProcessedActorPtr->roomZ;
+                currentProcessedActorPtr->zv.ZVZ2 += currentProcessedActorPtr->roomZ;
+
+                break;
+            }
             case LM_DO_CARRE_ZV: // DO_CARRE_ZV
             {
                 appendFormated("LM_DO_CARRE_ZV ");
@@ -1212,7 +1226,7 @@ void processLife(int lifeNum, bool callFoundLife)
 
                 if (currentProcessedActorPtr->beta != lifeTempVar1)
                 {
-                    if (currentProcessedActorPtr->rotate.param == 0 || currentProcessedActorPtr->rotate.newAngle != lifeTempVar1)
+                    if (currentProcessedActorPtr->rotate.numSteps == 0 || currentProcessedActorPtr->rotate.endValue != lifeTempVar1)
                     {
                         InitRealValue(currentProcessedActorPtr->beta, lifeTempVar1, lifeTempVar2, &currentProcessedActorPtr->rotate);
                     }
@@ -1230,7 +1244,7 @@ void processLife(int lifeNum, bool callFoundLife)
 
                 if (currentProcessedActorPtr->alpha != lifeTempVar1)
                 {
-                    if (currentProcessedActorPtr->rotate.param == 0 || lifeTempVar1 != currentProcessedActorPtr->rotate.newAngle)
+                    if (currentProcessedActorPtr->rotate.numSteps == 0 || lifeTempVar1 != currentProcessedActorPtr->rotate.endValue)
                     {
                         InitRealValue(currentProcessedActorPtr->alpha, lifeTempVar1, lifeTempVar2, &currentProcessedActorPtr->rotate);
                     }
