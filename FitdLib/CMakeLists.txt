@@ -93,6 +93,9 @@ endif()
 
 add_library (FitdLib ${SOURCES})
 
-target_compile_definitions( FitdLib PUBLIC "BX_CONFIG_DEBUG=0" )
-set_property(TARGET FitdLib PROPERTY CXX_STANDARD 20)
 
+
+#set( CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /DBX_CONFIG_DEBUG=1")
+#set( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /DBX_CONFIG_DEBUG=1")
+
+set_property(TARGET FitdLib PROPERTY CXX_STANDARD 20)
