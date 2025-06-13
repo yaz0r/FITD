@@ -73,13 +73,13 @@ int copyObjectToActor(int body, int typeZv, int hardZvIdx, s16 objectType, int x
         actorPtr->hardMat = -1;
     }
 
-    actorPtr->rotate.oldAngle = 0;
-    actorPtr->rotate.newAngle = 0;
-    actorPtr->rotate.param = 0;
+    actorPtr->rotate.startValue = 0;
+    actorPtr->rotate.endValue = 0;
+    actorPtr->rotate.numSteps = 0;
 
-    actorPtr->YHandler.oldAngle = 0;
-    actorPtr->YHandler.newAngle = 0;
-    actorPtr->YHandler.param = 0;
+    actorPtr->YHandler.startValue = 0;
+    actorPtr->YHandler.endValue = 0;
+    actorPtr->YHandler.numSteps = 0;
 
     actorPtr->falling = 0;
 

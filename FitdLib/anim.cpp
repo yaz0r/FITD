@@ -221,18 +221,22 @@ int InitAnim(int animNum,int animType, int animInfo)
     return(1);
 }
 
-int evaluateReal(interpolatedValue* data)
+int evaluateReal(RealValue* data)
 {
-	if(!data->param)
-		return data->newAngle;
+	if(!data->numSteps)
+		return data->endValue;
 
-	if(timer - data->timeOfRotate> (unsigned int)data->param)
+	if(timer - data->memoTicks> (unsigned int)data->numSteps)
 	{
-		data->param = 0;
-		return data->newAngle;
+		data->numSteps = 0;
+		return data->endValue;
 	}
 
-	return ((((data->newAngle - data->oldAngle)*(timer - data->timeOfRotate))/data->param)+data->oldAngle);
+    s32 valueDiff = data->endValue - data->startValue;
+    s32 currentTime = timer - data->memoTicks;
+    s32 interpolatedValue = data->startValue + ((valueDiff * currentTime) / data->numSteps);
+
+	return interpolatedValue;
 }
 
 int manageFall(int actorIdx, ZVStruct* zvPtr)
@@ -387,19 +391,19 @@ void updateAnimation(void)
 
 	}
 
-	if(currentProcessedActorPtr->YHandler.param) // currently falling ?
+	if(currentProcessedActorPtr->YHandler.numSteps) // currently falling ?
 	{
-		if(currentProcessedActorPtr->YHandler.param != -1)
+		if(currentProcessedActorPtr->YHandler.numSteps != -1)
 		{
 			stepY = evaluateReal(&currentProcessedActorPtr->YHandler) - oldStepY;
 		}
 		else // stop falling
 		{
-			stepY = currentProcessedActorPtr->YHandler.newAngle - oldStepY;
+			stepY = currentProcessedActorPtr->YHandler.endValue - oldStepY;
 
-			currentProcessedActorPtr->YHandler.param = 0;
-			currentProcessedActorPtr->YHandler.newAngle = 0;
-			currentProcessedActorPtr->YHandler.oldAngle = 0;
+			currentProcessedActorPtr->YHandler.numSteps = 0;
+			currentProcessedActorPtr->YHandler.endValue = 0;
+			currentProcessedActorPtr->YHandler.startValue = 0;
 		}
 	}
 	else
@@ -633,7 +637,7 @@ void updateAnimation(void)
 		currentProcessedActorPtr->zv.ZVZ2 += stepZ;
 	} // end of movement management
 
-	if(!currentProcessedActorPtr->YHandler.param)
+	if(!currentProcessedActorPtr->YHandler.numSteps)
 	{
 		// fall management ?
 		currentProcessedActorPtr->worldY += currentProcessedActorPtr->stepY;
@@ -661,7 +665,7 @@ void updateAnimation(void)
 	}
 	else
 	{
-		if((currentProcessedActorPtr->YHandler.param != -1) && (currentProcessedActorPtr->_flags & AF_FALLABLE))
+		if((currentProcessedActorPtr->YHandler.numSteps != -1) && (currentProcessedActorPtr->_flags & AF_FALLABLE))
 		{
 			currentProcessedActorPtr->falling = 1;
 		}
@@ -725,7 +729,7 @@ void updateAnimation(void)
 	}
 	else // not the end of anim
 	{
-		if((currentProcessedActorPtr->ANIM == -1) && (currentProcessedActorPtr->speed != 0) && (currentProcessedActorPtr->speedChange.param == 0))
+		if((currentProcessedActorPtr->ANIM == -1) && (currentProcessedActorPtr->speed != 0) && (currentProcessedActorPtr->speedChange.numSteps == 0))
 		{
 			currentProcessedActorPtr->worldX += currentProcessedActorPtr->stepX;
 			currentProcessedActorPtr->roomX += currentProcessedActorPtr->stepX;

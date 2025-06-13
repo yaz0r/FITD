@@ -93,15 +93,15 @@ struct ZVStruct
 
 typedef struct ZVStruct ZVStruct;
 
-struct interpolatedValue
+struct RealValue
 {
-    s16 oldAngle;
-    s16 newAngle;
-    s16 param;
-    unsigned int timeOfRotate;
+    s16 startValue;
+    s16 endValue;
+    s16 numSteps;
+    unsigned int memoTicks;
 };
 
-typedef struct interpolatedValue interpolatedValue;
+typedef struct RealValue RealValue;
 
 enum actorFlags
 {
@@ -167,12 +167,12 @@ struct tObject // used to read data from file too
 	s16 animNegY;
 	s16 animNegZ;
 
-    interpolatedValue YHandler;
+    RealValue YHandler;
     s16 falling;
-    interpolatedValue rotate;
+    RealValue rotate;
     s16 direction;
     s16 speed;
-    interpolatedValue speedChange;
+    RealValue speedChange;
     s16 COL[3];
     s16 COL_BY;
     s16 HARD_DEC;

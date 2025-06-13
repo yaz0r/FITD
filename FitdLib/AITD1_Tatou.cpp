@@ -4,9 +4,7 @@
 
 void clearScreenTatou(void)
 {
-	int i;
-
-	for(i=0;i<45120;i++)
+	for(int i=0;i<45120;i++)
 	{
 		frontBuffer[i] = 0;
 	}

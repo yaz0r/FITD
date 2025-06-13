@@ -77,12 +77,12 @@ void GereManualRot(int param)
     {
         if(currentProcessedActorPtr->direction != 1)
         {
-            currentProcessedActorPtr->rotate.param = 0;
+            currentProcessedActorPtr->rotate.numSteps = 0;
         }
 
         currentProcessedActorPtr->direction = 1;
 
-        if(currentProcessedActorPtr->rotate.param == 0)
+        if(currentProcessedActorPtr->rotate.numSteps == 0)
         {
             int oldBeta = currentProcessedActorPtr->beta;
 
@@ -102,12 +102,12 @@ void GereManualRot(int param)
     {
         if(currentProcessedActorPtr->direction != -1)
         {
-            currentProcessedActorPtr->rotate.param = 0;
+            currentProcessedActorPtr->rotate.numSteps = 0;
         }
 
         currentProcessedActorPtr->direction = -1;
 
-        if(currentProcessedActorPtr->rotate.param == 0)
+        if(currentProcessedActorPtr->rotate.numSteps == 0)
         {
             int oldBeta = currentProcessedActorPtr->beta;
 
@@ -126,7 +126,7 @@ void GereManualRot(int param)
     if(!(localJoyD&0xC))
     {
         currentProcessedActorPtr->direction = 0;
-        currentProcessedActorPtr->rotate.param = 0;
+        currentProcessedActorPtr->rotate.numSteps = 0;
     }
 }
 
@@ -247,16 +247,16 @@ void processTrack(void)
                     currentProcessedActorPtr->roomZ + currentProcessedActorPtr->stepZ,
                     currentProcessedActorPtr->beta, x, z );
 
-                if( currentProcessedActorPtr->rotate.param == 0 || currentProcessedActorPtr->direction != angleModif )
+                if( (currentProcessedActorPtr->rotate.numSteps == 0) || (currentProcessedActorPtr->direction != angleModif) )
                 {
-                    InitRealValue( currentProcessedActorPtr->beta, currentProcessedActorPtr->beta - (angleModif << 8), 60, &currentProcessedActorPtr->rotate);
+                    InitRealValue( currentProcessedActorPtr->beta, currentProcessedActorPtr->beta - (angleModif * 256), 60, &currentProcessedActorPtr->rotate);
                 }
 
                 currentProcessedActorPtr->direction = angleModif;
 
                 if( currentProcessedActorPtr->direction == 0 )
                 {
-                    currentProcessedActorPtr->rotate.param = 0;
+                    currentProcessedActorPtr->rotate.numSteps = 0;
                 }
                 else
                 {
@@ -325,7 +325,7 @@ void processTrack(void)
 
                     currentProcessedActorPtr->speed = 0;
                     currentProcessedActorPtr->direction = 0;
-                    currentProcessedActorPtr->rotate.param = 0;
+                    currentProcessedActorPtr->rotate.numSteps = 0;
                     currentProcessedActorPtr->positionInTrack += 5;
 
                     break;
@@ -353,7 +353,7 @@ void processTrack(void)
                         z += (roomDataTable[currentProcessedActorPtr->room].worldZ - roomDataTable[roomNumber].worldZ) * 10;
                     }
 
-                    distanceToPoint = computeDistanceToPoint( currentProcessedActorPtr->roomX + currentProcessedActorPtr->stepX,
+                    distanceToPoint = GiveDistance2D( currentProcessedActorPtr->roomX + currentProcessedActorPtr->stepX,
                         currentProcessedActorPtr->roomZ + currentProcessedActorPtr->stepZ,
                         x,z );
 
@@ -365,7 +365,7 @@ void processTrack(void)
                             currentProcessedActorPtr->beta,
                             x,z );
 
-                        if((currentProcessedActorPtr->rotate.param == 0) || (currentProcessedActorPtr->direction != angleModif))
+                        if((currentProcessedActorPtr->rotate.numSteps == 0) || (currentProcessedActorPtr->direction != angleModif))
                         {
                             InitRealValue(currentProcessedActorPtr->beta, currentProcessedActorPtr->beta - (angleModif * 64), 15, &currentProcessedActorPtr->rotate);
                         }
@@ -374,7 +374,7 @@ void processTrack(void)
 
                         if(!angleModif)
                         {
-                            currentProcessedActorPtr->rotate.param = 0;
+                            currentProcessedActorPtr->rotate.numSteps = 0;
                         }
                         else
                         {
@@ -416,33 +416,37 @@ void processTrack(void)
                 }
 
                 // reached position?
-                if ((y == currentProcessedActorPtr->roomY) && (computeDistanceToPoint(currentProcessedActorPtr->roomX + currentProcessedActorPtr->stepX, currentProcessedActorPtr->roomZ + currentProcessedActorPtr->stepZ, x, z) < DISTANCE_TO_POINT_TRESSHOLD))
+                if (y == currentProcessedActorPtr->roomY)
                 {
-                    currentProcessedActorPtr->positionInTrack += 6;
+                    int distance = GiveDistance2D(currentProcessedActorPtr->roomX + currentProcessedActorPtr->stepX, currentProcessedActorPtr->roomZ + currentProcessedActorPtr->stepZ, x, z);
+                    if (distance < DISTANCE_TO_POINT_TRESSHOLD) {
+                        currentProcessedActorPtr->positionInTrack += 6;
+                        break;
+                    }
                 }
-                else
+
                 {
-                    int angleModif = computeAngleModificatorToPosition(
+                    int direction = computeAngleModificatorToPosition(
                         currentProcessedActorPtr->roomX + currentProcessedActorPtr->stepX,
                         currentProcessedActorPtr->roomZ + currentProcessedActorPtr->stepZ,
                         currentProcessedActorPtr->beta,
                         x, z);
 
-                    if (currentProcessedActorPtr->YHandler.param == 0)
+                    if (currentProcessedActorPtr->YHandler.numSteps == 0)
                     {
                         InitRealValue(0, y - (currentProcessedActorPtr->roomY + currentProcessedActorPtr->stepY), time, &currentProcessedActorPtr->YHandler);
                     }
 
-                    if ((currentProcessedActorPtr->rotate.param == 0) || (currentProcessedActorPtr->direction != angleModif))
+                    if ((currentProcessedActorPtr->rotate.numSteps == 0) || (currentProcessedActorPtr->direction != direction))
                     {
-                        InitRealValue(currentProcessedActorPtr->beta, currentProcessedActorPtr->beta - (angleModif * 256), 60, &currentProcessedActorPtr->rotate);
+                        InitRealValue(currentProcessedActorPtr->beta, currentProcessedActorPtr->beta - (direction * 256), 60, &currentProcessedActorPtr->rotate);
                     }
 
-                    currentProcessedActorPtr->direction = angleModif;
+                    currentProcessedActorPtr->direction = direction;
 
-                    if (!angleModif)
+                    if (!direction)
                     {
-                        currentProcessedActorPtr->rotate.param = 0;
+                        currentProcessedActorPtr->rotate.numSteps = 0;
                     }
                     else
                     {
@@ -503,7 +507,7 @@ void processTrack(void)
                         currentProcessedActorPtr->direction = -1; // right
                     }
 
-                    if(!currentProcessedActorPtr->rotate.param)
+                    if(!currentProcessedActorPtr->rotate.numSteps)
                     {
                         InitRealValue(currentProcessedActorPtr->beta, betaDif, 120, &currentProcessedActorPtr->rotate);
                     }
@@ -593,7 +597,7 @@ void processTrack(void)
                             currentProcessedActorPtr->beta,
                             x,z );
 
-                        if(!currentProcessedActorPtr->rotate.param || currentProcessedActorPtr->direction != angleModif)
+                        if(!currentProcessedActorPtr->rotate.numSteps || currentProcessedActorPtr->direction != angleModif)
                         {
                             InitRealValue(currentProcessedActorPtr->beta, currentProcessedActorPtr->beta - (angleModif<<8), 60, &currentProcessedActorPtr->rotate);
                         }
@@ -606,7 +610,7 @@ void processTrack(void)
                         }
                         else
                         {
-                            currentProcessedActorPtr->rotate.param = 0;
+                            currentProcessedActorPtr->rotate.numSteps = 0;
                         }
 
                     }
@@ -664,7 +668,7 @@ void processTrack(void)
                             currentProcessedActorPtr->beta,
                             x,z );
 
-                        if(!currentProcessedActorPtr->rotate.param || currentProcessedActorPtr->direction != angleModif)
+                        if(!currentProcessedActorPtr->rotate.numSteps || currentProcessedActorPtr->direction != angleModif)
                         {
                             InitRealValue(currentProcessedActorPtr->beta, currentProcessedActorPtr->beta - (angleModif<<8), 60, &currentProcessedActorPtr->rotate);
                         }
@@ -677,7 +681,7 @@ void processTrack(void)
                         }
                         else
                         {
-                            currentProcessedActorPtr->rotate.param = 0;
+                            currentProcessedActorPtr->rotate.numSteps = 0;
                         }
 
                     }
@@ -802,7 +806,7 @@ void processTrack2(void)
                     currentProcessedActorPtr->roomZ + currentProcessedActorPtr->stepZ,
                     currentProcessedActorPtr->beta, x, z );
 
-                if( currentProcessedActorPtr->rotate.param == 0 || currentProcessedActorPtr->direction != angleModif )
+                if( currentProcessedActorPtr->rotate.numSteps == 0 || currentProcessedActorPtr->direction != angleModif )
                 {
                     InitRealValue( currentProcessedActorPtr->beta, currentProcessedActorPtr->beta - (angleModif << 8), 60, &currentProcessedActorPtr->rotate);
                 }
@@ -811,7 +815,7 @@ void processTrack2(void)
 
                 if( currentProcessedActorPtr->direction == 0 )
                 {
-                    currentProcessedActorPtr->rotate.param = 0;
+                    currentProcessedActorPtr->rotate.numSteps = 0;
                 }
                 else
                 {
@@ -880,7 +884,7 @@ void processTrack2(void)
 
                     currentProcessedActorPtr->speed = 0;
                     currentProcessedActorPtr->direction = 0;
-                    currentProcessedActorPtr->rotate.param = 0;
+                    currentProcessedActorPtr->rotate.numSteps = 0;
                     currentProcessedActorPtr->positionInTrack += 5;
 
                     break;
@@ -907,7 +911,7 @@ void processTrack2(void)
                         z += (roomDataTable[currentProcessedActorPtr->room].worldZ - roomDataTable[roomNumber].worldZ) * 10;
                     }
 
-                    distanceToPoint = computeDistanceToPoint( currentProcessedActorPtr->roomX + currentProcessedActorPtr->stepX,
+                    distanceToPoint = GiveDistance2D( currentProcessedActorPtr->roomX + currentProcessedActorPtr->stepX,
                         currentProcessedActorPtr->roomZ + currentProcessedActorPtr->stepZ,
                         x,z );
 
@@ -919,7 +923,7 @@ void processTrack2(void)
                             currentProcessedActorPtr->beta,
                             x,z );
 
-                        if(currentProcessedActorPtr->rotate.param == 0 || currentProcessedActorPtr->direction != angleModif)
+                        if(currentProcessedActorPtr->rotate.numSteps == 0 || currentProcessedActorPtr->direction != angleModif)
                         {
                             InitRealValue(currentProcessedActorPtr->beta, currentProcessedActorPtr->beta - (angleModif<<6), 15, &currentProcessedActorPtr->rotate);
                         }
@@ -928,7 +932,7 @@ void processTrack2(void)
 
                         if(!angleModif)
                         {
-                            currentProcessedActorPtr->rotate.param = 0;
+                            currentProcessedActorPtr->rotate.numSteps = 0;
                         }
                         else
                         {
@@ -979,7 +983,7 @@ void processTrack2(void)
                         currentProcessedActorPtr->direction = -1;
                     }
 
-                    if(!currentProcessedActorPtr->rotate.param)
+                    if(!currentProcessedActorPtr->rotate.numSteps)
                     {
                         InitRealValue(currentProcessedActorPtr->beta, betaDif, 120, &currentProcessedActorPtr->rotate);
                     }
