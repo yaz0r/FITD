@@ -31,7 +31,7 @@ add_subdirectory(${THIRD_PARTY}/zlib ${CMAKE_BINARY_DIR}/zlib/zlib-build)
 add_subdirectory( FitdLib )
 add_subdirectory( Fitd )
 
-set(USE_ASAN ON CACHE BOOL "" FORCE)
+#set(USE_ASAN ON CACHE BOOL "" FORCE)
 if(USE_ASAN) 
 	target_link_options(Fitd PRIVATE "-fsanitize=address")
 	target_compile_options(Fitd PRIVATE "-fsanitize=address")
