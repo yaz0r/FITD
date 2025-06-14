@@ -31,7 +31,7 @@ add_subdirectory(${THIRD_PARTY}/zlib ${CMAKE_BINARY_DIR}/zlib/zlib-build)
 add_subdirectory( FitdLib )
 add_subdirectory( Fitd )
 
-set(USE_SANITIZER ON)
+#set(USE_SANITIZER ON)
 if(USE_SANITIZER)
     IF(MSVC)
         set(SANITIZER_TYPE "address")
