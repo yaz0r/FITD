@@ -271,7 +271,7 @@ void drawInventoryAITD2()
 	statusRight = 159;
 	statusBottom = 174;
 
-	setupCameraProjection(((statusRight-statusLeft)/2)+statusLeft,((statusBottom-statusTop)/2) + statusTop,128,400,390);
+	SetProjection(((statusRight-statusLeft)/2)+statusLeft,((statusBottom-statusTop)/2) + statusTop,128,400,390);
 }
 
 int	TabXSprite [3] = {127,118,124};

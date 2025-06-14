@@ -1599,7 +1599,7 @@ void SetPosCamera(int x, int y, int z)
 	translateZ = z;
 }
 
-void setupCameraProjection(int centerX, int centerY, int x, int y, int z)
+void SetProjection(int centerX, int centerY, int x, int y, int z)
 {
 	cameraCenterX = centerX;
 	cameraCenterY = centerY;
@@ -1626,7 +1626,7 @@ int isInViewList(int value)
 }
 
 // setup visibility list
-void setupCameraSub1()
+void InitViewedRoomList()
 {
 	u32 i;
 	int j;
@@ -1892,7 +1892,7 @@ void copyZv(ZVStruct* source, ZVStruct* dest)
 	memcpy(dest,source,sizeof(ZVStruct));
 }
 
-void setupCameraSub4(void)
+void RefreshAux2(void)
 {
 	FastCopyScreen(aux,aux2);
 
@@ -2163,7 +2163,7 @@ addObject:
 	//TODO: object update
 }
 
-void updateAllActorAndObjects()
+void GenereActiveList()
 {
 	int i;
 	tObject *currentActor = objectTable.data();
@@ -2341,7 +2341,7 @@ int checkActorInRoom(int room)
 	return(0);
 }
 
-void createActorList()
+void GenereAffList()
 {
 	numActorInList = 0;
 
@@ -2369,7 +2369,6 @@ void InitView()
 	int x;
 	int y;
 	int z;
-	cameraDataStruct* pCamera;
 
 	SaveTimerAnim();
 
@@ -2392,7 +2391,7 @@ void InitView()
         printf("Load 2d animations");
     }
 
-	pCamera = cameraDataTable[NumCamera];
+    cameraDataStruct* pCamera = cameraDataTable[NumCamera];
 
 	SetAngleCamera(pCamera->alpha,pCamera->beta,pCamera->gamma);
 
@@ -2418,19 +2417,19 @@ void InitView()
 #endif
 	SetPosCamera(x,y,z); // setup camera position
 
-	setupCameraProjection(160,100,pCamera->focal1,pCamera->focal2,pCamera->focal3); // setup focale
+	SetProjection(160,100,pCamera->focal1,pCamera->focal2,pCamera->focal3); // setup projection
 
 #ifdef FITD_DEBUGGER
 	if(debuggerVar_topCamera)
-		setupCameraProjection(160,100,1000,100,100); // setup focale
+		SetProjection(160,100,1000,100,100);
 #endif
 
-	setupCameraSub1();
-	updateAllActorAndObjects();
-	createActorList();
-	//  setupCameraSub3();
-	setupCameraSub4();
-	/*  setupCameraSub5();
+	InitViewedRoomList();
+	GenereActiveList();
+	GenereAffList();
+	//  TriListObjet();
+	RefreshAux2();
+	/*  InitScreenCoors();
 	*/
 	if(FlagInitView==2)
 	{
@@ -3660,7 +3659,7 @@ void foundObject(int objIdx, int param)
 	currentFoundBodyIdx = objPtr->foundBody;
 	currentFoundBody = HQR_Get(listBody,currentFoundBodyIdx);
 
-	setupCameraProjection(160,100,128,300,298);
+	SetProjection(160,100,128,300,298);
 
 	statusVar1 = 0;
 

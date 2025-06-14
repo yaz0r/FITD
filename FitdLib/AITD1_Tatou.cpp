@@ -32,7 +32,7 @@ int make3dTatou(void)
     beta = 256;
     alpha = 8;
 
-    setupCameraProjection(160,100,128,500,490);
+    SetProjection(160,100,128,500,490);
 
     copyPalette(currentGamePalette,paletteBackup);
 
