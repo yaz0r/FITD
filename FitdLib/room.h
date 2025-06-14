@@ -106,8 +106,8 @@ struct roomDataStruct
 };
 typedef struct roomDataStruct roomDataStruct;
 
-extern cameraDataStruct* cameraDataTable[NUM_MAX_CAMERA_IN_ROOM];
-extern cameraViewedRoomStruct* currentCameraZoneList[NUM_MAX_CAMERA_IN_ROOM];
+extern std::vector<cameraDataStruct*> cameraDataTable;
+extern std::vector<cameraViewedRoomStruct*> currentCameraZoneList;
 extern std::vector<roomDataStruct> roomDataTable;
 
 roomDefStruct* getRoomData(int roomNumber);

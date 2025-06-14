@@ -197,7 +197,9 @@ FORCEINLINE u16 READ_LE_U16(void *ptr)
 #ifdef MACOSX
   return (((u8*)ptr)[1]<<8)|((u8*)ptr)[0];
 #else
-  return *(u16*)ptr;
+  u16 temp;
+  memcpy(&temp, ptr, 2);
+  return temp;
 #endif
 }
 
@@ -225,7 +227,9 @@ FORCEINLINE u32 READ_LE_U32(void *ptr)
 #ifdef MACOSX
   return (((u8*)ptr)[3]<<24)|(((u8*)ptr)[2]<<16)|(((u8*)ptr)[1]<<8)|((u8*)ptr)[0];
 #else
-  return *(u32*)ptr;
+  u32 temp;
+  memcpy(&temp, ptr, 4);
+  return temp;
 #endif
 }
 

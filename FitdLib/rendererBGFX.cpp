@@ -1182,7 +1182,7 @@ void osystem_flip(unsigned char* videoBuffer)
     osystem_flushPendingPrimitives();
 }
 
-void osystem_createMask(const std::array<u8, 320 * 200>& mask, int roomId, int maskId, unsigned char* refImage, int maskX1, int maskY1, int maskX2, int maskY2)
+void osystem_createMask(const std::array<u8, 320 * 200>& mask, int roomId, int maskId, int maskX1, int maskY1, int maskX2, int maskY2)
 {
     if (maskTextures.size() < roomId + 1)
     {
@@ -1205,7 +1205,7 @@ void osystem_createMask(const std::array<u8, 320 * 200>& mask, int roomId, int m
         maskTextures[roomId][maskId].vertexBuffer = BGFX_INVALID_HANDLE;
     }
 
-    maskTextures[roomId][maskId].maskTexture = bgfx::createTexture2D(320, 200, false, 1, bgfx::TextureFormat::R8U, 0, bgfx::copy(&mask[0], 320 * 200));
+    maskTextures[roomId][maskId].maskTexture = bgfx::createTexture2D(320, 200, false, 1, bgfx::TextureFormat::R8U, 0, bgfx::copy(mask.data(), 320 * 200));
     maskTextures[roomId][maskId].maskX1 = maskX1;
     maskTextures[roomId][maskId].maskX2 = maskX2 + 1;
     maskTextures[roomId][maskId].maskY1 = maskY1;

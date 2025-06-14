@@ -63,7 +63,7 @@
 	void osystem_playSample(char* samplePtr,int size);
 	//    void getMouseStatus(mouseStatusStruct * mouseData);
 
-	void osystem_createMask(const std::array<u8, 320 * 200>& mask, int roomId, int maskId, unsigned char* refImage, int maskX1, int maskY1, int maskX2, int maskY2);
+	void osystem_createMask(const std::array<u8, 320 * 200>& mask, int roomId, int maskId, int maskX1, int maskY1, int maskX2, int maskY2);
 	void osystem_drawMask(int roomId, int maskId);
 
 	void osystem_startFrame();
