@@ -119,6 +119,8 @@ void debugger_draw(void)
         if (ImGui::BeginMenu("Debug"))
         {
             ImGui::MenuItem("No Collisions", nullptr, &debuggerVar_noHardClip);
+            ImGui::Combo("Collision", (int*)&hardColDisplayMode, "None\0Wireframe\0Filled\0");
+            ImGui::Combo("Triggers", (int*)&sceColDisplayMode, "None\0Wireframe\0Filled\0");
             ImGui::EndMenu();
         }
         ImGui::EndMainMenuBar();
@@ -126,51 +128,53 @@ void debugger_draw(void)
 
     if(debuggerVar_debugMenuDisplayed)
     {
-		cameraDataStruct* pCamera = cameraDataTable[NumCamera];
-
-        ImGui::Begin("Camera");
-        if (pCamera)
+        if(cameraDataTable.size())
         {
-            ImGui::BeginGroup();
-            ImGui::PushID("Position");
-            ImGui::InputInt("X", &translateX);
-            ImGui::InputInt("Y", &translateY);
-            ImGui::InputInt("Z", &translateZ);
-            ImGui::PopID();
-            ImGui::EndGroup();
+            cameraDataStruct* pCamera = cameraDataTable[NumCamera];
 
-            ImGui::BeginGroup();
-            ImGui::PushID("Center");
-            InputS16("Pitch", &pCamera->alpha);
-            InputS16("Yaw", &pCamera->beta);
-            InputS16("Roll", &pCamera->gamma);
-            ImGui::PopID();
-            ImGui::EndGroup();
+            ImGui::Begin("Camera");
+            if (pCamera)
+            {
+                ImGui::BeginGroup();
+                ImGui::PushID("Position");
+                ImGui::InputInt("X", &translateX);
+                ImGui::InputInt("Y", &translateY);
+                ImGui::InputInt("Z", &translateZ);
+                ImGui::PopID();
+                ImGui::EndGroup();
 
-            SetAngleCamera(pCamera->alpha, pCamera->beta, pCamera->gamma);
+                ImGui::BeginGroup();
+                ImGui::PushID("Center");
+                InputS16("Pitch", &pCamera->alpha);
+                InputS16("Yaw", &pCamera->beta);
+                InputS16("Roll", &pCamera->gamma);
+                ImGui::PopID();
+                ImGui::EndGroup();
 
-            ImGui::BeginGroup();
-            ImGui::PushID("Center");
-            ImGui::InputInt("HCenter", &cameraCenterX);
-            ImGui::InputInt("VCenter", &cameraCenterY);
-            ImGui::PopID();
-            ImGui::EndGroup();
+                SetAngleCamera(pCamera->alpha, pCamera->beta, pCamera->gamma);
 
-            ImGui::BeginGroup();
-            ImGui::PushID("Projection");
-            ImGui::InputInt("Perspective", &cameraPerspective);
-            ImGui::InputInt("XFov", &cameraFovX);
-            ImGui::InputInt("YFov", &cameraFovY);
-            ImGui::PopID();
-            ImGui::EndGroup();
+                ImGui::BeginGroup();
+                ImGui::PushID("Center");
+                ImGui::InputInt("HCenter", &cameraCenterX);
+                ImGui::InputInt("VCenter", &cameraCenterY);
+                ImGui::PopID();
+                ImGui::EndGroup();
+
+                ImGui::BeginGroup();
+                ImGui::PushID("Projection");
+                ImGui::InputInt("Perspective", &cameraPerspective);
+                ImGui::InputInt("XFov", &cameraFovX);
+                ImGui::InputInt("YFov", &cameraFovY);
+                ImGui::PopID();
+                ImGui::EndGroup();
+            }
+            if (ImGui::Button("DumpScene"))
+            {
+                SaveScene();
+            }
+            ImGui::End();
         }
 
-        if (ImGui::Button("DumpScene"))
-        {
-            SaveScene();
-        }
-
-        ImGui::End();
 
         if(ListWorldObjets.size())
         {
