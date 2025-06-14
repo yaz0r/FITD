@@ -110,7 +110,7 @@ void PlayWorld(int allowSystemMenu, int deltaTime)
                 }
             }
 
-            currentProcessedActorPtr = objectTable;
+            currentProcessedActorPtr = objectTable.data();
 
             for(currentProcessedActorIdx = 0; currentProcessedActorIdx < NUM_MAX_OBJECT; currentProcessedActorIdx++)
             {
@@ -126,12 +126,12 @@ void PlayWorld(int allowSystemMenu, int deltaTime)
                 currentProcessedActorPtr++;
             }
 
-            currentProcessedActorPtr = objectTable;
+            currentProcessedActorPtr = objectTable.data();
             for(currentProcessedActorIdx = 0; currentProcessedActorIdx < NUM_MAX_OBJECT; currentProcessedActorIdx++)
             {
                 if(currentProcessedActorPtr->indexInWorld >= 0)
                 {
-                    int flag = currentProcessedActorPtr->_flags;
+                    int flag = currentProcessedActorPtr->objectType;
 
                     if((flag & AF_ANIMATED) || (g_gameId >= AITD2 && flag & 0x200))
                     {
@@ -151,7 +151,7 @@ void PlayWorld(int allowSystemMenu, int deltaTime)
                 currentProcessedActorPtr++;
             }
 
-            currentProcessedActorPtr = objectTable;
+            currentProcessedActorPtr = objectTable.data();
             for(currentProcessedActorIdx = 0; currentProcessedActorIdx < NUM_MAX_OBJECT; currentProcessedActorIdx++)
             {
                 if(currentProcessedActorPtr->indexInWorld >= 0)
@@ -212,14 +212,14 @@ void PlayWorld(int allowSystemMenu, int deltaTime)
 
                 NumCamera = NewNumCamera;
 
-				currentProcessedActorPtr = objectTable;
-                for(currentProcessedActorIdx = 0; currentProcessedActorIdx < NUM_MAX_OBJECT; currentProcessedActorIdx++)
+                for (currentProcessedActorIdx = 0; currentProcessedActorIdx < NUM_MAX_OBJECT; currentProcessedActorIdx++)
                 {
+                    currentProcessedActorPtr = &objectTable[currentProcessedActorIdx];
                     if(currentProcessedActorPtr->indexInWorld >= 0)
                     {
                         if(currentProcessedActorPtr->life != -1)
                         {
-                            if(currentProcessedActorPtr->_flags & 0x200)
+                            if(currentProcessedActorPtr->objectType & 0x200)
                             {
                                 if(currentProcessedActorPtr->lifeMode&3)
                                     if(!(currentProcessedActorPtr->lifeMode&4))

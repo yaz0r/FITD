@@ -129,23 +129,23 @@ int InitAnim(int animNum,int animType, int animInfo)
 {
     if(animNum == currentProcessedActorPtr->ANIM)
     {
-        if(!(currentProcessedActorPtr->_flags & AF_ANIMATED))
+        if(!(currentProcessedActorPtr->objectType & AF_ANIMATED))
         {
-            if(currentProcessedActorPtr->_flags & AF_BOXIFY)
+            if(currentProcessedActorPtr->objectType & AF_BOXIFY)
             {
                 removeFromBGIncrust(currentProcessedActorIdx);
             }
 
-            currentProcessedActorPtr->_flags |= AF_ANIMATED;
+            currentProcessedActorPtr->objectType |= AF_ANIMATED;
 
-            SetAnimObjet(currentProcessedActorPtr->FRAME, HQR_Get(listAnim,animNum), HQR_Get(listBody, currentProcessedActorPtr->bodyNum));
+            SetAnimObjet(currentProcessedActorPtr->frame, HQR_Get(listAnim,animNum), HQR_Get(listBody, currentProcessedActorPtr->bodyNum));
 
             currentProcessedActorPtr->animType = animType;
             currentProcessedActorPtr->animInfo = animInfo;
 
 			if(g_gameId > AITD1)
 			{
-				currentProcessedActorPtr->FRAME = 0;
+				currentProcessedActorPtr->frame = 0;
 			}
 
 			return 1;
@@ -164,11 +164,11 @@ int InitAnim(int animNum,int animType, int animInfo)
         return(1);
     }
 
-    if(!(currentProcessedActorPtr->_flags & AF_ANIMATED))
+    if(!(currentProcessedActorPtr->objectType & AF_ANIMATED))
     {
-		currentProcessedActorPtr->_flags |= AF_ANIMATED;
+		currentProcessedActorPtr->objectType |= AF_ANIMATED;
 
-        if(currentProcessedActorPtr->_flags & AF_BOXIFY)
+        if(currentProcessedActorPtr->objectType & AF_BOXIFY)
         {
             removeFromBGIncrust(currentProcessedActorIdx);
         }
@@ -180,7 +180,7 @@ int InitAnim(int animNum,int animType, int animInfo)
 		currentProcessedActorPtr->newAnimInfo = animInfo;
 		if(g_gameId > AITD1)
 		{
-			currentProcessedActorPtr->FRAME = 0;
+			currentProcessedActorPtr->frame = 0;
 		}
 		return 1;
     }
@@ -215,7 +215,7 @@ int InitAnim(int animNum,int animType, int animInfo)
 
 	if(g_gameId != AITD1)
 	{
-		currentProcessedActorPtr->FRAME = 0;
+		currentProcessedActorPtr->frame = 0;
 	}
 
     return(1);
@@ -293,52 +293,64 @@ void updateAnimation(void)
 
 	int newAnim = currentProcessedActorPtr->newAnim;
 
-	if(newAnim != -1) // next anim ?
-	{
-		if(newAnim == -2) // completely stop anim and add actor to background
-		{
-			addActorToBgInscrust(currentProcessedActorIdx);
-			currentProcessedActorPtr->newAnim = -1;
-			currentProcessedActorPtr->newAnimType = 0;
-			currentProcessedActorPtr->newAnimInfo = -1;
-			currentProcessedActorPtr->END_ANIM = 1;
+    if (newAnim != -1) // next anim ?
+    {
+        if (newAnim == -2) // completely stop anim and add actor to background
+        {
+            addActorToBgInscrust(currentProcessedActorIdx);
+            currentProcessedActorPtr->newAnim = -1;
+            currentProcessedActorPtr->newAnimType = 0;
+            currentProcessedActorPtr->newAnimInfo = -1;
+            currentProcessedActorPtr->flagEndAnim = 1;
 
-			return;
-		}
+            return;
+        }
+        else {
+            if (!(currentProcessedActorPtr->newAnimType & ANIM_RESET)) // Reset
+            {
+                if (currentProcessedActorPtr->END_FRAME == 0)
+                {
+                    currentProcessedActorPtr->worldX += currentProcessedActorPtr->stepX;
+                    currentProcessedActorPtr->roomX += currentProcessedActorPtr->stepX;
 
-		if(currentProcessedActorPtr->END_FRAME == 0)
-		{
-			currentProcessedActorPtr->worldX += currentProcessedActorPtr->stepX;
-			currentProcessedActorPtr->roomX += currentProcessedActorPtr->stepX;
+                    currentProcessedActorPtr->worldZ += currentProcessedActorPtr->stepZ;
+                    currentProcessedActorPtr->roomZ += currentProcessedActorPtr->stepZ;
 
-			currentProcessedActorPtr->worldZ += currentProcessedActorPtr->stepZ;
-			currentProcessedActorPtr->roomZ += currentProcessedActorPtr->stepZ;
+                    currentProcessedActorPtr->stepX = 0;
+                    currentProcessedActorPtr->stepZ = 0;
 
-			currentProcessedActorPtr->stepX = 0;
-			currentProcessedActorPtr->stepZ = 0;
+                    currentProcessedActorPtr->animNegX = 0;
+                    currentProcessedActorPtr->animNegY = 0;
+                    currentProcessedActorPtr->animNegZ = 0;
+                }
 
-			currentProcessedActorPtr->animNegX = 0;
-			currentProcessedActorPtr->animNegY = 0;
-			currentProcessedActorPtr->animNegZ = 0;
-		}
+                // TODO: AITD3 has some extra code here to handle bufferAnimCounter
 
-		initBufferAnim(BufferAnim[bufferAnimCounter], HQR_Get(listBody,currentProcessedActorPtr->bodyNum)); 
+                StockInterAnim(BufferAnim[bufferAnimCounter], HQR_Get(listBody, currentProcessedActorPtr->bodyNum));
 
-		bufferAnimCounter++;
-		if(bufferAnimCounter == NB_BUFFER_ANIM)
-			bufferAnimCounter = 0;
+                bufferAnimCounter++;
+                if (bufferAnimCounter == NB_BUFFER_ANIM)
+                    bufferAnimCounter = 0;
 
-		currentProcessedActorPtr->ANIM = newAnim;
-		currentProcessedActorPtr->animType = currentProcessedActorPtr->newAnimType;
-		currentProcessedActorPtr->animInfo = currentProcessedActorPtr->newAnimInfo;
-		currentProcessedActorPtr->newAnim = -1;
-		currentProcessedActorPtr->newAnimType = 0;
-		currentProcessedActorPtr->newAnimInfo = -1;
-		currentProcessedActorPtr->END_ANIM = 0;
-		currentProcessedActorPtr->FRAME = 0;
+            }
+            else {
+                ResetStartAnim(HQR_Get(listBody, currentProcessedActorPtr->bodyNum));
+                currentProcessedActorPtr->newAnimType &= ~ANIM_RESET;
+            }
+            currentProcessedActorPtr->ANIM = newAnim;
+            currentProcessedActorPtr->animType = currentProcessedActorPtr->newAnimType;
+            currentProcessedActorPtr->animInfo = currentProcessedActorPtr->newAnimInfo;
 
-		currentProcessedActorPtr->numOfFrames = GetNbFramesAnim(HQR_Get(listAnim,newAnim));
-	}
+            currentProcessedActorPtr->newAnim = -1;
+            currentProcessedActorPtr->newAnimType = 0;
+            currentProcessedActorPtr->newAnimInfo = -1;
+
+            currentProcessedActorPtr->flagEndAnim = 0;
+            currentProcessedActorPtr->frame = 0;
+
+            currentProcessedActorPtr->numOfFrames = GetNbFramesAnim(HQR_Get(listAnim, newAnim));
+        }
+    }
 
 	if(currentProcessedActorPtr->ANIM == -1) // no animation
 	{
@@ -382,7 +394,7 @@ void updateAnimation(void)
 		oldStepY = currentProcessedActorPtr->stepY;
 		oldStepZ = currentProcessedActorPtr->stepZ;
 
-		currentProcessedActorPtr->END_FRAME = SetInterAnimObjet(currentProcessedActorPtr->FRAME, HQR_Get(listAnim, currentProcessedActorPtr->ANIM), HQR_Get(listBody, currentProcessedActorPtr->bodyNum));
+		currentProcessedActorPtr->END_FRAME = SetInterAnimObjet(currentProcessedActorPtr->frame, HQR_Get(listAnim, currentProcessedActorPtr->ANIM), HQR_Get(listBody, currentProcessedActorPtr->bodyNum));
 
 		walkStep(animStepX,animStepZ,currentProcessedActorPtr->beta);
 
@@ -499,7 +511,7 @@ void updateAnimation(void)
 
 			ZVStruct* touchedZv = &actorTouchedPtr->zv;
 
-			if(actorTouchedPtr->_flags & AF_FOUNDABLE) // takable
+			if(actorTouchedPtr->objectType & AF_FOUNDABLE) // takable
 			{
 				if(currentProcessedActorPtr->trackMode == 1 /*&& ((gameId == AITD1 && defines.field_1E == 0) || (gameId >= JACK && defines.field_6 == 0))*/) // TODO: check if character isn't dead...
 				{
@@ -508,7 +520,7 @@ void updateAnimation(void)
 			}
 			else
 			{
-				if(actorTouchedPtr->_flags & AF_MOVABLE) // can be pushed ?
+				if(actorTouchedPtr->objectType & AF_MOVABLE) // can be pushed ?
 				{
 					ZVStruct localZv2;
 
@@ -568,12 +580,12 @@ void updateAnimation(void)
 					}
 					else // push succeed
 					{
-						if(actorTouchedPtr->_flags & AF_BOXIFY)
+						if(actorTouchedPtr->objectType & AF_BOXIFY)
 						{
 							removeFromBGIncrust(collisionIndex);
 						}
 
-						actorTouchedPtr->_flags |= AF_ANIMATED;
+						actorTouchedPtr->objectType |= AF_ANIMATED;
 
 						actorTouchedPtr->worldX += stepX; // apply push to object
 						actorTouchedPtr->worldZ += stepZ;
@@ -645,7 +657,7 @@ void updateAnimation(void)
 
 		currentProcessedActorPtr->stepY = 0;
 
-		if(currentProcessedActorPtr->_flags & AF_FALLABLE)
+		if(currentProcessedActorPtr->objectType & AF_FALLABLE)
 		{
 			zvPtr = &currentProcessedActorPtr->zv;
 
@@ -665,7 +677,7 @@ void updateAnimation(void)
 	}
 	else
 	{
-		if((currentProcessedActorPtr->YHandler.numSteps != -1) && (currentProcessedActorPtr->_flags & AF_FALLABLE))
+		if((currentProcessedActorPtr->YHandler.numSteps != -1) && (currentProcessedActorPtr->objectType & AF_FALLABLE))
 		{
 			currentProcessedActorPtr->falling = 1;
 		}
@@ -679,7 +691,7 @@ void updateAnimation(void)
 		{
 			tObject* actorTouchedPtr = &objectTable[collisionIndex];
 
-			if(actorTouchedPtr->_flags & AF_MOVABLE)
+			if(actorTouchedPtr->objectType & AF_MOVABLE)
 			{
 				int i;
 
@@ -691,7 +703,7 @@ void updateAnimation(void)
 
 				if(i == 3)
 				{
-					actorTouchedPtr->_flags &= ~AF_ANIMATED;
+					actorTouchedPtr->objectType &= ~AF_ANIMATED;
 					addActorToBgInscrust(collisionIndex);
 				}
 			}
@@ -700,12 +712,12 @@ void updateAnimation(void)
 
 	if(currentProcessedActorPtr->END_FRAME) // key frame change
 	{
-		currentProcessedActorPtr->FRAME++;
+		currentProcessedActorPtr->frame++;
 
-		if(currentProcessedActorPtr->FRAME >= currentProcessedActorPtr->numOfFrames) // end of anim ?
+		if(currentProcessedActorPtr->frame >= currentProcessedActorPtr->numOfFrames) // end of anim ?
 		{
-			currentProcessedActorPtr->END_ANIM = 1; // end of anim
-			currentProcessedActorPtr->FRAME = 0; // restart anim
+			currentProcessedActorPtr->flagEndAnim = 1; // end of anim
+			currentProcessedActorPtr->frame = 0; // restart anim
 
 			if(!(currentProcessedActorPtr->animType & 1) && (currentProcessedActorPtr->newAnim == -1)) // is another anim waiting ?
 			{
@@ -743,12 +755,12 @@ void updateAnimation(void)
 			InitRealValue(0,currentProcessedActorPtr->speed,60,&currentProcessedActorPtr->speedChange);
 		}
 
-		currentProcessedActorPtr->END_ANIM = 0;
+		currentProcessedActorPtr->flagEndAnim = 0;
 	}
 }
 
 
-void initBufferAnim(std::vector<s16>& buffer, char* bodyPtr)
+void StockInterAnim(std::vector<s16>& buffer, char* bodyPtr)
 {
     std::vector<s16>::iterator bufferIt = buffer.begin();
 
@@ -804,6 +816,13 @@ void initBufferAnim(std::vector<s16>& buffer, char* bodyPtr)
         }
 
     }
+}
+
+void ResetStartAnim(char* bodyPtr) {
+    bodyPtr += 16;
+    *(u16*)(bodyPtr + 4) = 0; // reset timer
+    *(s16*)(bodyPtr) = 0;
+    *(s16*)(bodyPtr + 2) = 0;
 }
 
 s16 GetNbFramesAnim(char* animPtr)

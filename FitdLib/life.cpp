@@ -84,14 +84,11 @@ int randRange(int min, int max)
 int InitSpecialObjet(int mode, int X, int Y, int Z, int stage, int room, int alpha, int beta, int gamma, ZVStruct* zvPtr)
 {
     s16 localSpecialTable[4];
-    tObject* currentActorPtr;
-    int i;
-    ZVStruct* actorZvPtr;
-
     memcpy(localSpecialTable, specialTable, 8);
 
-    currentActorPtr = objectTable;
+    tObject* currentActorPtr = objectTable.data();
 
+    int i;
     for (i = 0; i < NUM_MAX_OBJECT; i++) // count the number of active actors
     {
         if (currentActorPtr->indexInWorld == -1)
@@ -104,7 +101,7 @@ int InitSpecialObjet(int mode, int X, int Y, int Z, int stage, int room, int alp
         return(-1);
     }
 
-    currentActorPtr->_flags = AF_SPECIAL;
+    currentActorPtr->objectType = AF_SPECIAL;
     currentActorPtr->indexInWorld = -2;
     currentActorPtr->life = -1;
     currentActorPtr->lifeMode = 2;
@@ -129,6 +126,7 @@ int InitSpecialObjet(int mode, int X, int Y, int Z, int stage, int room, int alp
     currentActorPtr->stepY = 0;
     currentActorPtr->stepZ = 0;
 
+    ZVStruct* actorZvPtr = nullptr;
     if (zvPtr)
     {
         actorZvPtr = &currentActorPtr->zv;
@@ -149,9 +147,9 @@ int InitSpecialObjet(int mode, int X, int Y, int Z, int stage, int room, int alp
         actorZvPtr->ZVZ1 -= Z;
         actorZvPtr->ZVZ2 -= Z;
 
-        currentActorPtr->FRAME = HQ_Malloc(HQ_Memory, 304);
+        currentActorPtr->frame = HQ_Malloc(HQ_Memory, 304);
 
-        flowPtr = HQ_PtrMalloc(HQ_Memory, currentActorPtr->FRAME);
+        flowPtr = HQ_PtrMalloc(HQ_Memory, currentActorPtr->frame);
 
         if (!flowPtr)
         {
@@ -758,7 +756,7 @@ void processLife(int lifeNum, bool callFoundLife)
                 {
                     currentProcessedActorPtr->bodyNum = lifeTempVar1;
 
-                    if (currentProcessedActorPtr->_flags & AF_ANIMATED)
+                    if (currentProcessedActorPtr->objectType & AF_ANIMATED)
                     {
                         if ((currentProcessedActorPtr->ANIM != -1) && (currentProcessedActorPtr->bodyNum != -1))
                         {
@@ -779,7 +777,7 @@ void processLife(int lifeNum, bool callFoundLife)
                             }
                             else */
                             {
-                                SetInterAnimObjet(currentProcessedActorPtr->FRAME, pAnim, pBody);
+                                SetInterAnimObjet(currentProcessedActorPtr->frame, pAnim, pBody);
                             }
                         }
                     }
@@ -802,7 +800,7 @@ void processLife(int lifeNum, bool callFoundLife)
 
                 currentProcessedActorPtr->bodyNum = param1;
 
-                if (currentProcessedActorPtr->_flags & AF_ANIMATED)
+                if (currentProcessedActorPtr->objectType & AF_ANIMATED)
                 {
                     char* pAnim = HQR_Get(listAnim, currentProcessedActorPtr->ANIM);
                     char* pBody;
@@ -920,9 +918,9 @@ void processLife(int lifeNum, bool callFoundLife)
                 appendFormated("LM_TYPE ");
 
                 lifeTempVar1 = readNextArgument("type") & AF_MASK;
-                lifeTempVar2 = currentProcessedActorPtr->_flags;
+                lifeTempVar2 = currentProcessedActorPtr->objectType;
 
-                currentProcessedActorPtr->_flags = (currentProcessedActorPtr->_flags & ~AF_MASK) + lifeTempVar1;
+                currentProcessedActorPtr->objectType = (currentProcessedActorPtr->objectType & ~AF_MASK) + lifeTempVar1;
 
                 if (g_gameId > AITD1)
                 {
@@ -1003,7 +1001,7 @@ void processLife(int lifeNum, bool callFoundLife)
                 }
                 else
                 {
-                    InitAnim(anim, 4, animFlag);
+                    InitAnim(anim, ANIM_ONCE | ANIM_RESET, animFlag);
                 }
 
                 break;
@@ -1011,21 +1009,61 @@ void processLife(int lifeNum, bool callFoundLife)
             case LM_ANIM_HYBRIDE_ONCE:
             {
                 appendFormated("LM_ANIM_HYBRIDE_ONCE ");
-                // TODO
-                int anim = readNextArgument("Anim");
-                int body = readNextArgument("Body?");
 
-                //printf("LM_ANIM_HYBRIDE_ONCE(anim:%d, body:%d)\n", anim, body);
+                int anim = readNextArgument("Anim");
+                int body = readNextArgument("Body");
+
+                if ((currentProcessedActorPtr->ANIM != anim) || (currentProcessedActorPtr->bodyNum != body)) {
+                    currentProcessedActorPtr->ANIM = anim;
+                    currentProcessedActorPtr->bodyNum = body;
+                    currentProcessedActorPtr->memoTicks = timer;
+                    currentProcessedActorPtr->frame = 0;
+
+                    if ((currentProcessedActorPtr->ANIM != -1) && (currentProcessedActorPtr->bodyNum != -1)) {
+                        char* pHybrid = HQR_Get(listHybrides, currentProcessedActorPtr->ANIM);
+                        pHybrid += READ_LE_U32(pHybrid + 8);
+                        pHybrid += READ_LE_U32(pHybrid + currentProcessedActorPtr->bodyNum * 4);
+
+                        currentProcessedActorPtr->numOfFrames = pHybrid[1];
+                        currentProcessedActorPtr->animInfo = -1;
+                        currentProcessedActorPtr->animType = ANIM_ONCE;
+                        currentProcessedActorPtr->objectType |= AF_OBJ_2D;
+                    }
+                    else {
+                        currentProcessedActorPtr->numOfFrames = 0;
+                        currentProcessedActorPtr->objectType = 0;
+                    }
+                }
                 break;
             }
             case LM_ANIM_HYBRIDE_REPEAT:
             {
                 appendFormated("LM_ANIM_HYBRIDE_REPEAT ");
-                // TODO
-                int anim = readNextArgument("Anim");
-                int body = readNextArgument("Body?");
 
-                //printf("LM_ANIM_HYBRIDE_REPEAT(anim:%d, body:%d)\n", anim, body);
+                int anim = readNextArgument("Anim");
+                int body = readNextArgument("Body");
+
+                if ((currentProcessedActorPtr->ANIM != anim) || (currentProcessedActorPtr->bodyNum != body)) {
+                    currentProcessedActorPtr->ANIM = anim;
+                    currentProcessedActorPtr->bodyNum = body;
+                    currentProcessedActorPtr->memoTicks = timer;
+                    currentProcessedActorPtr->frame = 0;
+
+                    if ((currentProcessedActorPtr->ANIM != -1) && (currentProcessedActorPtr->bodyNum != -1)) {
+                        char* pHybrid = HQR_Get(listHybrides, currentProcessedActorPtr->ANIM);
+                        pHybrid += READ_LE_U32(pHybrid + 8);
+                        pHybrid += READ_LE_U32(pHybrid + currentProcessedActorPtr->bodyNum * 4);
+
+                        currentProcessedActorPtr->numOfFrames = pHybrid[1];
+                        currentProcessedActorPtr->animInfo = -1;
+                        currentProcessedActorPtr->animType = ANIM_REPEAT;
+                        currentProcessedActorPtr->objectType |= AF_OBJ_2D;
+                    }
+                    else {
+                        currentProcessedActorPtr->numOfFrames = 0;
+                        currentProcessedActorPtr->objectType = 0;
+                    }
+                }
                 break;
             }
             ////////////////////////////////////////////////////////////////////////
@@ -1691,7 +1729,7 @@ void processLife(int lifeNum, bool callFoundLife)
                 {
                     if (currentProcessedActorPtr->ANIM == lifeTempVar2)
                     {
-                        if (currentProcessedActorPtr->FRAME == lifeTempVar3)
+                        if (currentProcessedActorPtr->frame == lifeTempVar3)
                         {
                             playSound(lifeTempVar1);
                             //setSampleFreq(0);

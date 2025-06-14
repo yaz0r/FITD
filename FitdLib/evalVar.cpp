@@ -298,12 +298,12 @@ int evalVar(const char* name)
                     }
                 case 0x6:
                     {
-                        return(actorPtr->END_ANIM);
+                        return(actorPtr->flagEndAnim);
                         break;
                     }
                 case 0x7:
                     {
-                        return(actorPtr->FRAME);
+                        return(actorPtr->frame);
                         break;
                     }
                 case 0x8:
@@ -608,7 +608,7 @@ int evalVar2(const char* name)
                 actorIdx = ListWorldObjets[objectNumber].objIndex;
 
                 currentLifePtr+=2;
-                actorPtr = &objectTable[actorIdx];
+                actorPtr = nullptr;
 
                 if(actorIdx==-1)
                 {
@@ -639,6 +639,9 @@ int evalVar2(const char* name)
 							return false;
                         }
                     }
+                }
+                else {
+                    actorPtr = &objectTable[actorIdx];
                 }
             }
             {
@@ -724,12 +727,12 @@ int evalVar2(const char* name)
                     }
                 case 0x6:
                     {
-                        return(actorPtr->END_ANIM);
+                        return(actorPtr->flagEndAnim);
                         break;
                     }
                 case 0x7:
                     {
-                        return(actorPtr->FRAME);
+                        return(actorPtr->frame);
                         break;
                     }
                 case 0x8:

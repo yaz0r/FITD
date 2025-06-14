@@ -78,17 +78,18 @@ char* screenSm3;
 char* screenSm4;
 char* screenSm5;
 
-tObject objectTable[NUM_MAX_OBJECT];
+std::array<tObject, NUM_MAX_OBJECT> objectTable;
 
 s16 currentWorldTarget;
 
 int fileSize;
 
-hqrEntryStruct* listBody;
-hqrEntryStruct* listAnim;
-hqrEntryStruct* listLife;
-hqrEntryStruct* listTrack;
-hqrEntryStruct* listMatrix;
+hqrEntryStruct* listBody = nullptr;
+hqrEntryStruct* listAnim = nullptr;
+hqrEntryStruct* listLife = nullptr;
+hqrEntryStruct* listTrack = nullptr;
+hqrEntryStruct* listHybrides = nullptr;
+hqrEntryStruct* listMatrix = nullptr;
 
 s16 maxObjects;
 

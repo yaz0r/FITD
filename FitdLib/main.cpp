@@ -223,7 +223,7 @@ void executeFoundLife(int objIdx)
 		currentProcessedActorPtr->indexInWorld = objIdx;
 		currentProcessedActorPtr->life = -1;
 		currentProcessedActorPtr->bodyNum = -1;
-		currentProcessedActorPtr->_flags = 0;
+		currentProcessedActorPtr->objectType = 0;
 		currentProcessedActorPtr->trackMode = -1;
 		currentProcessedActorPtr->room = -1;
 		currentProcessedActorPtr->lifeMode = -1;
@@ -1162,7 +1162,10 @@ void LoadWorld(void)
 	}
 
 	listLife = HQR_InitRessource("LISTLIFE", 65000, 100);
-	listTrack = HQR_InitRessource("LISTTRAK", 20000, 100); 
+	listTrack = HQR_InitRessource("LISTTRAK", 20000, 100);
+    if (g_gameId >= JACK) {
+        listHybrides = HQR_InitRessource("LISTHYB", 20000, 10); // TODO: recheck size for other games
+    }
 
 	// TODO: missing dos memory check here
 
@@ -1671,7 +1674,7 @@ void DeleteObjet(int index) // remove actor
 			CVars[getCVarsIdx(FOG_FLAG)] = 0;
 		}
 
-		HQ_Free_Malloc(HQ_Memory,actorPtr->FRAME);
+		HQ_Free_Malloc(HQ_Memory,actorPtr->frame);
 	}
 	else
 	{
@@ -1684,10 +1687,10 @@ void DeleteObjet(int index) // remove actor
 
 			objectPtr->body = actorPtr->bodyNum;
 			objectPtr->anim = actorPtr->ANIM;
-			objectPtr->frame = actorPtr->FRAME;
+			objectPtr->frame = actorPtr->frame;
 			objectPtr->animType = actorPtr->animType;
 			objectPtr->animInfo = actorPtr->animInfo;
-			objectPtr->flags = actorPtr->_flags & ~AF_BOXIFY;
+			objectPtr->flags = actorPtr->objectType & ~AF_BOXIFY;
 			objectPtr->flags |= AF_SPECIAL * actorPtr->dynFlags; // ugly hack, need rewrite
 			objectPtr->life = actorPtr->life;
 			objectPtr->lifeMode = actorPtr->lifeMode;
@@ -2163,7 +2166,7 @@ addObject:
 void updateAllActorAndObjects()
 {
 	int i;
-	tObject *currentActor = objectTable;
+	tObject *currentActor = objectTable.data();
 	tWorldObject* currentObject;
 
 	if(g_gameId > JACK)
@@ -2340,30 +2343,24 @@ int checkActorInRoom(int room)
 
 void createActorList()
 {
-	int i;
-	tObject* actorPtr;
-
 	numActorInList = 0;
 
-	actorPtr = objectTable;
-
-	for(i=0;i<NUM_MAX_OBJECT;i++)
+	for(int i=0;i< objectTable.size();i++)
 	{
+        tObject* actorPtr = &objectTable[i];
 		if(actorPtr->indexInWorld != -1 && actorPtr->bodyNum != -1)
 		{
 			if(checkActorInRoom(actorPtr->room))
 			{
 				sortedActorTable[numActorInList] = i;
-				if(!(actorPtr->_flags & (AF_SPECIAL & AF_ANIMATED)))
+				if(!(actorPtr->objectType & (AF_SPECIAL & AF_ANIMATED)))
 				{
-					actorPtr->_flags |= AF_BOXIFY;
+					actorPtr->objectType |= AF_BOXIFY;
 					//  FlagRefreshAux2 = 1;
 				}
 				numActorInList++;
 			}
 		}
-
-		actorPtr++;
 	}
 }
 
@@ -2390,6 +2387,10 @@ void InitView()
 		createAITD1Mask();
 	}
 	cameraBackgroundChanged = true;
+
+    if (g_gameId >= JACK) {
+        printf("Load 2d animations");
+    }
 
 	pCamera = cameraDataTable[NumCamera];
 
@@ -2522,7 +2523,7 @@ void removeFromBGIncrust(int actorIdx)
 {
 	tObject* actorPtr = &objectTable[actorIdx];
 
-	actorPtr->_flags &= ~AF_BOXIFY;
+	actorPtr->objectType &= ~AF_BOXIFY;
 
 	//  FlagRefreshAux2 = 1;
 
@@ -2585,7 +2586,7 @@ void deleteObject(int objIdx)
 
 		//    FlagGenereActiveList = 1;
 
-		if(actorPtr->_flags & AF_BOXIFY)
+		if(actorPtr->objectType & AF_BOXIFY)
 		{
 			removeFromBGIncrust(actorIdx);
 		}
@@ -3294,43 +3295,59 @@ void mainDraw(int flagFlip)
 		// this is commented out to draw actors incrusted in background
 		//if(actorPtr->_flags & (AF_ANIMATED + AF_DRAWABLE + AF_SPECIAL))
 		{
-			actorPtr->_flags &= ~AF_DRAWABLE;
+			actorPtr->objectType &= ~AF_DRAWABLE;
 
-			if(actorPtr->_flags & AF_SPECIAL)
+			if(actorPtr->objectType & AF_SPECIAL)
 			{
 				mainDrawSub2(currentDrawActor);
 			}
 			else 
 			{
-				char* bodyPtr = HQR_Get(listBody,actorPtr->bodyNum);
+                if (actorPtr->objectType & AF_OBJ_2D) {
+                    char* pHybrid = HQR_Get(listHybrides, actorPtr->ANIM);
+                    char* pData = pHybrid + READ_LE_U32(pHybrid + 8);
+                    pData += READ_LE_U32(pData + actorPtr->bodyNum * 4);
 
-				if(HQ_Load)
-				{
-					//          initAnimInBody(actorPtr->FRAME, HQR_Get(listAnim, actorPtr->ANIM), bodyPtr);
-				}
+                    char* pAnim = pData + 2;
+                    pAnim += 8 * actorPtr->frame;
+                    s16 numHybrid = READ_LE_U16(pAnim);
 
-				AffObjet(actorPtr->worldX + actorPtr->stepX, actorPtr->worldY + actorPtr->stepY, actorPtr->worldZ + actorPtr->stepZ, actorPtr->alpha, actorPtr->beta, actorPtr->gamma, bodyPtr); 
+                    //AffHyb(numHybrid, 0, 0, pHybrid);
+
+                    // TODO: bounding volume
+                }
+                else
+                {
+                    char* bodyPtr = HQR_Get(listBody, actorPtr->bodyNum);
+
+                    if (HQ_Load)
+                    {
+                        //          initAnimInBody(actorPtr->FRAME, HQR_Get(listAnim, actorPtr->ANIM), bodyPtr);
+                    }
+
+                    AffObjet(actorPtr->worldX + actorPtr->stepX, actorPtr->worldY + actorPtr->stepY, actorPtr->worldZ + actorPtr->stepZ, actorPtr->alpha, actorPtr->beta, actorPtr->gamma, bodyPtr);
 
 
-				if(actorPtr->animActionType != 0)
-				{
-					if(actorPtr->hotPointID != -1)
-					{
-						getHotPoint(actorPtr->hotPointID, bodyPtr, &actorPtr->hotPoint);
-					}
-				}
+                    if (actorPtr->animActionType != 0)
+                    {
+                        if (actorPtr->hotPointID != -1)
+                        {
+                            getHotPoint(actorPtr->hotPointID, bodyPtr, &actorPtr->hotPoint);
+                        }
+                    }
 
-				///////////////////////////////////// DEBUG
+                    ///////////////////////////////////// DEBUG
 #ifdef FITD_DEBUGGER
-				//  if(debuggerVar_drawModelZv)
-				{
-					if(backgroundMode == backgroundModeEnum_3D)
-					{
-						drawZv(actorPtr);
-					}
-				}
+                //  if(debuggerVar_drawModelZv)
+                    {
+                        if (backgroundMode == backgroundModeEnum_3D)
+                        {
+                            drawZv(actorPtr);
+                        }
+                    }
 #endif
-				/////////////////////////////////////
+                    /////////////////////////////////////
+                }
 			}
 
 			if(BBox3D1 < 0)
@@ -3418,8 +3435,8 @@ void walkStep(int angle1, int angle2, int angle3)
 
 void addActorToBgInscrust(int actorIdx)
 {
-	objectTable[actorIdx]._flags |= AF_BOXIFY + AF_DRAWABLE;
-	objectTable[actorIdx]._flags &= ~AF_ANIMATED;
+	objectTable[actorIdx].objectType |= AF_BOXIFY + AF_DRAWABLE;
+	objectTable[actorIdx].objectType &= ~AF_ANIMATED;
 
 	//FlagRefreshAux2 = 1;
 }
@@ -3464,7 +3481,7 @@ void getZvRelativePosition(ZVStruct* zvPtr, int startRoom, int destRoom)
 int checkObjectCollisions(int actorIdx, ZVStruct* zvPtr)
 {
 	int currentCollisionSlot = 0;
-	tObject* currentActor = objectTable;
+    tObject* currentActor = objectTable.data();
 	int actorRoom = objectTable[actorIdx].room;
 
 	for(int i=0;i<3;i++)
@@ -4078,6 +4095,12 @@ void checkIfCameraChangeIsRequired(void)
 
 	if(NumCamera!=-1)
 	{
+        if (currentCameraTargetActor == -1)
+        {
+            // TODO: Happens at the start of AITD3, likely a bug
+            return;
+        }
+
 		tObject* actorPtr;
 		int zvx1;
 		int zvx2;
@@ -4317,13 +4340,10 @@ int checkLineProjectionWithActors( int actorIdx, int X, int Y, int Z, int beta, 
 		}
 		else
 		{
-			tObject* currentActorPtr = objectTable;
-
-			int i;
-
-			for(i=0;i<NUM_MAX_OBJECT;i++)
+			for(int i=0;i<objectTable.size();i++)
 			{
-				if(currentActorPtr->indexInWorld != -1 && i != actorIdx && !(currentActorPtr->_flags & AF_SPECIAL))
+                tObject* currentActorPtr = &objectTable[i];
+				if(currentActorPtr->indexInWorld != -1 && i != actorIdx && !(currentActorPtr->objectType & AF_SPECIAL))
 				{
 					ZVStruct* zvPtr = &currentActorPtr->zv;
 
@@ -4352,8 +4372,6 @@ int checkLineProjectionWithActors( int actorIdx, int X, int Y, int Z, int beta, 
 					foundFlag = i;
 					break;
 				}
-
-				currentActorPtr++;
 			}
 		}
 	}
