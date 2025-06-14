@@ -3266,22 +3266,6 @@ void mainDraw(int flagFlip)
 	SetClip(0,0,319,199);
 	genVar6 = 0;
 
-#ifdef FITD_DEBUGGER
-	if(backgroundMode == backgroundModeEnum_3D)
-	{
-		for(i=0;i<getNumberOfRoom();i++)
-		{
-			drawHardCol(i);
-			drawSceZone(i);
-		}
-
-		//drawConverZones();
-		//drawMaskZones();
-	}
-#endif
-
-
-
 	osystem_startModelRender();
 
 	for(i=0;i<numActorInList;i++)
@@ -3389,6 +3373,24 @@ void mainDraw(int flagFlip)
 	}
 
 	osystem_stopModelRender();
+
+#ifdef FITD_DEBUGGER
+    {
+        for (i = 0; i < getNumberOfRoom(); i++)
+        {
+            if (hardColDisplayMode != displayNone) {
+                drawHardCol(i);
+            }
+
+            if (sceColDisplayMode != displayNone) {
+                drawSceZone(i);
+            }
+        }
+
+        //drawConverZones();
+        //drawMaskZones();
+    }
+#endif
 
 	if(drawTextOverlay())
 	{

@@ -285,4 +285,6 @@ hqrEntryStruct* listSamp;
 
 #if defined(FITD_DEBUGGER)
 backgroundModeEnum backgroundMode = backgroundModeEnum_2D;
+collisiosDisplayMode hardColDisplayMode = displayNone;
+collisiosDisplayMode sceColDisplayMode = displayNone;
 #endif

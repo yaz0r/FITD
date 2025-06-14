@@ -512,6 +512,16 @@ enum backgroundModeEnum
 typedef enum backgroundModeEnum backgroundModeEnum;
 
 extern backgroundModeEnum backgroundMode;
+
+enum collisiosDisplayMode : int
+{
+    displayNone,
+    displayWired,
+    displayFull,
+};
+extern collisiosDisplayMode hardColDisplayMode;
+extern collisiosDisplayMode sceColDisplayMode;
+
 #endif
 
 struct sGroupState
