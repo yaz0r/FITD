@@ -254,12 +254,12 @@ void PlayWorld(int allowSystemMenu, int deltaTime)
 
         //    if(FlagGenereActiveList)
         {
-            updateAllActorAndObjects();
+            GenereActiveList();
         } 
 
         //    if(actorTurnedToObj)
         {
-            createActorList();
+            GenereAffList();
         }
 
         sortActorList();

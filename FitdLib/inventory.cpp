@@ -220,7 +220,7 @@ void processInventory(void)
 		statusRight = WindowX2;
 		statusBottom = WindowY2;
 
-		setupCameraProjection(((statusRight-statusLeft)/2)+statusLeft,((statusBottom-statusTop)/2) + statusTop,128,400,390);
+		SetProjection(((statusRight-statusLeft)/2)+statusLeft,((statusBottom-statusTop)/2) + statusTop,128,400,390);
 
 		break;
 	case AITD2:
