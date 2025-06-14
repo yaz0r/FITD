@@ -45,10 +45,10 @@ struct maskStruct
 {
     bgfx::TextureHandle maskTexture = BGFX_INVALID_HANDLE;
     bgfx::VertexBufferHandle vertexBuffer = BGFX_INVALID_HANDLE;
-    int maskX1;
-    int maskY1;
-    int maskX2;
-    int maskY2;
+    int maskX1 = 0;
+    int maskY1 = 0;
+    int maskX2 = 0;
+    int maskY2 = 0;
 };
 
 std::vector<std::vector<maskStruct>> maskTextures; // [room][mask]
