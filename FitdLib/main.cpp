@@ -1326,7 +1326,7 @@ void loadCamera(int cameraIdx)
 	}
 }
 
-struct maskStruct
+struct sMaskStruct
 {
 	u16 x1;
 	u16 y1;
@@ -1338,12 +1338,10 @@ struct maskStruct
 	std::array<u8, 320*200> mask;
 };
 
-std::vector<std::vector<maskStruct>> g_maskBuffers;
+std::vector<std::vector<sMaskStruct>> g_maskBuffers;
 
 void loadMask(int cameraIdx)
 {
-	g_maskBuffers.clear();
-
     if (g_gameId == TIMEGATE)
         return;
 
@@ -1358,16 +1356,18 @@ void loadMask(int cameraIdx)
 
 	g_MaskPtr = (unsigned char*)loadPak(name,cameraIdx);
 
+    g_maskBuffers.clear();
+    g_maskBuffers.resize(cameraDataTable[NumCamera]->numViewedRooms);
 	for(int i=0; i<cameraDataTable[NumCamera]->numViewedRooms; i++)
 	{
 		cameraViewedRoomStruct* pRoomView = &cameraDataTable[NumCamera]->viewedRoomTable[i];
 		unsigned char* pViewedRoomMask = g_MaskPtr + READ_LE_U32(g_MaskPtr + i*4);
 
+        g_maskBuffers[i].reserve(pRoomView->numMask);
 		for(int j=0; j<pRoomView->numMask; j++)
 		{
+            sMaskStruct* pDestMask = &g_maskBuffers[i].emplace_back();
 			unsigned char* pMaskData = pViewedRoomMask + READ_LE_U32(pViewedRoomMask + j*4);
-
-			maskStruct* pDestMask = &g_maskBuffers[i][j];
 
             pDestMask->mask.fill(0);
 
@@ -1433,8 +1433,8 @@ void createAITD1Mask()
 
 		for(int maskIdx=0;maskIdx<numMask;maskIdx++)
 		{
-			maskStruct theMaskStruct;
-			maskStruct* pDestMask = &theMaskStruct;
+            sMaskStruct theMaskStruct;
+            sMaskStruct* pDestMask = &theMaskStruct;
             pDestMask->mask.fill(0);
             polyBackBuffer = pDestMask->mask.data();
 
