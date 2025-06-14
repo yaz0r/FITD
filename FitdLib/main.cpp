@@ -1338,10 +1338,12 @@ struct maskStruct
 	std::array<u8, 320*200> mask;
 };
 
-maskStruct g_maskBuffers[10][10];
+std::vector<std::vector<maskStruct>> g_maskBuffers;
 
 void loadMask(int cameraIdx)
 {
+	g_maskBuffers.clear();
+
     if (g_gameId == TIMEGATE)
         return;
 
@@ -1409,7 +1411,7 @@ void loadMask(int cameraIdx)
 				}
 			}
 
-			osystem_createMask(pDestMask->mask, i, j, (unsigned char*)aux, pDestMask->x1, pDestMask->y1, pDestMask->x2, pDestMask->y2);
+			osystem_createMask(pDestMask->mask, i, j, pDestMask->x1, pDestMask->y1, pDestMask->x2, pDestMask->y2);
 		}
 	}
 }
@@ -1431,13 +1433,13 @@ void createAITD1Mask()
 
 		for(int maskIdx=0;maskIdx<numMask;maskIdx++)
 		{
-			maskStruct* pDestMask = &g_maskBuffers[viewedRoomIdx][maskIdx];
+			maskStruct theMaskStruct;
+			maskStruct* pDestMask = &theMaskStruct;
             pDestMask->mask.fill(0);
-            polyBackBuffer = &pDestMask->mask[0];
+            polyBackBuffer = pDestMask->mask.data();
 
-			char* src = data2 + *(u16*)(data+2);
-
-			int numMaskZone = *(s16*)(data);
+			int numMaskZone = READ_LE_U16(data);
+			char* src = data2 + READ_LE_U16(data+2);
 
             int minX = 319;
             int maxX = 0;
@@ -1449,12 +1451,12 @@ void createAITD1Mask()
 			data+4,
 			*(s16*)(data) ))*/
 			{
-				int numMaskPoly = *(s16*)src;
+				int numMaskPoly = READ_LE_U16(src);
 				src += 2;
 
 				for(int maskPolyIdx=0;maskPolyIdx<numMaskPoly;maskPolyIdx++)
 				{
-					int numPoints = *(s16*)(src);
+					int numPoints = READ_LE_U16(src);
 					src+=2;
 
 					memcpy(cameraBuffer, src, numPoints*4);
@@ -1482,9 +1484,9 @@ void createAITD1Mask()
 
 			}
 
-			osystem_createMask(pDestMask->mask, viewedRoomIdx, maskIdx, (unsigned char*)aux, minX-1, minY-1, maxX+1, maxY+1);
+			osystem_createMask(pDestMask->mask, viewedRoomIdx, maskIdx, minX-1, minY-1, maxX+1, maxY+1);
 
-			int numOverlay = *(s16*)(data);
+			int numOverlay = READ_LE_U16(data);
 			data+=2;
 			data+=((numOverlay*4)+1)*2;
 		}

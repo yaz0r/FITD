@@ -14,8 +14,8 @@ etageVar1 -> table for camera data
 */
 
 std::vector<roomDataStruct> roomDataTable;
-cameraDataStruct* cameraDataTable[NUM_MAX_CAMERA_IN_ROOM];
-cameraViewedRoomStruct* currentCameraZoneList[NUM_MAX_CAMERA_IN_ROOM];
+std::vector<cameraDataStruct*> cameraDataTable;
+std::vector<cameraViewedRoomStruct*> currentCameraZoneList;
 
 roomDefStruct* getRoomData(int roomNumber)
 {
@@ -112,6 +112,11 @@ void ChangeSalle(int roomNumber)
     int newNumCamera = 0;
     int newAbsCamera = -1;
 
+    cameraDataTable.clear();
+
+    currentCameraZoneList.clear();
+    currentCameraZoneList.resize(numCameraInRoom, nullptr);
+    
     // load the new camera table and try to keep the same camera (except if changing floor)
     for(i=0;i<numCameraInRoom;i++)
     {
@@ -130,7 +135,7 @@ void ChangeSalle(int roomNumber)
             room_PtrCamera[i] = g_currentFloorCameraRawData + READ_LE_U32(g_currentFloorCameraRawData + currentCameraIdx * 4);
         }
 
-        cameraDataTable[i] = &(g_currentFloorCameraData[currentCameraIdx]);
+        cameraDataTable.push_back(&g_currentFloorCameraData.at(currentCameraIdx));
 
         currentCameraIdx = cameraDataTable[i]->numViewedRooms;
 
@@ -143,8 +148,9 @@ void ChangeSalle(int roomNumber)
         }
 
         ASSERT(cameraDataTable[i]->viewedRoomTable[j].viewedRoomIdx == currentRoom);
-        if(cameraDataTable[i]->viewedRoomTable[j].viewedRoomIdx == currentRoom)
+        if(cameraDataTable[i]->viewedRoomTable[j].viewedRoomIdx == currentRoom) {
             currentCameraZoneList[i] = &cameraDataTable[i]->viewedRoomTable[j];
+        }
     }
 
     // reajust world coordinates

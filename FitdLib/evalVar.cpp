@@ -201,10 +201,10 @@ int evalVar(const char* name)
                 actorIdx = ListWorldObjets[objectNumber].objIndex;
 
                 currentLifePtr+=2;
-                actorPtr = &objectTable[actorIdx];
-
+                
                 if(actorIdx==-1)
                 {
+                    actorPtr = nullptr;
                     switch(var1 & 0x7FFF)
                     {
                     case 0x1F:
@@ -224,6 +224,10 @@ int evalVar(const char* name)
                         }
                     }
                 }
+                else {
+                    actorPtr = &objectTable[actorIdx];
+                }
+                
             }
             {
 
