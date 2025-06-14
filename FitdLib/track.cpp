@@ -537,13 +537,13 @@ void processTrack(void)
                 }
             case TL_DEC_OFF: // background collision off
                 {
-                    currentProcessedActorPtr->_flags &= ~AF_TRIGGER;
+                    currentProcessedActorPtr->objectType &= ~AF_TRIGGER;
                     currentProcessedActorPtr->positionInTrack++;
                     break;
                 }
             case TL_DEC_ON: // background collision on
                 {
-                    currentProcessedActorPtr->_flags |= AF_TRIGGER;
+                    currentProcessedActorPtr->objectType |= AF_TRIGGER;
                     currentProcessedActorPtr->positionInTrack++;
                     break;
                 }
@@ -1013,13 +1013,13 @@ void processTrack2(void)
                 }
             case 0xA:
                 {
-                    currentProcessedActorPtr->_flags &= 0xFFBF;
+                    currentProcessedActorPtr->objectType &= 0xFFBF;
                     currentProcessedActorPtr->positionInTrack++;
                     break;
                 }
             case 0xB:
                 {
-                    currentProcessedActorPtr->_flags |= 0x40;
+                    currentProcessedActorPtr->objectType |= 0x40;
                     currentProcessedActorPtr->positionInTrack++;
                     break;
                 }/*

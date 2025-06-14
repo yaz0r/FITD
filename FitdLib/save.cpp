@@ -284,8 +284,8 @@ int loadSave(int saveNumber)
         ASSERT(sizeof(objectTable[i].bodyNum) == 2);
         fread(&objectTable[i].bodyNum,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i]._flags) == 2);
-        fread(&objectTable[i]._flags,2,1,fHandle);
+        ASSERT(sizeof(objectTable[i].objectType) == 2);
+        fread(&objectTable[i].objectType,2,1,fHandle);
 
         ASSERT(sizeof(objectTable[i].dynFlags) == 2);
         fread(&objectTable[i].dynFlags,2,1,fHandle);
@@ -389,8 +389,8 @@ int loadSave(int saveNumber)
         ASSERT(sizeof(objectTable[i].newAnimInfo) == 2);
         fread(&objectTable[i].newAnimInfo,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].FRAME) == 2);
-        fread(&objectTable[i].FRAME,2,1,fHandle);
+        ASSERT(sizeof(objectTable[i].frame) == 2);
+        fread(&objectTable[i].frame,2,1,fHandle);
 
         ASSERT(sizeof(objectTable[i].numOfFrames) == 2);
         fread(&objectTable[i].numOfFrames,2,1,fHandle);
@@ -398,8 +398,8 @@ int loadSave(int saveNumber)
         ASSERT(sizeof(objectTable[i].END_FRAME) == 2);
         fread(&objectTable[i].END_FRAME,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].END_ANIM) == 2);
-        fread(&objectTable[i].END_ANIM,2,1,fHandle);
+        ASSERT(sizeof(objectTable[i].flagEndAnim) == 2);
+        fread(&objectTable[i].flagEndAnim,2,1,fHandle);
 
         ASSERT(sizeof(objectTable[i].trackMode) == 2);
         fread(&objectTable[i].trackMode,2,1,fHandle);
@@ -499,7 +499,7 @@ int loadSave(int saveNumber)
             if(objectTable[i].ANIM != -1)
             {
                 char* animPtr = HQR_Get(listAnim,objectTable[i].ANIM);
-                SetAnimObjet(objectTable[i].FRAME,animPtr,bodyPtr);
+                SetAnimObjet(objectTable[i].frame,animPtr,bodyPtr);
             }
         }
     }
@@ -562,7 +562,7 @@ int makeSaveFile(int entry)
                 if (objectTable[i].ANIM == 4)
                 {
                     CVars[getCVarsIdx(FOG_FLAG)] = 0;
-                    HQ_Free_Malloc(HQ_Memory, objectTable[i].FRAME);
+                    HQ_Free_Malloc(HQ_Memory, objectTable[i].frame);
                 }
             }
 		}
@@ -778,8 +778,8 @@ int makeSaveFile(int entry)
         ASSERT(sizeof(objectTable[i].bodyNum) == 2);
         fwrite(&objectTable[i].bodyNum,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i]._flags) == 2);
-        fwrite(&objectTable[i]._flags,2,1,fHandle);
+        ASSERT(sizeof(objectTable[i].objectType) == 2);
+        fwrite(&objectTable[i].objectType,2,1,fHandle);
 
         ASSERT(sizeof(objectTable[i].dynFlags) == 2);
         fwrite(&objectTable[i].dynFlags,2,1,fHandle);
@@ -879,8 +879,8 @@ int makeSaveFile(int entry)
         ASSERT(sizeof(objectTable[i].newAnimInfo) == 2);
         fwrite(&objectTable[i].newAnimInfo,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].FRAME) == 2);
-        fwrite(&objectTable[i].FRAME,2,1,fHandle);
+        ASSERT(sizeof(objectTable[i].frame) == 2);
+        fwrite(&objectTable[i].frame,2,1,fHandle);
 
         ASSERT(sizeof(objectTable[i].numOfFrames) == 2);
         fwrite(&objectTable[i].numOfFrames,2,1,fHandle);
@@ -888,8 +888,8 @@ int makeSaveFile(int entry)
         ASSERT(sizeof(objectTable[i].END_FRAME) == 2);
         fwrite(&objectTable[i].END_FRAME,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].END_ANIM) == 2);
-        fwrite(&objectTable[i].END_ANIM,2,1,fHandle);
+        ASSERT(sizeof(objectTable[i].flagEndAnim) == 2);
+        fwrite(&objectTable[i].flagEndAnim,2,1,fHandle);
 
         ASSERT(sizeof(objectTable[i].trackMode) == 2);
         fwrite(&objectTable[i].trackMode,2,1,fHandle);

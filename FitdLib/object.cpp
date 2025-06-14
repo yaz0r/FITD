@@ -4,7 +4,7 @@ int copyObjectToActor(int body, int typeZv, int hardZvIdx, s16 objectType, int x
 {
     int i;
     int j;
-    tObject* actorPtr = objectTable;
+    tObject* actorPtr = objectTable.data();
     char* bodyPtr;
     ZVStruct* zvPtr;
 
@@ -23,7 +23,7 @@ int copyObjectToActor(int body, int typeZv, int hardZvIdx, s16 objectType, int x
     currentProcessedActorIdx = i;
 
     actorPtr->bodyNum = body;
-    actorPtr->_flags = objectType;
+    actorPtr->objectType = objectType;
     actorPtr->stage = stage;
     actorPtr->room = room;
     actorPtr->worldX = actorPtr->roomX = x;
@@ -44,13 +44,13 @@ int copyObjectToActor(int body, int typeZv, int hardZvIdx, s16 objectType, int x
     actorPtr->dynFlags = 1;
 
     actorPtr->ANIM = anim;
-    actorPtr->FRAME = frame;
+    actorPtr->frame = frame;
 
     actorPtr->animType = animtype;
     actorPtr->animInfo = animInfo;
 
     actorPtr->END_FRAME = 1;
-    actorPtr->END_ANIM = 1;
+    actorPtr->flagEndAnim = 1;
     actorPtr->newAnim = -1;
     actorPtr->newAnimType = 0;
     actorPtr->newAnimInfo = -1;
@@ -105,8 +105,8 @@ int copyObjectToActor(int body, int typeZv, int hardZvIdx, s16 objectType, int x
             SetAnimObjet(frame,animPtr,bodyPtr);
 
             actorPtr->numOfFrames = GetNbFramesAnim(animPtr);
-            actorPtr->END_ANIM = 0;
-            actorPtr->_flags |= AF_ANIMATED;
+            actorPtr->flagEndAnim = 0;
+            actorPtr->objectType |= AF_ANIMATED;
 
             //			computeScreenBox(actorPtr->field_22 + actorPtr->field_5A, actorPtr->field_24 + actorPtr->field_5C, actorPtr->anim + actorPtr->field_5E, actorPtr->alpha, actorPtr->beta, actorPtr->gamma, bodyPtr);
 
@@ -129,9 +129,9 @@ int copyObjectToActor(int body, int typeZv, int hardZvIdx, s16 objectType, int x
         }
         else
         {
-            if(!(actorPtr->_flags & AF_DRAWABLE))
+            if(!(actorPtr->objectType & AF_DRAWABLE))
             {
-                actorPtr->_flags &= ~AF_ANIMATED; // do not animate an object that is invisible
+                actorPtr->objectType &= ~AF_ANIMATED; // do not animate an object that is invisible
             }
         }
     }
