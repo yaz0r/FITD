@@ -33,7 +33,12 @@ add_subdirectory( Fitd )
 
 set(USE_SANITIZER ON)
 if(USE_SANITIZER)
-	set(SANITIZER_TYPE "address,undefined,leak")
+    IF(MSVC)
+        set(SANITIZER_TYPE "address")
+    ELSE()
+        set(SANITIZER_TYPE "address,undefined,leak")
+    ENDIF()
+	
 	target_link_options(Fitd PRIVATE "-fsanitize=${SANITIZER_TYPE}")
 	target_compile_options(Fitd PRIVATE "-fsanitize=${SANITIZER_TYPE}")
 	target_compile_options(FitdLib PRIVATE "-fsanitize=${SANITIZER_TYPE}")
