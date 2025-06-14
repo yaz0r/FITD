@@ -28,6 +28,12 @@ void afficheSprite(int left, int top, int index, char* gfxData)
 
     offset = 320 - width;
 
+    // Prevent overflow
+    if(height + top > 200)
+    {
+        height = top - 200;
+    }
+
     for(i=0;i<height;i++)
     {
         for(j=0;j<width;j++)

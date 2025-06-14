@@ -270,10 +270,10 @@ void debugger_draw(void)
             InputS16("newAnim", &pObject->newAnim);
             InputS16("newAnimType", &pObject->newAnimType);
             InputS16("newAnimInfo", &pObject->newAnimInfo);
-            InputS16("FRAME", &pObject->FRAME);
+            InputS16("FRAME", &pObject->frame);
             InputS16("numOfFrames", &pObject->numOfFrames);
             InputS16("END_FRAME", &pObject->END_FRAME);
-            InputS16("END_ANIM", &pObject->END_ANIM);
+            InputS16("END_ANIM", &pObject->flagEndAnim);
             InputS16("trackMode", &pObject->trackMode);
             InputS16("trackNumber", &pObject->trackNumber);
             InputS16("MARK", &pObject->MARK);

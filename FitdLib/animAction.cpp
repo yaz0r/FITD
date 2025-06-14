@@ -29,7 +29,7 @@ void GereFrappe(void)
             return;
         }
 
-        if (currentProcessedActorPtr->FRAME == currentProcessedActorPtr->animActionFRAME)
+        if (currentProcessedActorPtr->frame == currentProcessedActorPtr->animActionFRAME)
         {
             currentProcessedActorPtr->animActionType = FRAPPE_OK;
         }
@@ -77,7 +77,7 @@ void GereFrappe(void)
                 actorPtr2->HIT_BY = currentProcessedActorIdx;
                 actorPtr2->hitForce = currentProcessedActorPtr->hitForce;
 
-                if(actorPtr2->_flags & AF_ANIMATED)
+                if(actorPtr2->objectType & AF_ANIMATED)
                 {
                     currentProcessedActorPtr->animActionType = 0;
                     return;
@@ -90,7 +90,7 @@ void GereFrappe(void)
             if(currentProcessedActorPtr->ANIM != currentProcessedActorPtr->animActionANIM)
                 return;
 
-            if(currentProcessedActorPtr->FRAME != currentProcessedActorPtr->animActionFRAME)
+            if(currentProcessedActorPtr->frame != currentProcessedActorPtr->animActionFRAME)
                 return;
 
             currentProcessedActorPtr->animActionType = 5;
@@ -174,7 +174,7 @@ void GereFrappe(void)
                 }
                 else
                 {
-                    if(currentProcessedActorPtr->FRAME == currentProcessedActorPtr->animActionFRAME)
+                    if(currentProcessedActorPtr->frame == currentProcessedActorPtr->animActionFRAME)
                     {
                         currentProcessedActorPtr->animActionType = 7;
 
@@ -240,8 +240,8 @@ void GereFrappe(void)
             actorPtr->zv.ZVZ1 += z;
             actorPtr->zv.ZVZ2 += z;
 
-            actorPtr->_flags |= AF_ANIMATED;
-            actorPtr->_flags &= ~AF_BOXIFY;
+            actorPtr->objectType |= AF_ANIMATED;
+            actorPtr->objectType &= ~AF_BOXIFY;
 
             ListWorldObjets[objIdx].x = x;
             ListWorldObjets[objIdx].y = y;

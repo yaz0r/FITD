@@ -115,14 +115,18 @@ enum actorFlags
     AF_FOUNDABLE    = 0x0080,
     AF_FALLABLE     = 0x0100,
 
-    AF_MASK         = AF_ANIMATED + AF_MOVABLE + AF_TRIGGER + AF_FOUNDABLE + AF_FALLABLE,
+    // >= JACK
+    AF_OBJ_2D       = 0x0200,
+    AF_WATER        = 0x0400,
+
+    AF_MASK         = AF_ANIMATED + AF_MOVABLE + AF_TRIGGER + AF_FOUNDABLE + AF_FALLABLE + AF_WATER,
 };
 
 struct tObject // used to read data from file too
 {
     s16 indexInWorld;
     s16 bodyNum;
-    u16 _flags;
+    u16 objectType;
     s16 dynFlags;
     ZVStruct zv;
     s16 screenXMin;
@@ -150,10 +154,11 @@ struct tObject // used to read data from file too
     s16 newAnim;
     s16 newAnimType;
     s16 newAnimInfo;
-    s16 FRAME;
+    s16 frame;
     s16 numOfFrames;
     s16 END_FRAME;
-    s16 END_ANIM;
+    s16 flagEndAnim;
+    u32 memoTicks; // for 2d objects
     s16 trackMode;
     s16 trackNumber;
     s16 MARK;
@@ -323,7 +328,7 @@ extern char* screenSm3;
 extern char* screenSm4;
 extern char* screenSm5;
 
-extern tObject objectTable[NUM_MAX_OBJECT];
+extern std::array<tObject, NUM_MAX_OBJECT> objectTable;
 
 extern s16 currentWorldTarget;
 
@@ -333,6 +338,7 @@ extern hqrEntryStruct* listBody;
 extern hqrEntryStruct* listAnim;
 extern hqrEntryStruct* listLife;
 extern hqrEntryStruct* listTrack;
+extern hqrEntryStruct* listHybrides;
 extern hqrEntryStruct* listMatrix;
 
 extern s16 maxObjects;
