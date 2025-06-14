@@ -62,11 +62,6 @@ struct polyVertex
 
     float U;
     float V;
-
-    unsigned char R;
-    unsigned char G;
-    unsigned char B;
-    unsigned char A;
 };
 
 struct sphereVertex
@@ -95,6 +90,7 @@ std::array<polyVertex, NUM_MAX_NOISE_VERTICES> noiseVertices;
 std::array<polyVertex, NUM_MAX_TRANSPARENT_VERTICES> transparentVertices;
 std::array<polyVertex, NUM_MAX_RAMP_VERTICES> rampVertices;
 std::array<sphereVertex, NUM_MAX_SPHERES_VERTICES> sphereVertices;
+std::vector<polyVertex> g_lineVertices;
 
 int numUsedFlatVertices = 0;
 int numUsedNoiseVertices = 0;
@@ -618,7 +614,6 @@ void osystem_flushPendingPrimitives()
             .begin()
             .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
             .add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
-            .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8)
             .end();
 
         bgfx::TransientVertexBuffer transientBuffer;
@@ -652,7 +647,6 @@ void osystem_flushPendingPrimitives()
             .begin()
             .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
             .add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
-            .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8)
             .end();
 
         bgfx::TransientVertexBuffer transientBuffer;
@@ -686,7 +680,6 @@ void osystem_flushPendingPrimitives()
             .begin()
             .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
             .add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
-            .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8)
             .end();
 
         bgfx::TransientVertexBuffer transientBuffer;
@@ -744,6 +737,39 @@ void osystem_flushPendingPrimitives()
         bgfx::setVertexBuffer(0, &transientBuffer);
         bgfx::submit(gameViewId, getSphereShader());
     }
+
+    if (g_lineVertices.size()) {
+        bgfx::VertexLayout layout;
+        layout
+            .begin()
+            .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
+            .add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
+            .end();
+
+        bgfx::TransientVertexBuffer transientBuffer;
+        bgfx::allocTransientVertexBuffer(&transientBuffer, g_lineVertices.size(), layout);
+
+        memcpy(transientBuffer.data, g_lineVertices.data(), sizeof(polyVertex) * g_lineVertices.size());
+
+        bgfx::setState(0 | BGFX_STATE_PT_LINES
+            | BGFX_STATE_WRITE_RGB
+            | BGFX_STATE_WRITE_A
+            | BGFX_STATE_WRITE_Z
+            | BGFX_STATE_DEPTH_TEST_LEQUAL
+            | BGFX_STATE_MSAA
+        );
+
+        static bgfx::UniformHandle paletteTextureUniform = BGFX_INVALID_HANDLE;
+        if (!bgfx::isValid(paletteTextureUniform))
+        {
+            paletteTextureUniform = bgfx::createUniform("s_paletteTexture", bgfx::UniformType::Sampler);
+        }
+
+        bgfx::setTexture(1, paletteTextureUniform, g_paletteTexture);
+
+        bgfx::setVertexBuffer(0, &transientBuffer);
+        bgfx::submit(gameViewId, getFlatShader());
+    }
 #if 0
     if (numUsedTransparentVertices)
     {
@@ -761,6 +787,7 @@ void osystem_flushPendingPrimitives()
     numUsedRampVertices = 0;
     numUsedSpheres = 0;
     numUsedTransparentVertices = 0;
+    g_lineVertices.clear();
 }
 
 void osystem_fillPoly(float* buffer, int numPoint, unsigned char color, u8 polyType)
@@ -884,10 +911,11 @@ void osystem_fillPoly(float* buffer, int numPoint, unsigned char color, u8 polyT
             pVertex->Y = buffer[i * 3 + 1];
             pVertex->Z = buffer[i * 3 + 2];
 
-            pVertex->R = RGB_Pal[color * 3];
-            pVertex->G = RGB_Pal[color * 3 + 1];
-            pVertex->B = RGB_Pal[color * 3 + 2];
-            pVertex->A = 128;
+            int bank = (color & 0xF0) >> 4;
+            int startColor = color & 0xF;
+            float colorf = startColor;
+            pVertex->U = colorf / 15.f;
+            pVertex->V = bank / 15.f;
             pVertex++;
         }
         break;
@@ -1004,6 +1032,26 @@ void osystem_fillPoly(float* buffer, int numPoint, unsigned char color, u8 polyT
 
 void osystem_draw3dLine(float x1, float y1, float z1, float x2, float y2, float z2, unsigned char color)
 {
+    polyVertex vertex1;
+    polyVertex vertex2;
+
+    vertex1.X = x1;
+    vertex1.Y = y1;
+    vertex1.Z = z1;
+
+    vertex2.X = x2;
+    vertex2.Y = y2;
+    vertex2.Z = z2;
+
+    int bank = (color & 0xF0) >> 4;
+    int startColor = color & 0xF;
+    float colorf = startColor;
+    vertex1.U = vertex2.U = colorf / 15.f;
+    vertex1.V = vertex2.V = bank / 15.f;
+
+    g_lineVertices.push_back(vertex1);
+    g_lineVertices.push_back(vertex2);
+
 #if 0
     GLfloat lineVertices[2 * 3];
     GLubyte lineColor[2 * 4];
@@ -1071,63 +1119,10 @@ void osystem_draw3dLine(float x1, float y1, float z1, float x2, float y2, float 
 
 void osystem_draw3dQuad(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, float x4, float y4, float z4, unsigned char color, int transparency)
 {
-    float lineVertices[4 * 3];
-    unsigned char lineColor1[4 * 4];
-    unsigned char lineColor2[4 * 4];
-
-    for (int i = 0; i < 4; i++)
-    {
-        lineColor1[i * 4 + 0] = RGB_Pal[(color + 3) * 3];
-        lineColor1[i * 4 + 1] = RGB_Pal[(color + 3) * 3 + 1];
-        lineColor1[i * 4 + 2] = RGB_Pal[(color + 3) * 3 + 2];
-        lineColor1[i * 4 + 3] = 255;
-
-        lineColor2[i * 4 + 0] = RGB_Pal[color * 3];
-        lineColor2[i * 4 + 1] = RGB_Pal[color * 3 + 1];
-        lineColor2[i * 4 + 2] = RGB_Pal[color * 3 + 2];
-        lineColor2[i * 4 + 3] = 255;
-
-    }
-
-    lineVertices[0] = x1;
-    lineVertices[1] = y1;
-    lineVertices[2] = z1;
-
-    lineVertices[3] = x2;
-    lineVertices[4] = y2;
-    lineVertices[5] = z2;
-
-    lineVertices[6] = x4;
-    lineVertices[7] = y4;
-    lineVertices[8] = z4;
-
-    lineVertices[9] = x3;
-    lineVertices[10] = y3;
-    lineVertices[11] = z3;
-
     osystem_draw3dLine(x1, y1, z1, x2, y2, z2, color);
     osystem_draw3dLine(x2, y2, z2, x3, y3, z3, color);
     osystem_draw3dLine(x3, y3, z3, x4, y4, z4, color);
     osystem_draw3dLine(x4, y4, z4, x1, y1, z1, color);
-
-    //glEnable(GL_DEPTH_TEST);
-    //glDisable(GL_BLEND);
-
-    /*glColor4ub(1.f, 1.f, 1.f, 1.f);
-    glVertexPointer(3, GL_FLOAT, 0, lineVertices);
-    glColorPointer(4, GL_UNSIGNED_BYTE, 0, lineColor1);
-    glDrawArrays(GL_LINE_LOOP, 0, 4);
-    checkGL();*/
-    /*
-    {
-    checkGL();
-    glVertexPointer(3, GL_FLOAT, 0, lineVertices);
-    glColorPointer(4, GL_UNSIGNED_BYTE, 0, lineColor2);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-    checkGL();
-    }
-    */
-
 }
 
 void osystem_drawSphere(float X, float Y, float Z, u8 color, u8 material, float size)
