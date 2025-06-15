@@ -912,7 +912,7 @@ void renderPoly(primEntryStruct* pEntry) // poly
 
 void renderZixel(primEntryStruct* pEntry) // point
 {
-    float pointSize = 20.f;
+    static float pointSize = 20.f;
     float transformedSize = ((pointSize * (float)cameraFovX) / (float)(pEntry->vertices[0].Z+cameraPerspective));
 
     osystem_drawPoint(pEntry->vertices[0].X,pEntry->vertices[0].Y,pEntry->vertices[0].Z,pEntry->color,pEntry->material, transformedSize);
@@ -920,13 +920,13 @@ void renderZixel(primEntryStruct* pEntry) // point
 
 void renderPoint(primEntryStruct* pEntry) // point
 {
-    float pointSize = 0.3f; // TODO: better way to compute that?
+    static float pointSize = 0.3f; // TODO: better way to compute that?
     osystem_drawPoint(pEntry->vertices[0].X,pEntry->vertices[0].Y,pEntry->vertices[0].Z,pEntry->color, pEntry->material, pointSize);
 }
 
 void renderBigPoint(primEntryStruct* pEntry) // point
 {
-    float bigPointSize = 2.f; // TODO: better way to compute that?
+    static float bigPointSize = 1.f; // TODO: better way to compute that?
     osystem_drawPoint(pEntry->vertices[0].X,pEntry->vertices[0].Y,pEntry->vertices[0].Z,pEntry->color, pEntry->material, bigPointSize);
 }
 
