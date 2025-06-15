@@ -60,7 +60,7 @@ int sortCompareFunction(const void* param1, const void* param2)
             flag |= 2;
         }
 
-        //TODO: remove hack and find the exact cause of the bug in the sorting algorithme
+        //TODO: remove hack and find the exact cause of the bug in the sorting algorithm
         //flag = 0;
 
         if(flag == 0)
@@ -134,5 +134,5 @@ int sortCompareFunction(const void* param1, const void* param2)
 
 void sortActorList()
 {
-    qsort(sortedActorTable, numActorInList, sizeof(int), sortCompareFunction);
+    qsort(sortedActorTable.data(), numActorInList, sizeof(int), sortCompareFunction);
 }

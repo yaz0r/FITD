@@ -1221,8 +1221,8 @@ void initVars()
 	genVar1 = genVar2;
 	genVar3 = genVar4;
 
-	genVar5 = 0;
-	genVar6 = 0;
+	NbPhysBoxs = 0;
+	NbLogBoxs = 0;
 
 	LastSample = -1;
 	nextSample = -1;
@@ -3257,16 +3257,12 @@ void mainDraw(int flagFlip)
 	}
 	else
 	{
-		genVar5 = 0;
+		NbPhysBoxs = 0;
 		FastCopyScreen(aux2,logicalScreen);
 	}
 
-	//osystem_drawBackground();
-
 	SetClip(0,0,319,199);
-	genVar6 = 0;
-
-	osystem_startModelRender();
+	NbLogBoxs = 0;
 
 	for(i=0;i<numActorInList;i++)
 	{
@@ -3371,8 +3367,6 @@ void mainDraw(int flagFlip)
 			}
 		}
 	}
-
-	osystem_stopModelRender();
 
 #ifdef FITD_DEBUGGER
     {

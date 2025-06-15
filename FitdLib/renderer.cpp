@@ -696,47 +696,45 @@ void primFunctionDefault(int primType,char** ptr,char** out)
     assert(0);
 }
 
-void processPrim_Line(int primType, char** ptr, char** out) // line tested
+void processPrim_Line(int primType, sPrimitive* ptr, char** out)
 {
-    float depth = 32000.f;
     primEntryStruct* pCurrentPrimEntry = &primTable[positionInPrimEntry];
 
-    (*ptr)++;
-    u8 lineColor = **ptr;
-    (*ptr)++;
-    (*ptr)++;
+    ASSERT(positionInPrimEntry < NUM_MAX_PRIM_ENTRY);
 
     pCurrentPrimEntry->type = primTypeEnum_Line;
-    pCurrentPrimEntry->color = lineColor;
+    pCurrentPrimEntry->numOfVertices = 2;
+    pCurrentPrimEntry->color = ptr->m_color;
+    pCurrentPrimEntry->material = ptr->m_material;
 
-
-    for(int i=0;i<2;i++)
+    float depth = 32000.f;
+    ASSERT(pCurrentPrimEntry->numOfVertices < NUM_MAX_VERTEX_IN_PRIM);
+    for (int i = 0; i < pCurrentPrimEntry->numOfVertices; i++)
     {
         u16 pointIndex;
 
-        pointIndex = *(u16*)(*ptr);
-        (*ptr)+=2;
+        pointIndex = ptr->m_points[i] * 6;
 
-        ASSERT((pointIndex%2) == 0);
+        ASSERT((pointIndex % 2) == 0);
 
-        pCurrentPrimEntry->vertices[i].X = renderPointList[pointIndex/2];
-        pCurrentPrimEntry->vertices[i].Y = renderPointList[(pointIndex/2)+1];
-        pCurrentPrimEntry->vertices[i].Z = renderPointList[(pointIndex/2)+2];
+        pCurrentPrimEntry->vertices[i].X = renderPointList[pointIndex / 2];
+        pCurrentPrimEntry->vertices[i].Y = renderPointList[(pointIndex / 2) + 1];
+        pCurrentPrimEntry->vertices[i].Z = renderPointList[(pointIndex / 2) + 2];
 
-        if(depth>pCurrentPrimEntry->vertices[i].Z)
+        if (pCurrentPrimEntry->vertices[i].Z < depth)
             depth = pCurrentPrimEntry->vertices[i].Z;
+
     }
 
-    if(depth > 0)
+#if !defined(AITD_UE4)
+    if (depth > 100)
+#endif
     {
         positionInPrimEntry++;
-        numOfPrimitiveToRender++;
-		ASSERT(positionInPrimEntry < NUM_MAX_PRIM_ENTRY);
-    }
-}
 
-void processPrim_Line(int primType, sPrimitive* ptr, char** out)
-{
+        numOfPrimitiveToRender++;
+        ASSERT(positionInPrimEntry < NUM_MAX_PRIM_ENTRY);
+    }
 }
 
 void processPrim_Poly(int primType, sPrimitive* ptr, char** out)

@@ -68,8 +68,6 @@
 
 	void osystem_startFrame();
 	void osystem_stopFrame();
-	void osystem_startModelRender();
-	void osystem_stopModelRender();
 
 	// clip
 	void osystem_setClip(float left, float top, float right, float bottom);

@@ -109,8 +109,8 @@ boxStruct genVar4[50];
 boxStruct *genVar1;
 boxStruct *genVar3;
 
-int genVar5;
-int genVar6;
+int NbPhysBoxs;
+int NbLogBoxs;
 int nextSample;
 int nextMusic;
 s16 currentCameraTargetActor;
@@ -201,7 +201,7 @@ int flagRedraw;
 float renderPointList[6400];
 
 int numActorInList;
-int sortedActorTable[NUM_MAX_OBJECT];
+std::array<int, NUM_MAX_OBJECT> sortedActorTable;
 
 int angleCompX;
 int angleCompZ;
