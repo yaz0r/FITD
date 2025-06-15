@@ -216,8 +216,8 @@ int loadSave(int saveNumber)
     ASSERT(sizeof(statusScreenAllowed) == 2);
     fread(&statusScreenAllowed,2,1,fHandle);
 
-    ASSERT(sizeof(giveUp) == 2);
-    fread(&giveUp,2,1,fHandle);
+    ASSERT(sizeof(FlagGameOver) == 2);
+    fread(&FlagGameOver,2,1,fHandle);
 
     ASSERT(sizeof(lightOff) == 2);
     fread(&lightOff,2,1,fHandle);
@@ -730,8 +730,8 @@ int makeSaveFile(int entry)
     ASSERT(sizeof(statusScreenAllowed) == 2);
     fwrite(&statusScreenAllowed,2,1,fHandle);
 
-    ASSERT(sizeof(giveUp) == 2);
-    fwrite(&giveUp,2,1,fHandle);
+    ASSERT(sizeof(FlagGameOver) == 2);
+    fwrite(&FlagGameOver,2,1,fHandle);
 
     ASSERT(sizeof(lightOff) == 2);
     fwrite(&lightOff,2,1,fHandle);

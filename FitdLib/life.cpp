@@ -345,16 +345,16 @@ void setStage(int newStage, int newRoomLocal, int X, int Y, int Z)
     {
         if (newStage != g_currentFloor)
         {
-            changeFloor = 1;
-            newFloor = newStage;
-            newRoom = newRoomLocal;
+            FlagChangeEtage = 1;
+            NewNumEtage = newStage;
+            NewNumSalle = newRoomLocal;
         }
         else
         {
             if (currentRoom != newRoomLocal)
             {
-                needChangeRoom = 1;
-                newRoom = newRoomLocal;
+                FlagChangeSalle = 1;
+                NewNumSalle = newRoomLocal;
             }
         }
     }
@@ -1979,8 +1979,8 @@ void processLife(int lifeNum, bool callFoundLife)
 
                             if (lifeTempVar3 != currentRoom)
                             {
-                                needChangeRoom = 1;
-                                newRoom = lifeTempVar3;
+                                FlagChangeSalle = 1;
+                                NewNumSalle = lifeTempVar3;
                             }
                         }
                         else
@@ -1990,9 +1990,9 @@ void processLife(int lifeNum, bool callFoundLife)
                             if (objectTable[lifeTempVar2].stage != g_currentFloor)
                             {
                                 currentWorldTarget = lifeTempVar1;
-                                changeFloor = 1;
-                                newFloor = objectTable[lifeTempVar2].stage;
-                                newRoom = objectTable[lifeTempVar2].room;
+                                FlagChangeEtage = 1;
+                                NewNumEtage = objectTable[lifeTempVar2].stage;
+                                NewNumSalle = objectTable[lifeTempVar2].room;
                             }
                             else
                             {
@@ -2003,8 +2003,8 @@ void processLife(int lifeNum, bool callFoundLife)
 
                                 if (lifeTempVar3 != currentRoom)
                                 {
-                                    needChangeRoom = 1;
-                                    newRoom = lifeTempVar3;
+                                    FlagChangeSalle = 1;
+                                    NewNumSalle = lifeTempVar3;
                                 }
                             }
                         }
@@ -2014,16 +2014,16 @@ void processLife(int lifeNum, bool callFoundLife)
                         currentWorldTarget = lifeTempVar1;
                         if (ListWorldObjets[lifeTempVar1].stage != g_currentFloor)
                         {
-                            changeFloor = 1;
-                            newFloor = ListWorldObjets[lifeTempVar1].stage;
-                            newRoom = ListWorldObjets[lifeTempVar1].room;
+                            FlagChangeEtage = 1;
+                            NewNumEtage = ListWorldObjets[lifeTempVar1].stage;
+                            NewNumSalle = ListWorldObjets[lifeTempVar1].room;
                         }
                         else
                         {
                             if (currentRoom != ListWorldObjets[lifeTempVar1].room)
                             {
-                                needChangeRoom = 1;
-                                newRoom = ListWorldObjets[lifeTempVar1].room;
+                                FlagChangeSalle = 1;
+                                NewNumSalle = ListWorldObjets[lifeTempVar1].room;
                             }
                         }
                     }
@@ -2473,7 +2473,7 @@ void processLife(int lifeNum, bool callFoundLife)
                 {
                     process_events();
                 }
-                giveUp = 1;
+                FlagGameOver = 1;
                 exitLife = 1;
                 break;
             }
@@ -2488,7 +2488,7 @@ void processLife(int lifeNum, bool callFoundLife)
                 {
                     process_events();
                 }
-                giveUp = 1;
+                FlagGameOver = 1;
                 exitLife = 1;
                 break;
             }

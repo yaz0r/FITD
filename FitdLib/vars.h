@@ -364,7 +364,7 @@ extern int NbLogBoxs;
 extern int nextSample;
 extern int nextMusic;
 extern s16 currentCameraTargetActor;
-extern s16 giveUp;
+extern s16 FlagGameOver;
 extern s16 lightOff;
 extern int lightVar2;
 extern int LastPriority;
@@ -374,10 +374,10 @@ extern s16 statusScreenAllowed;
 extern char* g_currentFloorRoomRawData;
 extern char* g_currentFloorCameraRawData;
 
-extern int changeFloor;
+extern int FlagChangeEtage;
 extern s16 NumCamera;
 extern s16 g_currentFloor;
-extern int needChangeRoom;
+extern int FlagChangeSalle;
 
 extern char* cameraPtr;
 extern roomDefStruct* pCurrentRoomData;
@@ -455,7 +455,7 @@ extern char* animVar1;
 extern char* animVar3;
 extern char* animVar4;
 
-extern s16 newFloor;
+extern s16 NewNumEtage;
 
 extern int fadeState;
 
@@ -473,7 +473,7 @@ extern int overlaySize2;
 
 extern int bgOverlayVar1;
 
-extern s16 newRoom;
+extern s16 NewNumSalle;
 
 extern const char* listBodySelect[];
 extern const char* listAnimSelect[];

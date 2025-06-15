@@ -99,7 +99,7 @@ void PlayWorld(int allowSystemMenu, int deltaTime)
 
         executeFoundLife(inHandTable[currentInventory]);
 
-        if(changeFloor == 0)
+        if(FlagChangeEtage == 0)
         {
             if(g_gameId == AITD1)
             {
@@ -110,10 +110,9 @@ void PlayWorld(int allowSystemMenu, int deltaTime)
                 }
             }
 
-            currentProcessedActorPtr = objectTable.data();
-
             for(currentProcessedActorIdx = 0; currentProcessedActorIdx < NUM_MAX_OBJECT; currentProcessedActorIdx++)
             {
+                currentProcessedActorPtr = &objectTable[currentProcessedActorIdx];
                 if(currentProcessedActorPtr->indexInWorld >= 0)
                 {
                     currentProcessedActorPtr->COL_BY = -1;
@@ -122,24 +121,22 @@ void PlayWorld(int allowSystemMenu, int deltaTime)
                     currentProcessedActorPtr->HARD_DEC = -1;
                     currentProcessedActorPtr->HARD_COL = -1;
                 }
-
-                currentProcessedActorPtr++;
             }
 
-            currentProcessedActorPtr = objectTable.data();
             for(currentProcessedActorIdx = 0; currentProcessedActorIdx < NUM_MAX_OBJECT; currentProcessedActorIdx++)
             {
+                currentProcessedActorPtr = &objectTable[currentProcessedActorIdx];
                 if(currentProcessedActorPtr->indexInWorld >= 0)
                 {
                     int flag = currentProcessedActorPtr->objectType;
 
                     if((flag & AF_ANIMATED) || (g_gameId >= AITD2 && flag & 0x200))
                     {
-                        updateAnimation();
+                        GereAnim();
                     }
                     if(flag & AF_TRIGGER)
                     {
-                        processActor2();
+                        GereDec();
                     }
 
                     if(currentProcessedActorPtr->animActionType)
@@ -147,13 +144,12 @@ void PlayWorld(int allowSystemMenu, int deltaTime)
                         GereFrappe();
                     }
                 }
-
-                currentProcessedActorPtr++;
             }
 
-            currentProcessedActorPtr = objectTable.data();
+            
             for(currentProcessedActorIdx = 0; currentProcessedActorIdx < NUM_MAX_OBJECT; currentProcessedActorIdx++)
             {
+                currentProcessedActorPtr = &objectTable[currentProcessedActorIdx];
                 if(currentProcessedActorPtr->indexInWorld >= 0)
                 {
                     if(currentProcessedActorPtr->life != -1)
@@ -181,75 +177,70 @@ void PlayWorld(int allowSystemMenu, int deltaTime)
                     }
                 }
 
-                if(changeFloor)
+                if(FlagChangeEtage)
                     break;
-
-                currentProcessedActorPtr++;
             }
 
-            if(giveUp)
+            if(FlagGameOver)
                 break;
         }
 
-        if(changeFloor)
+        if(FlagChangeEtage)
         {
-            LoadEtage(newFloor);
+            LoadEtage(NewNumEtage);
         }
 
-        if(needChangeRoom)
+        if(FlagChangeSalle)
         {
-			ChangeSalle(newRoom);
+			ChangeSalle(NewNumSalle);
             InitView();
+            continue;
         }
-        else
+
+        GereSwitchCamera();
+
+        // Handle 2d objects
+        //if (g_gameId >= AITD2) // no need for this test since it would do anything if there are 2d objects
         {
-            checkIfCameraChangeIsRequired();
-            if(g_gameId >= AITD2)
+            int memocam = NumCamera;
+
+            NumCamera = NewNumCamera;
+
+            for (currentProcessedActorIdx = 0; currentProcessedActorIdx < NUM_MAX_OBJECT; currentProcessedActorIdx++)
             {
-                int tempCurrentCamera;
-
-                tempCurrentCamera = NumCamera;
-
-                NumCamera = NewNumCamera;
-
-                for (currentProcessedActorIdx = 0; currentProcessedActorIdx < NUM_MAX_OBJECT; currentProcessedActorIdx++)
+                currentProcessedActorPtr = &objectTable[currentProcessedActorIdx];
+                if (currentProcessedActorPtr->indexInWorld >= 0)
                 {
-                    currentProcessedActorPtr = &objectTable[currentProcessedActorIdx];
-                    if(currentProcessedActorPtr->indexInWorld >= 0)
+                    if (currentProcessedActorPtr->life != -1)
                     {
-                        if(currentProcessedActorPtr->life != -1)
+                        if (currentProcessedActorPtr->objectType & AF_OBJ_2D)
                         {
-                            if(currentProcessedActorPtr->objectType & 0x200)
-                            {
-                                if(currentProcessedActorPtr->lifeMode&3)
-                                    if(!(currentProcessedActorPtr->lifeMode&4))
-                                    {
-                                        processLife(currentProcessedActorPtr->life, false);
-                                        actorTurnedToObj = 1;
-                                    }
-                            }
+                            if (currentProcessedActorPtr->lifeMode & 3)
+                                if (!(currentProcessedActorPtr->lifeMode & 4))
+                                {
+                                    processLife(currentProcessedActorPtr->life, false);
+                                    actorTurnedToObj = 1;
+                                }
                         }
                     }
-
-                    if(changeFloor)
-                        break;
-
-					currentProcessedActorPtr++;
                 }
 
-                if(giveUp)
+                if (FlagChangeEtage)
                     break;
+            }
 
-                NumCamera = tempCurrentCamera;
-            }
-            if(FlagInitView
+            if (FlagGameOver)
+                break;
+
+            NumCamera = memocam;
+        }
+        if (FlagInitView
 #ifdef FITD_DEBUGGER
-               || debuggerVar_topCamera
+            || debuggerVar_topCamera
 #endif
-               )
-            {
-                InitView();
-            }
+            )
+        {
+            InitView();
         }
 
         //    if(FlagGenereActiveList)

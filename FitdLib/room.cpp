@@ -190,8 +190,8 @@ void ChangeSalle(int roomNumber)
         }
     }
 
-    NewNumCamera = newNumCamera;
+    NewNumCamera = newNumCamera;    
     FlagInitView = 1;
-    needChangeRoom = 0;
+    FlagChangeSalle = 0;
     RestoreTimerAnim();
 }

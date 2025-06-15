@@ -279,7 +279,7 @@ int manageFall(int actorIdx, ZVStruct* zvPtr)
 	return(fallResult);
 }
 
-void updateAnimation(void)
+void GereAnim(void)
 {
 	int oldStepZ=0;
 	int oldStepY=0;
