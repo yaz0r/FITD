@@ -5,12 +5,12 @@ extern int input5;
 
 void menuWaitVSync();
 void AffSpfI(int x, int y, int param, char* gfx);
-void processActor2();
+void GereDec();
 void LoadEtage(int floorNumber);
 void ChangeSalle(int roomNumber);
 void executeFoundLife(int objIdx);
 void InitView();
-void checkIfCameraChangeIsRequired(void);
+void GereSwitchCamera(void);
 void GenereActiveList();
 void GenereAffList();
 void mainDraw(int mode);

@@ -114,7 +114,7 @@ int NbLogBoxs;
 int nextSample;
 int nextMusic;
 s16 currentCameraTargetActor;
-s16 giveUp;
+s16 FlagGameOver;
 s16 lightOff;
 int lightVar2;
 int LastPriority;
@@ -124,10 +124,10 @@ s16 statusScreenAllowed;
 char* g_currentFloorRoomRawData = NULL;
 char* g_currentFloorCameraRawData = NULL;
 
-int changeFloor;
+int FlagChangeEtage;
 s16 NumCamera;
 s16 g_currentFloor;
-int needChangeRoom;
+int FlagChangeSalle;
 
 char* cameraPtr;
 roomDefStruct* pCurrentRoomData;
@@ -224,7 +224,7 @@ char* animVar1;
 char* animVar3;
 char* animVar4;
 
-s16 newFloor;
+s16 NewNumEtage;
 
 int fadeState;
 
@@ -242,7 +242,7 @@ int overlaySize2;
 
 int bgOverlayVar1;
 
-s16 newRoom;
+s16 NewNumSalle;
 
 
 

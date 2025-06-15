@@ -37,8 +37,8 @@ void LoadEtage(int floorNumber)
     }
 
     NumCamera = -1;
-    needChangeRoom = 1;
-    changeFloor = 0;
+    FlagChangeSalle = 1;
+    FlagChangeEtage = 0;
 
     //////////////////////////////////
 

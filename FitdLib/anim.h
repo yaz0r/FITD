@@ -9,6 +9,6 @@ s16 SetInterAnimObjet(int frame, char* animPtr, char* bodyPtr);
 s16 GetNbFramesAnim(char* animPtr);
 void StockInterAnim(std::vector<s16>& animBuffer, char* bodyPtr);
 void ResetStartAnim(char* bodyPtr);
-void updateAnimation(void);
+void GereAnim(void);
 void InitCopyBox(char* var0, char* var1);
 

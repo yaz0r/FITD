@@ -1206,7 +1206,7 @@ void initVarsSub1(void)
 
 void initVars()
 {
-	giveUp = 0;
+	FlagGameOver = 0;
 
 	currentInventory = 0;
 
@@ -4086,7 +4086,7 @@ int findBestCamera(void)
 	return(foundCamera);
 }
 
-void checkIfCameraChangeIsRequired(void)
+void GereSwitchCamera(void)
 {
 	int localCurrentCam = NumCamera;
 	int newCamera;
@@ -4187,7 +4187,7 @@ sceZoneStruct* processActor2Sub(int x, int y, int z, roomDataStruct* pRoomData)
 
 }
 
-void processActor2()
+void GereDec()
 {
 	bool onceMore = false;
 	bool flagFloorChange = false;
@@ -4238,10 +4238,15 @@ void processActor2()
 						onceMore = true;
 						if(currentProcessedActorIdx == currentCameraTargetActor)
 						{
-							needChangeRoom = 1;
-							newRoom = (short)pCurrentZone->parameter;
-							if(g_gameId > AITD1)
-								ChangeSalle(newRoom);
+							FlagChangeSalle = 1;
+							NewNumSalle = (short)pCurrentZone->parameter;
+                            if (g_gameId > AITD1)
+                            {
+                                ChangeSalle(NewNumSalle);
+
+                                // Hack: this wasn't in the original game, but is required here, or else we would use the current camera index in the new room and potentially go out of bound
+                                NumCamera = -1;
+                            }
 						}
 						else
 						{

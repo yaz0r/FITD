@@ -291,8 +291,8 @@ void processTrack(void)
                     {
                         if(currentCameraTargetActor == currentProcessedActorIdx)
                         {
-                            needChangeRoom = 1;
-                            newRoom = roomNumber;
+                            FlagChangeSalle = 1;
+                            NewNumSalle = roomNumber;
                         }
 
                         currentProcessedActorPtr->room = roomNumber;
@@ -850,8 +850,8 @@ void processTrack2(void)
                     {
                         if(currentCameraTargetActor == currentProcessedActorIdx)
                         {
-                            needChangeRoom = 1;
-                            newRoom = roomNumber;
+                            FlagChangeSalle = 1;
+                            NewNumSalle = roomNumber;
                         }
 
                         currentProcessedActorPtr->room = roomNumber;
