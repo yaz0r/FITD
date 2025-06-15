@@ -661,6 +661,24 @@ void osystem_flushPendingPrimitives()
 
         bgfx::setTexture(1, paletteTextureUniform, g_paletteTexture);
 
+        // noise texture
+        static bgfx::TextureHandle noiseTexture = BGFX_INVALID_HANDLE;
+        if(!bgfx::isValid(noiseTexture))
+        {
+            const int noiseTextureDim = 256;
+            std::array<u8, noiseTextureDim* noiseTextureDim> noiseTextureData;
+            for (int i = 0; i < noiseTextureData.size(); i++) {
+                noiseTextureData[i] = rand();
+            }
+            noiseTexture = bgfx::createTexture2D(noiseTextureDim, noiseTextureDim, false, 1, bgfx::TextureFormat::R8U, 0, bgfx::copy(noiseTextureData.data(), noiseTextureDim * noiseTextureDim));
+        }
+        static bgfx::UniformHandle noiseTextureUniform = BGFX_INVALID_HANDLE;
+        if (!bgfx::isValid(noiseTextureUniform)) {
+            noiseTextureUniform = bgfx::createUniform("s_noiseTexture", bgfx::UniformType::Sampler);
+        }
+
+        bgfx::setTexture(0, noiseTextureUniform, noiseTexture);
+
         bgfx::setVertexBuffer(0, &transientBuffer);
         bgfx::submit(gameViewId, getNoiseShader());
     }
@@ -1044,70 +1062,6 @@ void osystem_draw3dLine(float x1, float y1, float z1, float x2, float y2, float 
 
     g_lineVertices.push_back(vertex1);
     g_lineVertices.push_back(vertex2);
-
-#if 0
-    GLfloat lineVertices[2 * 3];
-    GLubyte lineColor[2 * 4];
-
-    for (int i = 0; i < 2; i++)
-    {
-        lineColor[4 * i + 0] = RGB_Pal[color * 3 + 0];
-        lineColor[4 * i + 1] = RGB_Pal[color * 3 + 1];
-        lineColor[4 * i + 2] = RGB_Pal[color * 3 + 2];
-        lineColor[4 * i + 3] = 255;
-    }
-    lineVertices[0] = x1;
-    lineVertices[1] = y1;
-    lineVertices[2] = z1;
-    lineVertices[3] = x2;
-    lineVertices[4] = y2;
-    lineVertices[5] = z2;
-
-    static GLuint shaderprogram = 0;
-    static GLuint vertexp = 0;
-    static GLuint colorp = 0;
-    if (shaderprogram == 0)
-    {
-        shaderprogram = compileShader(flatQuadVS, flatQuadPS);
-        vertexp = glGetAttribLocation(shaderprogram, (const GLchar*)"in_Position");
-        colorp = glGetAttribLocation(shaderprogram, (const GLchar*)"in_Color");
-    }
-
-    glUseProgram(shaderprogram);
-
-    static GLuint vbo = 0;
-    if (vbo == 0)
-    {
-        glGenBuffers(1, &vbo);
-    }
-
-    for (int i = 0; i < 2; i++)
-    {
-        gVertexArray[i].positions[0] = lineVertices[i * 3 + 0];
-        gVertexArray[i].positions[1] = lineVertices[i * 3 + 1];
-        gVertexArray[i].positions[2] = lineVertices[i * 3 + 2];
-
-        gVertexArray[i].color[0] = lineColor[i * 4 + 0] / 255.f;
-        gVertexArray[i].color[1] = lineColor[i * 4 + 1] / 255.f;
-        gVertexArray[i].color[2] = lineColor[i * 4 + 2] / 255.f;
-        gVertexArray[i].color[3] = lineColor[i * 4 + 3] / 255.f;
-    }
-
-    glBindBuffer(GL_ARRAY_BUFFER, vbo); checkGL();
-    glBufferData(GL_ARRAY_BUFFER, sizeof(s_vertexData) * 2, &gVertexArray[0], GL_STATIC_DRAW); checkGL();
-    glVertexAttribPointer(vertexp, 3, GL_FLOAT, GL_FALSE, sizeof(s_vertexData), (void*)&((s_vertexData*)NULL)->positions); checkGL();
-    glEnableVertexAttribArray(vertexp); checkGL();
-
-    if (colorp != -1)
-    {
-        glVertexAttribPointer(colorp, 4, GL_FLOAT, GL_FALSE, sizeof(s_vertexData), (void*)&((s_vertexData*)NULL)->color);
-        glEnableVertexAttribArray(colorp);
-    }
-
-    glDrawArrays(GL_LINE_LOOP, 0, 2); checkGL();
-
-    checkGL();
-#endif
 }
 
 void osystem_draw3dQuad(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, float x4, float y4, float z4, unsigned char color, int transparency)
