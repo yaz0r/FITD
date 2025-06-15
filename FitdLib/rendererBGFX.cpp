@@ -616,6 +616,7 @@ void osystem_flushPendingPrimitives()
             | BGFX_STATE_WRITE_Z
             | BGFX_STATE_DEPTH_TEST_LEQUAL
             | BGFX_STATE_MSAA
+            | BGFX_STATE_CULL_CCW
         );
 
         static bgfx::UniformHandle paletteTextureUniform = BGFX_INVALID_HANDLE;
@@ -649,6 +650,7 @@ void osystem_flushPendingPrimitives()
             | BGFX_STATE_WRITE_Z
             | BGFX_STATE_DEPTH_TEST_LEQUAL
             | BGFX_STATE_MSAA
+            | BGFX_STATE_CULL_CCW
         );
 
         static bgfx::UniformHandle paletteTextureUniform = BGFX_INVALID_HANDLE;
@@ -682,6 +684,7 @@ void osystem_flushPendingPrimitives()
             | BGFX_STATE_WRITE_Z
             | BGFX_STATE_DEPTH_TEST_LEQUAL
             | BGFX_STATE_MSAA
+            | BGFX_STATE_CULL_CCW
         );
 
         static bgfx::UniformHandle paletteTextureUniform = BGFX_INVALID_HANDLE;
