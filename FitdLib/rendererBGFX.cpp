@@ -595,16 +595,6 @@ void osystem_stopFrame()
 {
 }
 
-void osystem_startModelRender()
-{
-
-}
-
-void osystem_stopModelRender()
-{
-    osystem_flushPendingPrimitives();
-}
-
 void osystem_flushPendingPrimitives()
 {
     if (numUsedFlatVertices)
@@ -1132,21 +1122,22 @@ void osystem_drawSphere(float X, float Y, float Z, u8 color, u8 material, float 
 
 void osystem_drawPoint(float X, float Y, float Z, u8 color, u8 material, float size)
 {
+    float fScaleRatio = 6.f / 5.f;
     std::array<sphereVertex, 4> corners;
-    corners[0].X = X + size;
-    corners[0].Y = Y + size;
+    corners[0].X = X + size * fScaleRatio;
+    corners[0].Y = Y + size * fScaleRatio;
     corners[0].Z = Z;
 
-    corners[1].X = X + size;
-    corners[1].Y = Y - size;
+    corners[1].X = X + size * fScaleRatio;
+    corners[1].Y = Y - size * fScaleRatio;
     corners[1].Z = Z;
 
-    corners[2].X = X - size;
-    corners[2].Y = Y - size;
+    corners[2].X = X - size * fScaleRatio;
+    corners[2].Y = Y - size * fScaleRatio;
     corners[2].Z = Z;
 
-    corners[3].X = X - size;
-    corners[3].Y = Y + size;
+    corners[3].X = X - size * fScaleRatio;
+    corners[3].Y = Y + size * fScaleRatio;
     corners[3].Z = Z;
 
     std::array<int, 2 * 3> mapping = { {
