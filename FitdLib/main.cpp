@@ -2650,8 +2650,11 @@ void drawZv(tObject* actorPtr)
 {
 	ZVStruct localZv;
 
-	if(( actorPtr->room != objectTable[currentCameraTargetActor].room ) && (objectTable[currentCameraTargetActor].room != -1))
+	if( actorPtr->room != objectTable[currentCameraTargetActor].room )
 	{
+        if (objectTable[currentCameraTargetActor].room == -1) {
+            return;
+        }
 		getZvRelativePosition(&localZv, actorPtr->room, objectTable[currentCameraTargetActor].room);
 	}
 	else
