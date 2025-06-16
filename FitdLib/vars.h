@@ -2,9 +2,9 @@
 
 #include "osystem.h"
 
-extern char* currentFoundBody;
-extern int currentFoundBodyIdx;
-extern int statusVar1;
+extern char* ShowObjet;
+extern int ShowBody;
+extern int ShowBeta;
 
 enum gameTypeEnum
 {
@@ -334,7 +334,7 @@ extern s16 currentWorldTarget;
 
 extern int fileSize;
 
-extern hqrEntryStruct* listBody;
+extern hqrEntryStruct* HQ_Bodys;
 extern hqrEntryStruct* listAnim;
 extern hqrEntryStruct* listLife;
 extern hqrEntryStruct* listTrack;

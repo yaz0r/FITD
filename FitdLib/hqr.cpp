@@ -510,7 +510,7 @@ void HQR_Reset(hqrEntryStruct* hqrPtr)
     hqrPtr->sizeFreeData = hqrPtr->maxFreeData;
     hqrPtr->numUsedEntry = 0;
 
-    if (hqrPtr == listBody)
+    if (hqrPtr == HQ_Bodys)
     {
         for (int i = 0; i < vBodies.size(); i++)
         {
@@ -536,7 +536,7 @@ void HQR_Free(hqrEntryStruct* hqrPtr)
     if(!hqrPtr)
         return;
 
-    if (hqrPtr == listBody)
+    if (hqrPtr == HQ_Bodys)
     {
         for (int i = 0; i < vBodies.size(); i++)
         {

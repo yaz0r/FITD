@@ -158,7 +158,7 @@ void GereFrappe(void)
 
                 ZVStruct rangeZv;
 
-                GiveZVObjet(HQR_Get(listBody, objPtr->body),&rangeZv);
+                GiveZVObjet(HQR_Get(HQ_Bodys, objPtr->body),&rangeZv);
 
                 rangeZv.ZVX1 += x;
                 rangeZv.ZVX2 += x;
@@ -231,7 +231,7 @@ void GereFrappe(void)
             actorPtr->roomY = y;
             actorPtr->roomZ = z;
 
-            GiveZVObjet(HQR_Get(listBody,actorPtr->bodyNum),&actorPtr->zv);
+            GiveZVObjet(HQR_Get(HQ_Bodys,actorPtr->bodyNum),&actorPtr->zv);
 
             actorPtr->zv.ZVX1 += x;
             actorPtr->zv.ZVX2 += x;

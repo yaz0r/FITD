@@ -1,7 +1,7 @@
 #ifndef _MAIN_
 #define _MAIN_
 
-extern int input5;
+extern int AntiRebond;
 
 void menuWaitVSync();
 void AffSpfI(int x, int y, int param, char* gfx);

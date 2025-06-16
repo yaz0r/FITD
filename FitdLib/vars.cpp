@@ -2,9 +2,9 @@
 
 enum gameTypeEnum g_gameId;
 
-char* currentFoundBody;
-int currentFoundBodyIdx;
-int statusVar1;
+char* ShowObjet;
+int ShowBody;
+int ShowBeta;
 
 hqrEntryStruct* HQ_Memory;
 
@@ -84,7 +84,7 @@ s16 currentWorldTarget;
 
 int fileSize;
 
-hqrEntryStruct* listBody = nullptr;
+hqrEntryStruct* HQ_Bodys = nullptr;
 hqrEntryStruct* listAnim = nullptr;
 hqrEntryStruct* listLife = nullptr;
 hqrEntryStruct* listTrack = nullptr;

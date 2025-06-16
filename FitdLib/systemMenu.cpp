@@ -88,7 +88,7 @@ void processSystemMenu(void)
             localClick = Click;
             localJoyD = JoyD;
 
-            if(!input5)
+            if(!AntiRebond)
             {
                 if(localKey == 0x1C || localClick) // enter
                 {
@@ -125,7 +125,7 @@ void processSystemMenu(void)
                         if(currentSelectedEntry<0)
                             currentSelectedEntry = 6;
 
-                        input5 = 1;
+                        AntiRebond = 1;
                     }
                     if(localJoyD == 2) // bottom
                     {
@@ -134,7 +134,7 @@ void processSystemMenu(void)
                         if(currentSelectedEntry>6)
                             currentSelectedEntry = 0;
 
-                        input5 = 1;
+                        AntiRebond = 1;
                     }
                 }
             }
@@ -142,7 +142,7 @@ void processSystemMenu(void)
             {
                 if(!localKey && !localJoyD)
                 {
-                    input5 = 0;
+                    AntiRebond = 0;
                 }
             }
         }

@@ -95,10 +95,10 @@ void renderInventoryObject(int arg)
     SetClip(statusLeft,statusTop,statusRight,statusBottom);
     AffRect(statusLeft,statusTop,statusRight,statusBottom,0);
 
-    statusVar1 -= 8;
+    ShowBeta -= 8;
 
-    setCameraTarget(0,0,0,60,statusVar1,0,24000);
-    AffObjet(0,0,0,0,0,0,currentFoundBody);
+    setCameraTarget(0,0,0,60,ShowBeta,0,24000);
+    AffObjet(0,0,0,0,0,0,ShowObjet);
 
     if(arg!=-1)
     {
@@ -199,7 +199,7 @@ void processInventory(void)
     modeSelect = 0;
     antiBounce = 2;
 
-    statusVar1 = 0;
+    ShowBeta = 0;
 
     SaveTimerAnim();
     //pauseShaking();
@@ -321,9 +321,9 @@ void processInventory(void)
             {
                 selectedWorldObjectIdx = DrawListObjets(firstObjectDisplayedIdx,selectedObjectIdx,15);
 
-                currentFoundBodyIdx = ListWorldObjets[selectedWorldObjectIdx].foundBody;
+                ShowBody = ListWorldObjets[selectedWorldObjectIdx].foundBody;
 
-                currentFoundBody = HQR_Get(listBody,currentFoundBodyIdx);
+                ShowObjet = HQR_Get(HQ_Bodys,ShowBody);
 
                 var_C = ListWorldObjets[selectedWorldObjectIdx].foundFlag;
 

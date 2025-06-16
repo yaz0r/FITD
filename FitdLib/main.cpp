@@ -26,7 +26,7 @@ FILE* Open(const char* filename, const char* mode) {
     return fopen(path.string().c_str(), mode);
 }
 
-int input5;
+int AntiRebond;
 
 int* currentCVarTable = NULL;
 
@@ -1171,12 +1171,12 @@ void LoadWorld(void)
 
 	if(g_gameId == AITD1)
 	{
-		listBody = HQR_InitRessource(listBodySelect[CVars[getCVarsIdx(CHOOSE_PERSO)]],37000, 50); // was calculated from free mem size
+		HQ_Bodys = HQR_InitRessource(listBodySelect[CVars[getCVarsIdx(CHOOSE_PERSO)]],37000, 50); // was calculated from free mem size
 		listAnim = HQR_InitRessource(listAnimSelect[CVars[getCVarsIdx(CHOOSE_PERSO)]],30000, 80); // was calculated from free mem size
 	}
 	else
 	{
-		listBody = HQR_InitRessource("LISTBODY",37000, 50); // was calculated from free mem size
+		HQ_Bodys = HQR_InitRessource("LISTBODY",37000, 50); // was calculated from free mem size
 		listAnim = HQR_InitRessource("LISTANIM",30000, 80); // was calculated from free mem size
 
 		listMatrix = HQR_InitRessource("LISTMAT",64000,5);
@@ -2388,7 +2388,7 @@ void InitView()
 	cameraBackgroundChanged = true;
 
     if (g_gameId >= JACK) {
-        printf("Load 2d animations");
+        printf("Load 2d animations\n");
     }
 
     cameraDataStruct* pCamera = cameraDataTable[NumCamera];
@@ -3300,7 +3300,7 @@ void mainDraw(int flagFlip)
                 }
                 else
                 {
-                    char* bodyPtr = HQR_Get(listBody, actorPtr->bodyNum);
+                    char* bodyPtr = HQR_Get(HQ_Bodys, actorPtr->bodyNum);
 
                     if (HQ_Load)
                     {
@@ -3537,13 +3537,13 @@ void cleanClip()
 	}
 }
 
-void drawFoundObect(int menuState,int objectName,int zoomFactor)
+void DrawFoundWindow(int menuState,int objectName,int zoomFactor)
 {
 	cleanClip();
 
-	setCameraTarget(0,0,0,60,statusVar1,0,zoomFactor);
+	setCameraTarget(0,0,0,60,ShowBeta,0,zoomFactor);
 
-	AffObjet(0,0,0,0,0,0, HQR_Get(listBody, currentFoundBodyIdx));
+	AffObjet(0,0,0,0,0,0, HQR_Get(HQ_Bodys, ShowBody));
 
 	SimpleMessage(160,WindowY1,20,1);
 	SimpleMessage(160,WindowY1+16,objectName,1);
@@ -3612,11 +3612,6 @@ void take(int objIdx)
 void foundObject(int objIdx, int param)
 {
 	tWorldObject* objPtr;
-	int var_C = 0;
-	int var_6 = 1;
-	int i;
-	int var_A = 15000;
-	int var_8 = -200;
 
 	if(objIdx < 0)
 		return;
@@ -3645,34 +3640,39 @@ void foundObject(int objIdx, int param)
 	//  setupShaking(1000); // probably to remove the shaking when in foundObject screen
 
 	int weight = 0;
-	for(i=0;i<numObjInInventoryTable[currentInventory];i++)
+	for(int i=0;i<numObjInInventoryTable[currentInventory];i++)
 	{
 		weight += ListWorldObjets[inventoryTable[currentInventory][i]].positionInTrack;
 	}
 
+    int choix = 1;
+
 	if(objPtr->positionInTrack + weight > CVars[getCVarsIdx(MAX_WEIGHT_LOADABLE)] || numObjInInventoryTable[currentInventory] +1 == 30)
 	{
-		var_6 = 3;
+		choix = 3;
 	}
 
-	currentFoundBodyIdx = objPtr->foundBody;
-	currentFoundBody = HQR_Get(listBody,currentFoundBodyIdx);
+	ShowBody = objPtr->foundBody;
+	ShowObjet = HQR_Get(HQ_Bodys,ShowBody);
 
 	SetProjection(160,100,128,300,298);
 
-	statusVar1 = 0;
+    int zoom = 15000;
+    int stepzoom = -200;
+	ShowBeta = 0;
 
 	memset(frontBuffer, 0, 320*200);
 	FastCopyScreen(frontBuffer,logicalScreen);
 
 	AffBigCadre(160,100,240,120);
 
-	drawFoundObect(var_6, objPtr->foundName, var_A);
+	DrawFoundWindow(choix, objPtr->foundName, zoom);
 	osystem_flip(NULL);
 
-	input5 = 1;
+	AntiRebond = 1;
 
-	while(!var_C)
+    int exitflag = 0;
+	while(!exitflag)
 	{
 		osystem_CopyBlockPhys((unsigned char*)logicalScreen,0,0,320,200);
 
@@ -3683,27 +3683,27 @@ void foundObject(int objIdx, int param)
 		localJoyD = JoyD;
 		localClick = Click;
 
-		if(!input5)
+		if(!AntiRebond)
 		{
 			if(localKey == 1)
 			{
-				if(var_6 != 2)
+				if(choix != 2)
 				{
-					var_6 = 0;
+					choix = 0;
 				}
 
-				var_C = 1;
+				exitflag = 1;
 			}
-			if(var_6 != 2)
+			if(choix != 2)
 			{
 				if(localJoyD&4)
 				{
-					var_6 = 0;
+					choix = 0;
 				}
 
 				if(localJoyD&8)
 				{
-					var_6 = 1;
+					choix = 1;
 				}
 			}
 
@@ -3714,33 +3714,33 @@ void foundObject(int objIdx, int param)
 					process_events();
 				}
 
-				var_C = 1;
+				exitflag = 1;
 			}
 		}
 		else
 		{
 			if(!localKey && !localJoyD && !localClick)
-				input5 = 0;
+				AntiRebond = 0;
 		}
 
-		statusVar1 -= 8;
+		ShowBeta -= 8;
 
-		var_A += var_8; // zoom / dezoom
+		zoom += stepzoom; // zoom / dezoom
 
-		if(var_A> 8000) // zoom management
-			var_8 = -var_8;
+		if(zoom> 8000) // zoom management
+			stepzoom = -stepzoom;
 
-		if(var_A< 25000)
-			var_8 = -var_8;
+		if(zoom< 25000)
+			stepzoom = -stepzoom;
 
-		drawFoundObect(var_6,objPtr->foundName,var_A);
+		DrawFoundWindow(choix,objPtr->foundName,zoom);
 
 		//    menuWaitVSync();
 	}
 
 	RestoreTimerAnim();
 
-	if(var_6 == 1)
+	if(choix == 1)
 	{
 		take(objIdx);
 	}
@@ -4210,17 +4210,13 @@ void GereDec()
 				{
 				case 0:
 					{
-						int x;
-						int y;
-						int z;
-
 						int oldRoom = currentProcessedActorPtr->room;
 
 						currentProcessedActorPtr->room = (short)pCurrentZone->parameter;
 
-						x = (roomDataTable[currentProcessedActorPtr->room].worldX - roomDataTable[oldRoom].worldX) * 10;
-						y = (roomDataTable[currentProcessedActorPtr->room].worldY - roomDataTable[oldRoom].worldY) * 10;
-						z = (roomDataTable[currentProcessedActorPtr->room].worldZ - roomDataTable[oldRoom].worldZ) * 10;
+                        int x = (roomDataTable[currentProcessedActorPtr->room].worldX - roomDataTable[oldRoom].worldX) * 10;
+                        int y = (roomDataTable[currentProcessedActorPtr->room].worldY - roomDataTable[oldRoom].worldY) * 10;
+                        int z = (roomDataTable[currentProcessedActorPtr->room].worldZ - roomDataTable[oldRoom].worldZ) * 10;
 
 						currentProcessedActorPtr->roomX -= x;
 						currentProcessedActorPtr->roomY += y;
@@ -4277,9 +4273,7 @@ void GereDec()
 					}
 				case 10: // stage
 					{
-						int life;
-
-						life = ListWorldObjets[currentProcessedActorPtr->indexInWorld].floorLife;
+                        int life = ListWorldObjets[currentProcessedActorPtr->indexInWorld].floorLife;
 
 						if(life==-1)
 							return;
@@ -4486,7 +4480,7 @@ void throwStoppedAt(int x, int z)
 	ZVStruct zvLocal;
 	u8* bodyPtr;
 
-	bodyPtr = (u8*)HQR_Get(listBody,currentProcessedActorPtr->bodyNum);
+	bodyPtr = (u8*)HQR_Get(HQ_Bodys,currentProcessedActorPtr->bodyNum);
 
 	GiveZVObjet((char*)bodyPtr,&zvLocal);
 
@@ -4854,7 +4848,7 @@ void cleanupAndExit(void)
 	HQR_Free(HQ_Memory);
 	HQR_Free(listLife);
 	HQR_Free(listTrack);
-	HQR_Free(listBody);
+	HQR_Free(HQ_Bodys);
 	HQR_Free(listAnim);
 
 	/* free(tabTextes);

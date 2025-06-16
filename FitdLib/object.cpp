@@ -96,7 +96,7 @@ int copyObjectToActor(int body, int typeZv, int hardZvIdx, s16 objectType, int x
 
     if(body != -1)
     {
-        bodyPtr = HQR_Get(listBody,actorPtr->bodyNum);
+        bodyPtr = HQR_Get(HQ_Bodys,actorPtr->bodyNum);
 
         if(anim != -1)
         {

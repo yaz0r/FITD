@@ -18,7 +18,7 @@ void LoadEtage(int floorNumber)
 
     //stopSounds();
 
-    HQR_Reset(listBody);
+    HQR_Reset(HQ_Bodys);
     HQR_Reset(listAnim);
 
     g_currentFloor = floorNumber;

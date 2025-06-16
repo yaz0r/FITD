@@ -260,7 +260,7 @@ int loadSave(int saveNumber)
 
     if(g_gameId == AITD1)
     {
-        configureHqrHero(listBody,listBodySelect[CVars[getCVarsIdx(CHOOSE_PERSO)]]);
+        configureHqrHero(HQ_Bodys,listBodySelect[CVars[getCVarsIdx(CHOOSE_PERSO)]]);
         configureHqrHero(listAnim,listAnimSelect[CVars[getCVarsIdx(CHOOSE_PERSO)]]);
     }
     else
@@ -494,7 +494,7 @@ int loadSave(int saveNumber)
     {
         if(objectTable[i].indexInWorld != -1 && objectTable[i].bodyNum != -1)
         {
-            char* bodyPtr = HQR_Get(listBody,objectTable[i].bodyNum);
+            char* bodyPtr = HQR_Get(HQ_Bodys,objectTable[i].bodyNum);
 
             if(objectTable[i].ANIM != -1)
             {

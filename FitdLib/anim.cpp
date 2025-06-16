@@ -138,7 +138,7 @@ int InitAnim(int animNum,int animType, int animInfo)
 
             currentProcessedActorPtr->objectType |= AF_ANIMATED;
 
-            SetAnimObjet(currentProcessedActorPtr->frame, HQR_Get(listAnim,animNum), HQR_Get(listBody, currentProcessedActorPtr->bodyNum));
+            SetAnimObjet(currentProcessedActorPtr->frame, HQR_Get(listAnim,animNum), HQR_Get(HQ_Bodys, currentProcessedActorPtr->bodyNum));
 
             currentProcessedActorPtr->animType = animType;
             currentProcessedActorPtr->animInfo = animInfo;
@@ -173,7 +173,7 @@ int InitAnim(int animNum,int animType, int animInfo)
             removeFromBGIncrust(currentProcessedActorIdx);
         }
 
-        SetAnimObjet(0, HQR_Get(listAnim,animNum), HQR_Get(listBody, currentProcessedActorPtr->bodyNum));
+        SetAnimObjet(0, HQR_Get(listAnim,animNum), HQR_Get(HQ_Bodys, currentProcessedActorPtr->bodyNum));
 
 		currentProcessedActorPtr->newAnim = animNum;
 		currentProcessedActorPtr->newAnimType = animType;
@@ -326,7 +326,7 @@ void GereAnim(void)
 
                 // TODO: AITD3 has some extra code here to handle bufferAnimCounter
 
-                StockInterAnim(BufferAnim[bufferAnimCounter], HQR_Get(listBody, currentProcessedActorPtr->bodyNum));
+                StockInterAnim(BufferAnim[bufferAnimCounter], HQR_Get(HQ_Bodys, currentProcessedActorPtr->bodyNum));
 
                 bufferAnimCounter++;
                 if (bufferAnimCounter == NB_BUFFER_ANIM)
@@ -334,7 +334,7 @@ void GereAnim(void)
 
             }
             else {
-                ResetStartAnim(HQR_Get(listBody, currentProcessedActorPtr->bodyNum));
+                ResetStartAnim(HQR_Get(HQ_Bodys, currentProcessedActorPtr->bodyNum));
                 currentProcessedActorPtr->newAnimType &= ~ANIM_RESET;
             }
             currentProcessedActorPtr->ANIM = newAnim;
@@ -394,7 +394,7 @@ void GereAnim(void)
 		oldStepY = currentProcessedActorPtr->stepY;
 		oldStepZ = currentProcessedActorPtr->stepZ;
 
-		currentProcessedActorPtr->END_FRAME = SetInterAnimObjet(currentProcessedActorPtr->frame, HQR_Get(listAnim, currentProcessedActorPtr->ANIM), HQR_Get(listBody, currentProcessedActorPtr->bodyNum));
+		currentProcessedActorPtr->END_FRAME = SetInterAnimObjet(currentProcessedActorPtr->frame, HQR_Get(listAnim, currentProcessedActorPtr->ANIM), HQR_Get(HQ_Bodys, currentProcessedActorPtr->bodyNum));
 
 		walkStep(animStepX,animStepZ,currentProcessedActorPtr->beta);
 

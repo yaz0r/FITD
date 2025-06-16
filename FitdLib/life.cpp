@@ -431,7 +431,7 @@ void doRealZv(tObject* actorPtr)
 {
     ZVStruct* zvPtr;
 
-    computeScreenBox(0, 0, 0, actorPtr->alpha, actorPtr->beta, actorPtr->gamma, HQR_Get(listBody, actorPtr->bodyNum));
+    computeScreenBox(0, 0, 0, actorPtr->alpha, actorPtr->beta, actorPtr->gamma, HQR_Get(HQ_Bodys, actorPtr->bodyNum));
 
     zvPtr = &actorPtr->zv;
 
@@ -769,7 +769,7 @@ void processLife(int lifeNum, bool callFoundLife)
                                 gereDecal(); */
                             }
 
-                            pBody = HQR_Get(listBody, currentProcessedActorPtr->bodyNum);
+                            pBody = HQR_Get(HQ_Bodys, currentProcessedActorPtr->bodyNum);
 
                             /*    if(gameId >= JACK)
                             {
@@ -811,7 +811,7 @@ void processLife(int lifeNum, bool callFoundLife)
                         gereDecal(); */
                     }
 
-                    pBody = HQR_Get(listBody, currentProcessedActorPtr->bodyNum);
+                    pBody = HQR_Get(HQ_Bodys, currentProcessedActorPtr->bodyNum);
 
                     SetAnimObjet(0, pAnim, pBody);
                     InitAnim(param2, 4, -1);
@@ -871,7 +871,7 @@ void processLife(int lifeNum, bool callFoundLife)
             case LM_DO_ROT_ZV: // DO_ROT_ZV
             {
                 appendFormated("LM_DO_ROT_ZV ");
-                getZvRot(HQR_Get(listBody, currentProcessedActorPtr->bodyNum), &currentProcessedActorPtr->zv,
+                getZvRot(HQR_Get(HQ_Bodys, currentProcessedActorPtr->bodyNum), &currentProcessedActorPtr->zv,
                     currentProcessedActorPtr->alpha,
                     currentProcessedActorPtr->beta,
                     currentProcessedActorPtr->gamma);
@@ -888,7 +888,7 @@ void processLife(int lifeNum, bool callFoundLife)
             case LM_DO_MAX_ZV:
             {
                 appendFormated("LM_DO_MAX_ZV ");
-                getZvMax(HQR_Get(listBody, currentProcessedActorPtr->bodyNum), &currentProcessedActorPtr->zv);
+                getZvMax(HQR_Get(HQ_Bodys, currentProcessedActorPtr->bodyNum), &currentProcessedActorPtr->zv);
 
                 currentProcessedActorPtr->zv.ZVX1 += currentProcessedActorPtr->roomX;
                 currentProcessedActorPtr->zv.ZVX2 += currentProcessedActorPtr->roomX;
@@ -902,7 +902,7 @@ void processLife(int lifeNum, bool callFoundLife)
             case LM_DO_CARRE_ZV: // DO_CARRE_ZV
             {
                 appendFormated("LM_DO_CARRE_ZV ");
-                getZvCube(HQR_Get(listBody, currentProcessedActorPtr->bodyNum), &currentProcessedActorPtr->zv);
+                getZvCube(HQR_Get(HQ_Bodys, currentProcessedActorPtr->bodyNum), &currentProcessedActorPtr->zv);
 
                 currentProcessedActorPtr->zv.ZVX1 += currentProcessedActorPtr->roomX;
                 currentProcessedActorPtr->zv.ZVX2 += currentProcessedActorPtr->roomX;
