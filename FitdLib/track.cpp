@@ -49,7 +49,7 @@ int computeAngleModificatorToPositionSub1(int ax)
         return(-1);
 }
 
-int computeAngleModificatorToPosition(int x1,int z1, int beta, int x2, int z2)
+int CapObjet(int x1,int z1, int beta, int x2, int z2)
 {
     int resultMin;
     int resultMax;
@@ -243,7 +243,7 @@ void processTrack(void)
                     z = *(s16*)(link+8)+(((*(s16*)(link+10))-(*(s16 *)(link+8))) / 2);
                 }
 
-                angleModif = computeAngleModificatorToPosition( currentProcessedActorPtr->roomX + currentProcessedActorPtr->stepX,
+                angleModif = CapObjet( currentProcessedActorPtr->roomX + currentProcessedActorPtr->stepX,
                     currentProcessedActorPtr->roomZ + currentProcessedActorPtr->stepZ,
                     currentProcessedActorPtr->beta, x, z );
 
@@ -360,7 +360,7 @@ void processTrack(void)
 
                     if(distanceToPoint >= DISTANCE_TO_POINT_TRESSHOLD) // not yet at position
                     {
-                        int angleModif = computeAngleModificatorToPosition( currentProcessedActorPtr->roomX + currentProcessedActorPtr->stepX,
+                        int angleModif = CapObjet( currentProcessedActorPtr->roomX + currentProcessedActorPtr->stepX,
                             currentProcessedActorPtr->roomZ + currentProcessedActorPtr->stepZ,
                             currentProcessedActorPtr->beta,
                             x,z );
@@ -426,7 +426,7 @@ void processTrack(void)
                 }
 
                 {
-                    int direction = computeAngleModificatorToPosition(
+                    int direction = CapObjet(
                         currentProcessedActorPtr->roomX + currentProcessedActorPtr->stepX,
                         currentProcessedActorPtr->roomZ + currentProcessedActorPtr->stepZ,
                         currentProcessedActorPtr->beta,
@@ -592,7 +592,7 @@ void processTrack(void)
                         currentProcessedActorPtr->zv.ZVY1 += difY;
                         currentProcessedActorPtr->zv.ZVY2 += difY;
 
-                        angleModif = computeAngleModificatorToPosition( currentProcessedActorPtr->roomX + currentProcessedActorPtr->stepX,
+                        angleModif = CapObjet( currentProcessedActorPtr->roomX + currentProcessedActorPtr->stepX,
                             currentProcessedActorPtr->roomZ + currentProcessedActorPtr->stepZ,
                             currentProcessedActorPtr->beta,
                             x,z );
@@ -663,7 +663,7 @@ void processTrack(void)
                         currentProcessedActorPtr->zv.ZVY1 += difY;
                         currentProcessedActorPtr->zv.ZVY2 += difY;
 
-                        angleModif = computeAngleModificatorToPosition( currentProcessedActorPtr->roomX + currentProcessedActorPtr->stepX,
+                        angleModif = CapObjet( currentProcessedActorPtr->roomX + currentProcessedActorPtr->stepX,
                             currentProcessedActorPtr->roomZ + currentProcessedActorPtr->stepZ,
                             currentProcessedActorPtr->beta,
                             x,z );
@@ -787,24 +787,21 @@ void processTrack2(void)
             {
                 tObject* followedActorPtr = &objectTable[followedActorIdx];
 
-                int roomNumber = followedActorPtr->room;
-                int x = followedActorPtr->roomX;
-                //int y = followedActorPtr->roomY;
-                int z = followedActorPtr->roomZ;
-                int angleModif;
+                int targetX = followedActorPtr->roomX;
+                int targetY = followedActorPtr->roomY;
+                int targetZ = followedActorPtr->roomZ;
 
-                if(currentProcessedActorPtr->room != roomNumber)
-                {
-                    /*  char* link = getRoomLink(currentProcessedActorPtr->room,roomNumber);
+                // This was changed from AITD2 and on
+                const auto& targetRoom = roomDataTable[followedActorPtr->room];
+                const auto& sourceRoom = roomDataTable[currentProcessedActorPtr->room];
 
-                    x = *(s16*)(link)+(((*(s16*)(link+2))-(*(s16 *)(link))) / 2);
-                    y = *(s16*)(link+4)+(((*(s16*)(link+6))-(*(s16 *)(link+4))) / 2);
-                    z = *(s16*)(link+8)+(((*(s16*)(link+10))-(*(s16 *)(link+8))) / 2); */
-                }
+                targetX -= (sourceRoom.worldX - targetRoom.worldX) * 10;
+                targetZ += (sourceRoom.worldZ - targetRoom.worldZ) * 10;
 
-                angleModif = computeAngleModificatorToPosition( currentProcessedActorPtr->roomX + currentProcessedActorPtr->stepX,
+                int angleModif = CapObjet(
+                    currentProcessedActorPtr->roomX + currentProcessedActorPtr->stepX,
                     currentProcessedActorPtr->roomZ + currentProcessedActorPtr->stepZ,
-                    currentProcessedActorPtr->beta, x, z );
+                    currentProcessedActorPtr->beta, targetX, targetZ );
 
                 if( currentProcessedActorPtr->rotate.numSteps == 0 || currentProcessedActorPtr->direction != angleModif )
                 {
@@ -841,7 +838,7 @@ void processTrack2(void)
 
             switch(trackMacro)
             {
-            case 0: // warp
+            case TL_INIT_COOR: // warp
                 {
                     int roomNumber = *(s16*)(trackPtr);
                     trackPtr += 2;
@@ -918,7 +915,7 @@ void processTrack2(void)
 
                     if(distanceToPoint >= DISTANCE_TO_POINT_TRESSHOLD) // not yet at position
                     {
-                        int angleModif = computeAngleModificatorToPosition( currentProcessedActorPtr->roomX + currentProcessedActorPtr->stepX,
+                        int angleModif = CapObjet( currentProcessedActorPtr->roomX + currentProcessedActorPtr->stepX,
                             currentProcessedActorPtr->roomZ + currentProcessedActorPtr->stepZ,
                             currentProcessedActorPtr->beta,
                             x,z );
