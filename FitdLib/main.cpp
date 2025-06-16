@@ -4245,7 +4245,7 @@ void GereDec()
                                 ChangeSalle(NewNumSalle);
 
                                 // Hack: this wasn't in the original game, but is required here, or else we would use the current camera index in the new room and potentially go out of bound
-                                NumCamera = -1;
+                                InitView();
                             }
 						}
 						else
