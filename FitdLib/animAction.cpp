@@ -63,6 +63,10 @@ void GereFrappe(void)
             rangeZv.ZVZ1 = z - range;
             rangeZv.ZVZ2 = z + range;
 
+            if (backgroundMode == backgroundModeEnum_3D) {
+                drawZv(rangeZv);
+            }
+            
             //drawProjectedBox(rangeZv.ZVX1,rangeZv.ZVX2,rangeZv.ZVY1,rangeZv.ZVY2,rangeZv.ZVZ1,rangeZv.ZVZ2,60,255);
 
             collision = checkObjectCollisions(currentProcessedActorIdx,&rangeZv);

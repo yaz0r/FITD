@@ -50,6 +50,8 @@ void getZvCube(char* bodyPtr, ZVStruct* zvPtr);
 void PutAtObjet(int objIdx, int objIdxToPutAt);
 void SetClip(int left, int top, int right, int bottom);
 
+void drawZv(const ZVStruct& localZv);
+
 ///
 void readBook(int index, int type);
 int Lire(int index, int left, int top, int right, int bottom, int mode, int color, int shadow);

@@ -2646,6 +2646,25 @@ void drawProjectedLine(s32 x1s, s32 y1s, s32 z1s, s32 x2s, s32 y2s, s32 z2s,int 
 #endif
 }
 
+void drawZv(const ZVStruct& localZv) {
+    // bottom
+    drawProjectedLine(localZv.ZVX1, localZv.ZVY2, localZv.ZVZ1, localZv.ZVX1, localZv.ZVY2, localZv.ZVZ2, 10);
+    drawProjectedLine(localZv.ZVX1, localZv.ZVY2, localZv.ZVZ2, localZv.ZVX2, localZv.ZVY2, localZv.ZVZ2, 10);
+    drawProjectedLine(localZv.ZVX2, localZv.ZVY2, localZv.ZVZ2, localZv.ZVX2, localZv.ZVY2, localZv.ZVZ1, 10);
+    drawProjectedLine(localZv.ZVX2, localZv.ZVY2, localZv.ZVZ1, localZv.ZVX1, localZv.ZVY2, localZv.ZVZ1, 10);
+
+    // top
+    drawProjectedLine(localZv.ZVX1, localZv.ZVY1, localZv.ZVZ1, localZv.ZVX1, localZv.ZVY1, localZv.ZVZ2, 10);
+    drawProjectedLine(localZv.ZVX1, localZv.ZVY1, localZv.ZVZ2, localZv.ZVX2, localZv.ZVY1, localZv.ZVZ2, 10);
+    drawProjectedLine(localZv.ZVX2, localZv.ZVY1, localZv.ZVZ2, localZv.ZVX2, localZv.ZVY1, localZv.ZVZ1, 10);
+    drawProjectedLine(localZv.ZVX2, localZv.ZVY1, localZv.ZVZ1, localZv.ZVX1, localZv.ZVY1, localZv.ZVZ1, 10);
+
+    drawProjectedLine(localZv.ZVX1, localZv.ZVY2, localZv.ZVZ1, localZv.ZVX1, localZv.ZVY1, localZv.ZVZ1, 10);
+    drawProjectedLine(localZv.ZVX1, localZv.ZVY2, localZv.ZVZ2, localZv.ZVX1, localZv.ZVY1, localZv.ZVZ2, 10);
+    drawProjectedLine(localZv.ZVX2, localZv.ZVY2, localZv.ZVZ2, localZv.ZVX2, localZv.ZVY1, localZv.ZVZ2, 10);
+    drawProjectedLine(localZv.ZVX2, localZv.ZVY2, localZv.ZVZ1, localZv.ZVX2, localZv.ZVY1, localZv.ZVZ1, 10);
+}
+
 void drawZv(tObject* actorPtr)
 {
 	ZVStruct localZv;
@@ -2662,32 +2681,7 @@ void drawZv(tObject* actorPtr)
 		copyZv(&actorPtr->zv,&localZv);
 	}
 
-
-	// bottom
-	drawProjectedLine(  localZv.ZVX1,
-		localZv.ZVY2,
-		localZv.ZVZ1,
-		localZv.ZVX1,
-		localZv.ZVY2,
-		localZv.ZVZ2,
-		10);
-
-	drawProjectedLine(localZv.ZVX1,localZv.ZVY2,localZv.ZVZ2,localZv.ZVX2,localZv.ZVY2,localZv.ZVZ2,10);
-	drawProjectedLine(localZv.ZVX2,localZv.ZVY2,localZv.ZVZ2,localZv.ZVX2,localZv.ZVY2,localZv.ZVZ1,10);
-	drawProjectedLine(localZv.ZVX2,localZv.ZVY2,localZv.ZVZ1,localZv.ZVX1,localZv.ZVY2,localZv.ZVZ1,10);
-
-	// top
-	drawProjectedLine(localZv.ZVX1,localZv.ZVY1,localZv.ZVZ1,localZv.ZVX1,localZv.ZVY1,localZv.ZVZ2,10);
-	drawProjectedLine(localZv.ZVX1,localZv.ZVY1,localZv.ZVZ2,localZv.ZVX2,localZv.ZVY1,localZv.ZVZ2,10);
-	drawProjectedLine(localZv.ZVX2,localZv.ZVY1,localZv.ZVZ2,localZv.ZVX2,localZv.ZVY1,localZv.ZVZ1,10);
-	drawProjectedLine(localZv.ZVX2,localZv.ZVY1,localZv.ZVZ1,localZv.ZVX1,localZv.ZVY1,localZv.ZVZ1,10);
-
-	drawProjectedLine(  localZv.ZVX1,localZv.ZVY2,localZv.ZVZ1, localZv.ZVX1,localZv.ZVY1,localZv.ZVZ1,10);
-	drawProjectedLine(  localZv.ZVX1,localZv.ZVY2,localZv.ZVZ2, localZv.ZVX1,localZv.ZVY1,localZv.ZVZ2,10);
-	drawProjectedLine(  localZv.ZVX2,localZv.ZVY2,localZv.ZVZ2, localZv.ZVX2,localZv.ZVY1,localZv.ZVZ2,10);
-	drawProjectedLine(  localZv.ZVX2,localZv.ZVY2,localZv.ZVZ1, localZv.ZVX2,localZv.ZVY1,localZv.ZVZ1,10);
-
-
+    drawZv(localZv);
 }
 
 void drawConverZone(cameraZoneEntryStruct* zonePtr)
@@ -3204,7 +3198,7 @@ void getHotPoint(int hotPointIdx, char* bodyPtr, point3dStruct* hotPoint)
 		ASSERT(hotPointIdx < offset);
 
 		if(hotPointIdx < offset)
-		{
+	{
 			int pointIdx;
 			s16* source;
 
@@ -3213,7 +3207,7 @@ void getHotPoint(int hotPointIdx, char* bodyPtr, point3dStruct* hotPoint)
 				bodyPtr+=hotPointIdx*0x18;
 			}
 			else
-			{
+		{
 				bodyPtr+=hotPointIdx*16;
 			}
 
@@ -3300,7 +3294,7 @@ void mainDraw(int flagFlip)
                 }
                 else
                 {
-                    char* bodyPtr = HQR_Get(HQ_Bodys, actorPtr->bodyNum);
+                    sBody* bodyPtr = getBodyFromPtr(HQR_Get(HQ_Bodys, actorPtr->bodyNum));
 
                     if (HQ_Load)
                     {
@@ -3314,7 +3308,7 @@ void mainDraw(int flagFlip)
                     {
                         if (actorPtr->hotPointID != -1)
                         {
-                            getHotPoint(actorPtr->hotPointID, bodyPtr, &actorPtr->hotPoint);
+                            getHotPoint(actorPtr->hotPointID, (char*)bodyPtr->m_raw, &actorPtr->hotPoint);
                         }
                     }
 
@@ -3526,51 +3520,6 @@ int checkObjectCollisions(int actorIdx, ZVStruct* zvPtr)
 	return(currentCollisionSlot);
 }
 
-void cleanClip()
-{
-	for(int x=clipLeft; x<clipRight; x++)
-	{
-		for(int y=clipTop; y<clipBottom; y++)
-		{
-			logicalScreen[y*320+x] = 0;
-		}
-	}
-}
-
-void DrawFoundWindow(int menuState,int objectName,int zoomFactor)
-{
-	cleanClip();
-
-	setCameraTarget(0,0,0,60,ShowBeta,0,zoomFactor);
-
-	AffObjet(0,0,0,0,0,0, HQR_Get(HQ_Bodys, ShowBody));
-
-	SimpleMessage(160,WindowY1,20,1);
-	SimpleMessage(160,WindowY1+16,objectName,1);
-	SimpleMessage(160,WindowY1+16,objectName,1);
-
-	switch(menuState)
-	{
-	case 0:
-		{
-			SelectedMessage(130,WindowY2-16,21,1,4);
-			SimpleMessage(190,WindowY2-16,22,4);
-			break;
-		}
-	case 1:
-		{
-			SimpleMessage(130,WindowY2-16,21,4);
-			SelectedMessage(190,WindowY2-16,22,1,4);
-			break;
-		}
-	case 2:
-		{
-			SelectedMessage(160,WindowY2-16,10,1,4);
-			break;
-		}
-	}
-}
-
 void take(int objIdx)
 {
 	tWorldObject* objPtr = &ListWorldObjets[objIdx];
@@ -3607,163 +3556,6 @@ void take(int objIdx)
 
 	objPtr->room = -1;
 	objPtr->stage = -1;
-}
-
-void foundObject(int objIdx, int param)
-{
-	tWorldObject* objPtr;
-
-	if(objIdx < 0)
-		return;
-
-	if(param == 2)
-	{
-		printf("foundObject with param == 2\n");
-	}
-
-	objPtr = &ListWorldObjets[objIdx];
-
-	if( param != 0 && (objPtr->foundFlag & 0xC000))
-	{
-		return;
-	}
-
-	if(objPtr->trackNumber)
-	{
-		if(timer - objPtr->trackNumber < 300) // prevent from reopening the window every frame
-			return;
-	}
-
-	objPtr->trackNumber = 0;
-
-	SaveTimerAnim();
-	//  setupShaking(1000); // probably to remove the shaking when in foundObject screen
-
-	int weight = 0;
-	for(int i=0;i<numObjInInventoryTable[currentInventory];i++)
-	{
-		weight += ListWorldObjets[inventoryTable[currentInventory][i]].positionInTrack;
-	}
-
-    int choix = 1;
-
-	if(objPtr->positionInTrack + weight > CVars[getCVarsIdx(MAX_WEIGHT_LOADABLE)] || numObjInInventoryTable[currentInventory] +1 == 30)
-	{
-		choix = 3;
-	}
-
-	ShowBody = objPtr->foundBody;
-	ShowObjet = HQR_Get(HQ_Bodys,ShowBody);
-
-	SetProjection(160,100,128,300,298);
-
-    int zoom = 15000;
-    int stepzoom = -200;
-	ShowBeta = 0;
-
-	memset(frontBuffer, 0, 320*200);
-	FastCopyScreen(frontBuffer,logicalScreen);
-
-	AffBigCadre(160,100,240,120);
-
-	DrawFoundWindow(choix, objPtr->foundName, zoom);
-	osystem_flip(NULL);
-
-	AntiRebond = 1;
-
-    int exitflag = 0;
-	while(!exitflag)
-	{
-		osystem_CopyBlockPhys((unsigned char*)logicalScreen,0,0,320,200);
-
-		process_events();
-		osystem_drawBackground();
-
-		localKey = key;
-		localJoyD = JoyD;
-		localClick = Click;
-
-		if(!AntiRebond)
-		{
-			if(localKey == 1)
-			{
-				if(choix != 2)
-				{
-					choix = 0;
-				}
-
-				exitflag = 1;
-			}
-			if(choix != 2)
-			{
-				if(localJoyD&4)
-				{
-					choix = 0;
-				}
-
-				if(localJoyD&8)
-				{
-					choix = 1;
-				}
-			}
-
-			if(localKey == 28 || localClick !=0)
-			{
-				while(key)
-				{
-					process_events();
-				}
-
-				exitflag = 1;
-			}
-		}
-		else
-		{
-			if(!localKey && !localJoyD && !localClick)
-				AntiRebond = 0;
-		}
-
-		ShowBeta -= 8;
-
-		zoom += stepzoom; // zoom / dezoom
-
-		if(zoom> 8000) // zoom management
-			stepzoom = -stepzoom;
-
-		if(zoom< 25000)
-			stepzoom = -stepzoom;
-
-		DrawFoundWindow(choix,objPtr->foundName,zoom);
-
-		//    menuWaitVSync();
-	}
-
-	RestoreTimerAnim();
-
-	if(choix == 1)
-	{
-		take(objIdx);
-	}
-	else
-	{
-		objPtr->trackNumber = timer;
-	}
-
-	while(key && Click)
-	{
-		process_events();
-	}
-
-	localJoyD = 0;
-	localKey = 0;
-	localClick = 0;
-
-	//  if(mainLoopVar1 != 0)
-	{
-		//setupShaking(-600);
-	}
-
-	FlagInitView = 1;
 }
 
 void hardColSuB1Sub1(int flag)

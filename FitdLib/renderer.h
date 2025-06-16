@@ -14,6 +14,7 @@ extern int numOfPoints;
 
 void transformPoint(float* ax, float* bx, float* cx);
 
+int AffObjet(int x, int y, int z, int alpha, int beta, int gamma, sBody* pBody);
 int AffObjet(int var0,int var1,int var2,int var3,int var4,int var5,void* modelPtr);
 
 void computeScreenBox(int x, int y, int z, int alpha, int beta, int gamma, char* bodyPtr);

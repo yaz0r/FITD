@@ -2,10 +2,6 @@
 
 enum gameTypeEnum g_gameId;
 
-char* ShowObjet;
-int ShowBody;
-int ShowBeta;
-
 hqrEntryStruct* HQ_Memory;
 
 int videoMode;

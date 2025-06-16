@@ -958,10 +958,9 @@ renderFunction renderFunctions[]={
 	renderZixel,
 };
 
-int AffObjet(int x,int y,int z,int alpha,int beta,int gamma,void* modelPtr)
+int AffObjet(int x,int y,int z,int alpha,int beta,int gamma, sBody* pBody)
 {
-    sBody* pBody = getBodyFromPtr(modelPtr);
-    char* ptr = (char*)modelPtr;
+    char* ptr = (char*)pBody->m_raw;
     int numPrim;
     int i;
     char* out;
@@ -1141,6 +1140,12 @@ int AffObjet(int x,int y,int z,int alpha,int beta,int gamma,void* modelPtr)
 
         osystem_flushPendingPrimitives();
         return(0);
+}
+
+int AffObjet(int x, int y, int z, int alpha, int beta, int gamma, void* modelPtr)
+{
+    sBody* pBody = getBodyFromPtr(modelPtr);
+    return AffObjet(x, y, z, alpha, beta, gamma, pBody);
 }
 
 void computeScreenBox(int x, int y, int z, int alpha, int beta, int gamma, char* bodyPtr)

@@ -2,10 +2,6 @@
 
 #include "osystem.h"
 
-extern char* ShowObjet;
-extern int ShowBody;
-extern int ShowBeta;
-
 enum gameTypeEnum
 {
     AITD1,
