@@ -3171,68 +3171,25 @@ void mainDrawSub2(int actorIdx) // draw flow
 	// TODO: finish
 }
 
-void getHotPoint(int hotPointIdx, char* bodyPtr, point3dStruct* hotPoint)
+void getHotPoint(int hotPointIdx, sBody* bodyPtr, point3dStruct* hotPoint)
 {
-	s16 flag;
+    hotPoint->x = 0;
+    hotPoint->y = 0;
+    hotPoint->z = 0;
 
-	flag = *(s16*)bodyPtr;
-	bodyPtr += 2;
-
-	if(flag&2)
+	if(bodyPtr->m_flags &2)
 	{
-		s16 offset;
-		bodyPtr += 12;
+		ASSERT(hotPointIdx < bodyPtr->m_groups.size());
 
-		offset = *(s16*)bodyPtr;
-		bodyPtr+=2;
-		bodyPtr+=offset;
-
-		offset = *(s16*)bodyPtr; // num points
-		bodyPtr+=2;
-		bodyPtr+=offset*6; // skip point buffer
-
-		offset = *(s16*)bodyPtr; // num bones
-		bodyPtr+=2;
-		bodyPtr+=offset*2; // skip bone buffer
-
-		ASSERT(hotPointIdx < offset);
-
-		if(hotPointIdx < offset)
-	{
-			int pointIdx;
-			s16* source;
-
-			if(flag&INFO_OPTIMISE)
-			{
-				bodyPtr+=hotPointIdx*0x18;
-			}
-			else
+		if(hotPointIdx < bodyPtr->m_groups.size())
 		{
-				bodyPtr+=hotPointIdx*16;
-			}
+            auto& group = bodyPtr->m_groups[bodyPtr->m_groupOrder[hotPointIdx]];
 
-			pointIdx = *(s16*)(bodyPtr+4); // first point
+			int pointIdx = group.m_baseVertices; // first point
+			auto& vertex = bodyPtr->m_vertices[pointIdx];
 
-			//ASSERT(pointIdx > 0 && pointIdx < 1200);
-
-			source = (s16*)(((char*)pointBuffer) + pointIdx);
-
-			hotPoint->x = source[0];
-			hotPoint->y = source[1];
-			hotPoint->z = source[2];
+            *hotPoint = vertex;
 		}
-		else
-		{
-			hotPoint->x = 0;
-			hotPoint->y = 0;
-			hotPoint->z = 0;
-		}
-	}
-	else
-	{
-		hotPoint->x = 0;
-		hotPoint->y = 0;
-		hotPoint->z = 0;
 	}
 }
 
