@@ -1218,14 +1218,7 @@ void processLife(int lifeNum, bool callFoundLife)
             case LM_DO_MOVE:
             {
                 appendFormated("LM_DO_MOVE ");
-                if (g_gameId == AITD1)
-                {
-                    processTrack();
-                }
-                else
-                {
-                    processTrack2();
-                }
+                processTrack();
                 break;
             }
             case LM_ANIM_MOVE:
