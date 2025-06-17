@@ -518,6 +518,13 @@ void HQR_Reset(hqrEntryStruct* hqrPtr)
         }
         vBodies.resize(0);
     }
+    if (hqrPtr == HQ_Anims) {
+        for (int i = 0; i < vAnimations.size(); i++)
+        {
+            delete vAnimations[i];
+        }
+        vAnimations.resize(0);
+    }
 
     for(i=0;i<hqrPtr->numMaxEntry;i++)
     {
@@ -543,6 +550,13 @@ void HQR_Free(hqrEntryStruct* hqrPtr)
             delete vBodies[i];
         }
         vBodies.clear();
+    }
+    if (hqrPtr == HQ_Anims) {
+        for (int i = 0; i < vAnimations.size(); i++)
+        {
+            delete vAnimations[i];
+        }
+        vAnimations.clear();
     }
 
     for(i=0;i<hqrPtr->numMaxEntry;i++)
