@@ -219,7 +219,7 @@ void PlayWorld(int allowSystemMenu, int deltaTime)
                                 if (!(currentProcessedActorPtr->lifeMode & 4))
                                 {
                                     processLife(currentProcessedActorPtr->life, false);
-                                    actorTurnedToObj = 1;
+                                    FlagGenereAffList = 1;
                                 }
                         }
                     }

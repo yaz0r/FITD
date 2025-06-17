@@ -261,7 +261,7 @@ int loadSave(int saveNumber)
     if(g_gameId == AITD1)
     {
         configureHqrHero(HQ_Bodys,listBodySelect[CVars[getCVarsIdx(CHOOSE_PERSO)]]);
-        configureHqrHero(listAnim,listAnimSelect[CVars[getCVarsIdx(CHOOSE_PERSO)]]);
+        configureHqrHero(HQ_Anims,listAnimSelect[CVars[getCVarsIdx(CHOOSE_PERSO)]]);
     }
     else
     {
@@ -498,7 +498,7 @@ int loadSave(int saveNumber)
 
             if(objectTable[i].ANIM != -1)
             {
-                sAnimation* animPtr = getAnimationFromPtr(HQR_Get(listAnim,objectTable[i].ANIM));
+                sAnimation* animPtr = getAnimationFromPtr(HQR_Get(HQ_Anims,objectTable[i].ANIM));
                 SetAnimObjet(objectTable[i].frame,animPtr,bodyPtr);
             }
         }

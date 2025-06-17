@@ -80,11 +80,11 @@ s16 currentWorldTarget;
 int fileSize;
 
 hqrEntryStruct* HQ_Bodys = nullptr;
-hqrEntryStruct* listAnim = nullptr;
+hqrEntryStruct* HQ_Anims = nullptr;
 hqrEntryStruct* listLife = nullptr;
 hqrEntryStruct* listTrack = nullptr;
 hqrEntryStruct* listHybrides = nullptr;
-hqrEntryStruct* listMatrix = nullptr;
+hqrEntryStruct* HQ_Matrices = nullptr;
 
 s16 maxObjects;
 
@@ -162,7 +162,7 @@ int cameraFovY;
 
 char currentCameraVisibilityList[30];
 
-int actorTurnedToObj = 0;
+int FlagGenereAffList = 0;
 
 int currentProcessedActorIdx;
 tObject* currentProcessedActorPtr;

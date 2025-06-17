@@ -61,7 +61,7 @@ int InitAnim(int animNum,int animType, int animInfo)
 
             currentProcessedActorPtr->objectType |= AF_ANIMATED;
 
-            SetAnimObjet(currentProcessedActorPtr->frame, getAnimationFromPtr(HQR_Get(listAnim,animNum)), getBodyFromPtr(HQR_Get(HQ_Bodys, currentProcessedActorPtr->bodyNum)));
+            SetAnimObjet(currentProcessedActorPtr->frame, getAnimationFromPtr(HQR_Get(HQ_Anims,animNum)), getBodyFromPtr(HQR_Get(HQ_Bodys, currentProcessedActorPtr->bodyNum)));
 
             currentProcessedActorPtr->animType = animType;
             currentProcessedActorPtr->animInfo = animInfo;
@@ -96,7 +96,7 @@ int InitAnim(int animNum,int animType, int animInfo)
             removeFromBGIncrust(currentProcessedActorIdx);
         }
 
-        SetAnimObjet(0, getAnimationFromPtr(HQR_Get(listAnim,animNum)), getBodyFromPtr(HQR_Get(HQ_Bodys, currentProcessedActorPtr->bodyNum)));
+        SetAnimObjet(0, getAnimationFromPtr(HQR_Get(HQ_Anims,animNum)), getBodyFromPtr(HQR_Get(HQ_Bodys, currentProcessedActorPtr->bodyNum)));
 
 		currentProcessedActorPtr->newAnim = animNum;
 		currentProcessedActorPtr->newAnimType = animType;
@@ -270,7 +270,7 @@ void GereAnim(void)
             currentProcessedActorPtr->flagEndAnim = 0;
             currentProcessedActorPtr->frame = 0;
 
-            currentProcessedActorPtr->numOfFrames = GetNbFramesAnim(getAnimationFromPtr(HQR_Get(listAnim, newAnim)));
+            currentProcessedActorPtr->numOfFrames = GetNbFramesAnim(getAnimationFromPtr(HQR_Get(HQ_Anims, newAnim)));
         }
     }
 
@@ -316,7 +316,7 @@ void GereAnim(void)
 		oldStepY = currentProcessedActorPtr->stepY;
 		oldStepZ = currentProcessedActorPtr->stepZ;
 
-		currentProcessedActorPtr->END_FRAME = SetInterAnimObjet(currentProcessedActorPtr->frame, getAnimationFromPtr(HQR_Get(listAnim, currentProcessedActorPtr->ANIM)), getBodyFromPtr(HQR_Get(HQ_Bodys, currentProcessedActorPtr->bodyNum)));
+		currentProcessedActorPtr->END_FRAME = SetInterAnimObjet(currentProcessedActorPtr->frame, getAnimationFromPtr(HQR_Get(HQ_Anims, currentProcessedActorPtr->ANIM)), getBodyFromPtr(HQR_Get(HQ_Bodys, currentProcessedActorPtr->bodyNum)));
 
 		walkStep(animStepX,animStepZ,currentProcessedActorPtr->beta);
 

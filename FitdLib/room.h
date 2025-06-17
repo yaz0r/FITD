@@ -72,20 +72,20 @@ struct cameraViewedRoomStruct
 
 struct cameraDataStruct
 {
-  s16 alpha;
-  s16 beta;
-  s16 gamma;
+  s16 alpha; // 0
+  s16 beta; // 2
+  s16 gamma; // 4
 
-  s16 x;
-  s16 y;
-  s16 z;
+  s16 x; // 6
+  s16 y; // 8
+  s16 z; // 10
 
-  s16 focal1;
-  s16 focal2;
-  s16 focal3;
+  s16 focal1; // 12
+  s16 focal2; // 14
+  s16 focal3; // 16
 
-  u16 numViewedRooms;
-  std::vector<cameraViewedRoomStruct> viewedRoomTable;
+  u16 numViewedRooms; // 18
+  std::vector<cameraViewedRoomStruct> viewedRoomTable; // 20
 };
 
 struct roomDataStruct

@@ -198,7 +198,7 @@ int InitSpecialObjet(int mode, int X, int Y, int Z, int stage, int room, int alp
     }
     }
 
-    actorTurnedToObj = 1;
+    FlagGenereAffList = 1;
     return(i);
 }
 
@@ -746,7 +746,7 @@ void processLife(int lifeNum, bool callFoundLife)
                     {
                         if ((currentProcessedActorPtr->ANIM != -1) && (currentProcessedActorPtr->bodyNum != -1))
                         {
-                            sAnimation* pAnim = getAnimationFromPtr(HQR_Get(listAnim, currentProcessedActorPtr->ANIM));
+                            sAnimation* pAnim = getAnimationFromPtr(HQR_Get(HQ_Anims, currentProcessedActorPtr->ANIM));
 
                             if (g_gameId >= JACK)
                             {
@@ -787,7 +787,7 @@ void processLife(int lifeNum, bool callFoundLife)
 
                 if (currentProcessedActorPtr->objectType & AF_ANIMATED)
                 {
-                    sAnimation* pAnim = getAnimationFromPtr(HQR_Get(listAnim, currentProcessedActorPtr->ANIM));
+                    sAnimation* pAnim = getAnimationFromPtr(HQR_Get(HQ_Anims, currentProcessedActorPtr->ANIM));
 
                     if (g_gameId >= JACK)
                     {
@@ -1174,7 +1174,7 @@ void processLife(int lifeNum, bool callFoundLife)
                 lifeTempVar1 = readNextArgument("TrackMode");
                 lifeTempVar2 = readNextArgument("TrackNumber");
 
-                setMoveMode(lifeTempVar1, lifeTempVar2);
+                InitDeplacement(lifeTempVar1, lifeTempVar2);
 
                 break;
             }

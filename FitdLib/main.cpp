@@ -1168,14 +1168,14 @@ void LoadWorld(void)
 	if(g_gameId == AITD1)
 	{
 		HQ_Bodys = HQR_InitRessource(listBodySelect[CVars[getCVarsIdx(CHOOSE_PERSO)]],37000, 50); // was calculated from free mem size
-		listAnim = HQR_InitRessource(listAnimSelect[CVars[getCVarsIdx(CHOOSE_PERSO)]],30000, 80); // was calculated from free mem size
+		HQ_Anims = HQR_InitRessource(listAnimSelect[CVars[getCVarsIdx(CHOOSE_PERSO)]],30000, 80); // was calculated from free mem size
 	}
 	else
 	{
 		HQ_Bodys = HQR_InitRessource("LISTBODY",37000, 50); // was calculated from free mem size
-		listAnim = HQR_InitRessource("LISTANIM",30000, 80); // was calculated from free mem size
+		HQ_Anims = HQR_InitRessource("LISTANIM",30000, 80); // was calculated from free mem size
 
-		listMatrix = HQR_InitRessource("LISTMAT",64000,5);
+		HQ_Matrices = HQR_InitRessource("LISTMAT",64000,5);
 	}
 
 
@@ -1713,7 +1713,7 @@ void DeleteObjet(int index) // remove actor
 			objectPtr->stage = actorPtr->stage;
 			objectPtr->room = actorPtr->room;
 
-			actorTurnedToObj = 1;
+			FlagGenereAffList = 1;
 		}
 	}
 }
@@ -1785,7 +1785,7 @@ void RefreshAux2(void)
 	//TODO: implementer la suite
 }
 
-void setMoveMode(int trackMode, int trackNumber)
+void InitDeplacement(int trackMode, int trackNumber)
 {
 	currentProcessedActorPtr->trackMode = trackMode;
 
@@ -1807,7 +1807,7 @@ void setMoveMode(int trackMode, int trackNumber)
 	}
 }
 
-s16 cameraVisibilityVar = 0;
+s16 ObjSalleRel = 0;
 
 int IsInCamera(int roomNumber)
 {
@@ -1817,12 +1817,12 @@ int IsInCamera(int roomNumber)
 	{
 		if(cameraDataTable[NumCamera]->viewedRoomTable[i].viewedRoomIdx == roomNumber)
 		{
-			cameraVisibilityVar = i;
+			ObjSalleRel = i;
 			return(1);
 		}
 	}
 
-	cameraVisibilityVar = -1;
+	ObjSalleRel = -1;
 
 	return 0;
 }
@@ -1835,376 +1835,283 @@ int IsInCamRectTestAITD2(int X, int Z) // TODO: not 100% exact
 	return 0;
 }
 
-int updateActorAitd2Only(int actorIdx)
-{
-	tObject *currentActor = &objectTable[actorIdx];
-
-	if(g_gameId == AITD1)
-	{
-		return 0;
-	}
-
-	if(currentActor->bodyNum != -1)
-	{
-		if(IsInCamera(currentActor->room))
-		{
-			if(IsInCamRectTestAITD2(currentActor->roomX + currentActor->stepX, currentActor->roomZ + currentActor->stepZ))
-			{
-				currentActor->lifeMode |= 4;
-				return 1;
-			}
-		}
-	}
-
-	return 0;
-}
-
 void updateAllActorAndObjectsAITD2()
 {
-	for(int i=0;i<NUM_MAX_OBJECT;i++)
-	{
-		tObject *pObject = &objectTable[i];
+    for (int i = 0; i < NUM_MAX_OBJECT; i++)
+    {
+        tObject* pObject = &objectTable[i];
 
-		if(pObject->indexInWorld == -1)
-		{
-			continue;
-		}
+        if (pObject->indexInWorld == -1)
+        {
+            continue;
+        }
 
-		pObject->lifeMode &= ~4;
+        pObject->lifeMode &= ~4;
 
-		if(pObject->stage == g_currentFloor)
-		{
-			switch(pObject->lifeMode)
-			{
-			case 0: // OFF
-				break;
-			case 1: // STAGE				
-				continue;
-			case 2: // ROOM
-				if(pObject->room == currentRoom)
-				{
-					continue;
-				}
-				break;
-			case 3: // CAMERA
-				if(isInViewList(pObject->room))
-				{
-					continue;
-				}
-				break;
-			default:
-				//assert(0);
-				break;
-			}
+        if (pObject->stage == g_currentFloor)
+        {
+            switch (pObject->lifeMode)
+            {
+            case 0: // OFF
+                break;
+            case 1: // STAGE
+                continue;
+            case 2: // ROOM
+                if (pObject->room == currentRoom)
+                {
+                    continue;
+                }
+                break;
+            case 3: // CAMERA
+                if (isInViewList(pObject->room))
+                {
+                    continue;
+                }
+                break;
+            default:
+                break;
+            }
 
-			if(updateActorAitd2Only(i))
-			{
-				pObject->lifeMode |= 4;
-				continue;
-			}
-		}
-		DeleteObjet(i);
-	}
+            if (pObject->bodyNum != -1)
+            {
+                if (IsInCamera(pObject->room))
+                {
+                    if (IsInCamRectTestAITD2(pObject->roomX + pObject->stepX, pObject->roomZ + pObject->stepZ))
+                    {
+                        pObject->lifeMode |= 4;
+                        continue;
+                    }
+                }
+            }
+        }
+        DeleteObjet(i);
+    }
 
-	for(int i=0;i<maxObjects;i++)
-	{
-		tWorldObject* currentObject = &ListWorldObjets[i];
+    for (int i = 0; i < maxObjects; i++)
+    {
+        tWorldObject* currentObject = &ListWorldObjets[i];
 
-		if(currentObject->objIndex != -1)
-		{
-			if(currentWorldTarget == i)
-			{
-				currentCameraTargetActor = currentObject->objIndex;
-			}
-		}
-		else
-		{
-			if(currentObject->stage == g_currentFloor)
-			{
-				if(currentObject->life != -1)
-				{
-					if(currentObject->lifeMode != -1)
-					{
-						int actorIdx;
-						int di;
+        if (currentObject->objIndex != -1)
+        {
+            if (currentWorldTarget == i)
+            {
+                currentCameraTargetActor = currentObject->objIndex;
+            }
+            continue;
+        }
 
-						switch(currentObject->lifeMode&3)
-						{
-						case 0:
-							{
-								di = 0;
-								break;
-							}
-						case 1:
-							{
-								di = 1;
-								break;
-							}
-						case 2:
-							{
-								if(currentObject->room != currentRoom)
-								{
-									di = 0;
-								}
-								else
-								{
-									di = 1;
-								}
-								break;
-							}
-						case 3:
-							{
-								if(!isInViewList(currentObject->room))
-								{
-									di = 0;
-								}
-								else
-								{
-									di = 1;
-								}
-								break;
-							}
-						}
+        if (currentObject->stage != g_currentFloor)
+            continue;
 
-						if(!di)
-						{
-							if(currentObject->body != -1)
-							{
-								if(IsInCamera(currentObject->room))
-								{
-									if(IsInCamRectTestAITD2(currentObject->x,currentObject->z))
-									{
-										currentObject->lifeMode |= 4;
-									}
-									else
-									{
-										continue;
-									}
-								}
-								else
-								{
-									continue;
-								}
-							}
-							else
-							{
-								continue;
-							}
-						}
+        bool isOk = false;
+        switch (currentObject->lifeMode & 3)
+        {
+        case 0: // OFF
+            isOk = false;
+            break;
+        case 1: // STAGE
+            isOk = true;
+            break;
+        case 3: // CAMERA
+            if (!isInViewList(currentObject->room))
+            {
+                isOk = false;
+            }
+            else
+            {
+                isOk = true;
+            }
+            break;
+        case 2: // ROOM
+            if (currentObject->room != currentRoom)
+            {
+                isOk = false;
+            }
+            else
+            {
+                isOk = true;
+            }
+            break;
+        }
 
-						//int var_C = currentObject->flags & 0xFFDF;
-						//int var_E = currentObject->field_2;
-						//int var_A = currentObject->anim;
-addObject:
-					actorIdx = copyObjectToActor( currentObject->body, currentObject->typeZV, currentObject->foundName,
-					currentObject->flags & 0xFFDF,
-					currentObject->x, currentObject->y, currentObject->z,
-					currentObject->stage, currentObject->room,
-					currentObject->alpha, currentObject->beta, currentObject->gamma,
-					currentObject->anim,
-					currentObject->frame, currentObject->animType, currentObject->animInfo);
+        if (!isOk) {
+            if ((currentObject->body == -1) || (!IsInCamera(currentObject->room)) || (!IsInCamRectTestAITD2(currentObject->x, currentObject->z)))
+            {
+                continue;
+            }
+            else {
+                currentObject->lifeMode |= 4;
+            }
+        }
 
-				  currentObject->objIndex = actorIdx;
+        currentObject->objIndex = InitObjet(currentObject->body, currentObject->typeZV, currentObject->foundName,
+            currentObject->flags & ~AF_SPECIAL,
+            currentObject->x, currentObject->y, currentObject->z,
+            currentObject->stage, currentObject->room,
+            currentObject->alpha, currentObject->beta, currentObject->gamma,
+            currentObject->anim,
+            currentObject->frame, currentObject->animType, currentObject->animInfo);
 
-				  if(actorIdx != -1)
-				  {
-					  currentProcessedActorPtr = &objectTable[actorIdx];
-					  currentProcessedActorIdx = actorIdx;
+        if (currentObject->objIndex != -1)
+        {
+            currentProcessedActorPtr = &objectTable[currentObject->objIndex];
+            currentProcessedActorIdx = currentObject->objIndex;
 
-					  if(currentWorldTarget == i)
-					  {
-						  currentCameraTargetActor = currentProcessedActorIdx;
-					  }
+            if (currentWorldTarget == i)
+            {
+                currentCameraTargetActor = currentProcessedActorIdx;
+            }
 
-					  currentProcessedActorPtr->dynFlags = (currentObject->flags & 0x20) / 0x20; // recheck
-					  currentProcessedActorPtr->life = currentObject->life;
-					  currentProcessedActorPtr->lifeMode = currentObject->lifeMode;
+            currentProcessedActorPtr->dynFlags = (currentObject->flags & 0x20) / 0x20; // recheck
+            currentProcessedActorPtr->life = currentObject->life;
+            currentProcessedActorPtr->lifeMode = currentObject->lifeMode;
 
-					  currentProcessedActorPtr->indexInWorld = i;
+            currentProcessedActorPtr->indexInWorld = i;
 
-					  setMoveMode(currentObject->trackMode, currentObject->trackNumber);
+            InitDeplacement(currentObject->trackMode, currentObject->trackNumber);
 
-					  currentProcessedActorPtr->positionInTrack = currentObject->positionInTrack;
+            currentProcessedActorPtr->positionInTrack = currentObject->positionInTrack;
 
-					  if(g_gameId != AITD1)
-					  {
-						  currentProcessedActorPtr->MARK = currentObject->mark;
-					  }
+            if (g_gameId != AITD1)
+            {
+                currentProcessedActorPtr->MARK = currentObject->mark;
+            }
 
-					  actorTurnedToObj = 1;
-				  }
-					}
-				}
-				else
-				{
-					if(isInViewList(currentObject->room))
-						goto addObject;
-				}
-			}
-		}
-	}
-
-	//  objModifFlag1 = 0;
-
-	//TODO: object update
+            FlagGenereAffList = 1;
+        }
+    }
+    //FlagGenereActiveList = true;
 }
+					
 
 void GenereActiveList()
 {
-	int i;
-	tObject *currentActor = objectTable.data();
-	tWorldObject* currentObject;
-
 	if(g_gameId > JACK)
 	{
 		updateAllActorAndObjectsAITD2();
 		return;
 	}
 
-	for(i=0;i<NUM_MAX_OBJECT;i++)
+	for(int i=0;i<NUM_MAX_OBJECT;i++)
 	{
-		if(currentActor->indexInWorld != -1)
+        tObject* currentActor = &objectTable[i];
+        if (currentActor->indexInWorld == -1)
+            continue;
+
+		if(currentActor->stage == g_currentFloor)
 		{
-			if(currentActor->stage == g_currentFloor)
+			if(currentActor->life != -1)
 			{
-				if(currentActor->life != -1)
+				switch(currentActor->lifeMode)
 				{
-					switch(currentActor->lifeMode)
+				case 0: // STAGE
+                    continue;
+				case 1: // ROOM
+					if(currentActor->room != currentRoom)
 					{
-					case 0:
-						{
-							break;
-						}
-					case 1:
-						{
-							if(currentActor->room != currentRoom)
-							{
-								DeleteObjet(i);
-							}
-							break;
-						}
-					case 2:
-						{
-							if(!isInViewList(currentActor->room))
-							{
-								DeleteObjet(i);
-							}
-							break;
-						}
-					default:
-						{
-							DeleteObjet(i);
-							break;
-						}
+                        continue;
 					}
-				}
-				else
-				{
+					break;
+				case 2: // CAMERA
 					if(!isInViewList(currentActor->room))
 					{
 						DeleteObjet(i);
+					}
+					break;
+				default:
+					{
+						break;
 					}
 				}
 			}
 			else
 			{
-				DeleteObjet(i);
+				if(!isInViewList(currentActor->room))
+				{
+                    continue;
+				}
 			}
 		}
 
-		currentActor++;
+        DeleteObjet(i);
 	}
 
-	currentObject = &ListWorldObjets[0];
-
-	for(i=0;i<maxObjects;i++)
+	for(int i=0;i<maxObjects;i++)
 	{
-		if(currentObject->objIndex != -1)
-		{
+        tWorldObject* currentObject = &ListWorldObjets[i];
+		if(currentObject->objIndex != -1) {
 			if(currentWorldTarget == i)
 			{
 				currentCameraTargetActor = currentObject->objIndex;
 			}
+            continue;
 		}
-		else
+
+        if (currentObject->stage != g_currentFloor) {
+            continue;
+        }
+
+        if (currentObject->life != -1)
+        {
+            switch (currentObject->lifeMode)
+            {
+            case -1:
+                continue;
+
+            case 0: // Stage
+                break;
+
+            case 1: // Room
+                if (currentObject->room != currentRoom)
+                {
+                    continue;
+                }
+                break;
+            case 2: // Camera
+                if (!isInViewList(currentObject->room))
+                {
+                    continue;
+                }
+                break;
+            }
+        }
+        else
+        {
+            if (!isInViewList(currentObject->room)) {
+                continue;
+            }
+        }
+
+        currentObject->objIndex = InitObjet( currentObject->body, currentObject->typeZV, currentObject->foundName,
+				currentObject->flags & ~AF_SPECIAL,
+				currentObject->x, currentObject->y, currentObject->z,
+				currentObject->stage, currentObject->room,
+				currentObject->alpha, currentObject->beta, currentObject->gamma,
+				currentObject->anim,
+				currentObject->frame, currentObject->animType, currentObject->animInfo);
+
+		if(currentObject->objIndex != -1)
 		{
-			if(currentObject->stage == g_currentFloor)
+			currentProcessedActorPtr = &objectTable[currentObject->objIndex];
+			currentProcessedActorIdx = currentObject->objIndex;
+
+			if(currentWorldTarget == i)
 			{
-				if(currentObject->life != -1)
-				{
-					if(currentObject->lifeMode != -1)
-					{
-						int actorIdx;
-
-						switch(currentObject->lifeMode)
-						{
-						case 1:
-							{
-								if(currentObject->room != currentRoom)
-								{
-									currentObject++;
-									continue;
-								}
-								break;
-							}
-						case 2:
-							{
-								if(!isInViewList(currentObject->room))
-								{
-									currentObject++;
-									continue;
-								}
-								break;
-							}
-						}
-
-						//int var_C = currentObject->flags & 0xFFDF;
-						//int var_E = currentObject->field_2;
-						//int var_A = currentObject->anim;
-
-addObject:        actorIdx = copyObjectToActor( currentObject->body, currentObject->typeZV, currentObject->foundName,
-					  currentObject->flags & 0xFFDF,
-					  currentObject->x, currentObject->y, currentObject->z,
-					  currentObject->stage, currentObject->room,
-					  currentObject->alpha, currentObject->beta, currentObject->gamma,
-					  currentObject->anim,
-					  currentObject->frame, currentObject->animType, currentObject->animInfo);
-
-				  currentObject->objIndex = actorIdx;
-
-				  if(actorIdx != -1)
-				  {
-					  currentProcessedActorPtr = &objectTable[actorIdx];
-					  currentProcessedActorIdx = actorIdx;
-
-					  if(currentWorldTarget == i)
-					  {
-						  currentCameraTargetActor = currentProcessedActorIdx;
-					  }
-
-					  currentProcessedActorPtr->dynFlags = (currentObject->flags & 0x20) / 0x20; // recheck
-					  currentProcessedActorPtr->life = currentObject->life;
-					  currentProcessedActorPtr->lifeMode = currentObject->lifeMode;
-
-					  currentProcessedActorPtr->indexInWorld = i;
-
-					  setMoveMode(currentObject->trackMode, currentObject->trackNumber);
-
-					  currentProcessedActorPtr->positionInTrack = currentObject->positionInTrack;
-
-					  actorTurnedToObj = 1;
-				  }
-					}
-				}
-				else
-				{
-					if(isInViewList(currentObject->room))
-						goto addObject;
-				}
+				currentCameraTargetActor = currentProcessedActorIdx;
 			}
-		}
 
-		currentObject++;
+			currentProcessedActorPtr->dynFlags = (currentObject->flags & 0x20) / 0x20; // recheck
+			currentProcessedActorPtr->life = currentObject->life;
+			currentProcessedActorPtr->lifeMode = currentObject->lifeMode;
+
+			currentProcessedActorPtr->indexInWorld = i;
+
+			InitDeplacement(currentObject->trackMode, currentObject->trackNumber);
+
+			currentProcessedActorPtr->positionInTrack = currentObject->positionInTrack;
+
+			FlagGenereAffList = 1;
+		}
 	}
 
 	//  FlagGenereActiveList = 0;
@@ -3879,7 +3786,7 @@ void GereDec()
 						}
 						else
 						{
-							actorTurnedToObj = 1;
+							FlagGenereAffList = 1;
 						}
 
 						startChrono(&currentProcessedActorPtr->ROOM_CHRONO);
@@ -4481,7 +4388,7 @@ void cleanupAndExit(void)
 	HQR_Free(listLife);
 	HQR_Free(listTrack);
 	HQR_Free(HQ_Bodys);
-	HQR_Free(listAnim);
+	HQR_Free(HQ_Anims);
 
 	/* free(tabTextes);
 	free(aux);

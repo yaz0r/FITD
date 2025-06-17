@@ -1,6 +1,6 @@
 #include "common.h"
 
-int copyObjectToActor(int body, int typeZv, int hardZvIdx, s16 objectType, int x, int y, int z, int stage, int room, int alpha, int beta, int gamma, int anim, int frame, int animtype, int animInfo)
+int InitObjet(int body, int typeZv, int hardZvIdx, s16 objectType, int x, int y, int z, int stage, int room, int alpha, int beta, int gamma, int anim, int frame, int animtype, int animInfo)
 {
     int i;
     int j;
@@ -101,7 +101,7 @@ int copyObjectToActor(int body, int typeZv, int hardZvIdx, s16 objectType, int x
 
         if(anim != -1)
         {
-            sAnimation* animPtr = getAnimationFromPtr(HQR_Get(listAnim,anim));
+            sAnimation* animPtr = getAnimationFromPtr(HQR_Get(HQ_Anims,anim));
 
             SetAnimObjet(frame,animPtr, bodyPtr);
 

@@ -488,7 +488,7 @@ void processTrack(void)
                 {
                     currentProcessedActorPtr->speed = 0;
                     currentProcessedActorPtr->trackNumber = -1;
-                    setMoveMode(0,0);
+                    InitDeplacement(0,0);
                     break;
                 }
             case TL_REPEAT:

@@ -336,11 +336,11 @@ extern s16 currentWorldTarget;
 extern int fileSize;
 
 extern hqrEntryStruct* HQ_Bodys;
-extern hqrEntryStruct* listAnim;
+extern hqrEntryStruct* HQ_Anims;
 extern hqrEntryStruct* listLife;
 extern hqrEntryStruct* listTrack;
 extern hqrEntryStruct* listHybrides;
-extern hqrEntryStruct* listMatrix;
+extern hqrEntryStruct* HQ_Matrices;
 
 extern s16 maxObjects;
 
@@ -417,7 +417,7 @@ extern int cameraFovY;
 
 extern char currentCameraVisibilityList[30];
 
-extern int actorTurnedToObj;
+extern int FlagGenereAffList;
 
 extern int currentProcessedActorIdx;
 extern tObject* currentProcessedActorPtr;

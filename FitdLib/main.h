@@ -58,7 +58,7 @@ void SetProjection(int centerX, int centerY, int x, int y, int z);
 void SetAngleCamera(int x, int y, int z);
 void SetPosCamera(int x, int y, int z);
 s16 GiveDistance2D(int x1, int z1, int x2, int z2);
-void setMoveMode(int trackMode, int trackNumber);
+void InitDeplacement(int trackMode, int trackNumber);
 void InitRealValue(s16 beta, s16 newBeta, s16 param, RealValue* rotatePtr);
 s16 updateActorRotation(RealValue* rotatePtr);
 void deleteObject(int objIdx);
