@@ -373,9 +373,6 @@ void setStage(int newStage, int newRoomLocal, int X, int Y, int Z)
 
 void setupRealZv(ZVStruct* zvPtr)
 {
-    int i;
-    s16* ptr = pointBuffer;
-
     zvPtr->ZVX1 = 32000;
     zvPtr->ZVY1 = 32000;
     zvPtr->ZVZ1 = 32000;
@@ -383,47 +380,36 @@ void setupRealZv(ZVStruct* zvPtr)
     zvPtr->ZVY2 = -32000;
     zvPtr->ZVZ2 = -32000;
 
-    for (i = 0; i < numOfPoints; i++)
+    for (int i = 0; i < numOfPoints; i++)
     {
-        if (zvPtr->ZVX1 >(*ptr))
+        point3dStruct* ptr = &pointBuffer[i];
+        if (zvPtr->ZVX1 > ptr->x)
         {
-            zvPtr->ZVX1 = *(ptr);
+            zvPtr->ZVX1 = ptr->x;
+        }
+        else if (zvPtr->ZVX2 < ptr->x)
+        {
+            zvPtr->ZVX2 = ptr->x;
+        }
+
+        if (zvPtr->ZVY1 > ptr->y)
+        {
+            zvPtr->ZVY1 = ptr->y;
+        }
+        else if (zvPtr->ZVY2 < ptr->y)
+        {
+            zvPtr->ZVY2 = ptr->y;
+        }
+
+        if (zvPtr->ZVZ1 > ptr->z)
+        {
+            zvPtr->ZVZ1 = ptr->z;
         }
         else
+        if (zvPtr->ZVZ2 < ptr->z)
         {
-            if (zvPtr->ZVX2 < (*ptr))
-            {
-                zvPtr->ZVX2 = *(ptr);
-            }
+            zvPtr->ZVZ2 = ptr->z;
         }
-        ptr++;
-
-        if (zvPtr->ZVY1 >(*ptr))
-        {
-            zvPtr->ZVY1 = *(ptr);
-        }
-        else
-        {
-            if (zvPtr->ZVY2 < (*ptr))
-            {
-                zvPtr->ZVY2 = *(ptr);
-            }
-        }
-        ptr++;
-
-        if (zvPtr->ZVZ1 >(*ptr))
-        {
-            zvPtr->ZVZ1 = *(ptr);
-        }
-        else
-        {
-            if (zvPtr->ZVZ2 < (*ptr))
-            {
-                zvPtr->ZVZ2 = *(ptr);
-            }
-        }
-        ptr++;
-
     }
 }
 
@@ -761,7 +747,6 @@ void processLife(int lifeNum, bool callFoundLife)
                         if ((currentProcessedActorPtr->ANIM != -1) && (currentProcessedActorPtr->bodyNum != -1))
                         {
                             char* pAnim = HQR_Get(listAnim, currentProcessedActorPtr->ANIM);
-                            char* pBody;
 
                             if (g_gameId >= JACK)
                             {
@@ -769,7 +754,7 @@ void processLife(int lifeNum, bool callFoundLife)
                                 gereDecal(); */
                             }
 
-                            pBody = HQR_Get(HQ_Bodys, currentProcessedActorPtr->bodyNum);
+                            sBody* pBody = getBodyFromPtr(HQR_Get(HQ_Bodys, currentProcessedActorPtr->bodyNum));
 
                             /*    if(gameId >= JACK)
                             {
@@ -803,7 +788,6 @@ void processLife(int lifeNum, bool callFoundLife)
                 if (currentProcessedActorPtr->objectType & AF_ANIMATED)
                 {
                     char* pAnim = HQR_Get(listAnim, currentProcessedActorPtr->ANIM);
-                    char* pBody;
 
                     if (g_gameId >= JACK)
                     {
@@ -811,7 +795,7 @@ void processLife(int lifeNum, bool callFoundLife)
                         gereDecal(); */
                     }
 
-                    pBody = HQR_Get(HQ_Bodys, currentProcessedActorPtr->bodyNum);
+                    sBody* pBody = getBodyFromPtr(HQR_Get(HQ_Bodys, currentProcessedActorPtr->bodyNum));
 
                     SetAnimObjet(0, pAnim, pBody);
                     InitAnim(param2, 4, -1);

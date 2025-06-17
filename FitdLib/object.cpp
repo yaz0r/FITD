@@ -103,7 +103,7 @@ int copyObjectToActor(int body, int typeZv, int hardZvIdx, s16 objectType, int x
         {
             char* animPtr = HQR_Get(listAnim,anim);
 
-            SetAnimObjet(frame,animPtr,(char*)bodyPtr->m_raw);
+            SetAnimObjet(frame,animPtr, bodyPtr);
 
             actorPtr->numOfFrames = GetNbFramesAnim(animPtr);
             actorPtr->flagEndAnim = 0;

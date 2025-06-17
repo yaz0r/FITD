@@ -89,6 +89,16 @@ struct ZVStruct
 
 typedef struct ZVStruct ZVStruct;
 
+struct ZVStruct16
+{
+    s16 ZVX1;
+    s16 ZVX2;
+    s16 ZVY1;
+    s16 ZVY2;
+    s16 ZVZ1;
+    s16 ZVZ2;
+};
+
 struct RealValue
 {
     s16 startValue;
@@ -448,7 +458,6 @@ extern int animStepZ;
 extern int animStepX;
 extern int animStepY;
 extern char* animVar1;
-extern char* animVar3;
 extern char* animVar4;
 
 extern s16 NewNumEtage;
@@ -522,9 +531,12 @@ extern collisiosDisplayMode sceColDisplayMode;
 
 struct sGroupState
 {
-    s16 m_type; // 8
-    s16 m_delta[3]; // A
-    s16 m_rotateDelta[3]; // 10 (AITD2+) if Info_optimise
+    s16 m_type; // 0
+    s16 m_delta[3]; // 2
+    // (AITD2+) if Info_optimise
+    s16 m_rotateDelta[3]; // 8
+    s16 m_padding;
+    // 8 / 0x10
 };
 
 struct sGroup
@@ -534,7 +546,8 @@ struct sGroup
     s16 m_baseVertices; // 4
     s8 m_orgGroup; // 6
     s8 m_numGroup; // 7
-    sGroupState m_state;
+    sGroupState m_state;//8
+    // 0x16 / 0x22 (AITD2+) if Info_optimise
 };
 
 enum primTypeEnum
@@ -575,15 +588,14 @@ struct sBody
 {
     void* m_raw;
 
-    u16 m_flags;
-    ZVStruct m_zv;
-    std::vector<u8> m_scratchBuffer;
-    std::vector<point3dStruct> m_vertices;
-    std::vector<uint16> m_groupOrder;
-    std::vector<sGroup> m_groups;
+    u16 m_flags; //0 size 0x2
+    ZVStruct16 m_zv; //2 size 0xC
+    char* startAnim = nullptr; // This is normally stored as 4 bytes at the beginning of scratchBuffer, but we store it here due to pointer size
+    std::vector<u8> m_scratchBuffer; //0xE size u16 + data
+    std::vector<point3dStruct> m_vertices; // size u16 count * 6
+    std::vector<uint16> m_groupOrder; // size u16 * 2
+    std::vector<sGroup> m_groups; // size u16 
     std::vector<sPrimitive> m_primitives;
-
-    void sync();
 };
 
 struct sFrame

@@ -1,16 +1,21 @@
 #include "common.h"
 
+void GiveZVObjet(sBody* bodyPtr, ZVStruct* zvPtr)
+{
+    zvPtr->ZVX1 = bodyPtr->m_zv.ZVX1;
+    zvPtr->ZVX2 = bodyPtr->m_zv.ZVX2;
+    zvPtr->ZVY1 = bodyPtr->m_zv.ZVY1;
+    zvPtr->ZVY2 = bodyPtr->m_zv.ZVY2;
+    zvPtr->ZVZ1 = bodyPtr->m_zv.ZVZ1;
+    zvPtr->ZVZ2 = bodyPtr->m_zv.ZVZ2;
+}
+
 void getZvCube(sBody* bodyPtr, ZVStruct* zvPtr)
 {
-    *zvPtr = bodyPtr->m_zv;
+    GiveZVObjet(bodyPtr, zvPtr);
     
     zvPtr->ZVZ2 = zvPtr->ZVX2 = (zvPtr->ZVX2 + zvPtr->ZVZ2)/2;
     zvPtr->ZVX1 = zvPtr->ZVZ1 = -zvPtr->ZVZ2;
-}
-
-void GiveZVObjet(sBody* bodyPtr, ZVStruct* zvPtr)
-{
-    *zvPtr = bodyPtr->m_zv;
 }
 
 void makeDefaultZV(ZVStruct* zvPtr)

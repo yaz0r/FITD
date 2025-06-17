@@ -9,7 +9,7 @@ extern int BBox3D4;
 #define NUM_MAX_POINT_IN_POINT_BUFFER 800
 #define NUM_MAX_BONES 50
 
-extern s16 pointBuffer[NUM_MAX_POINT_IN_POINT_BUFFER*3];
+extern std::array<point3dStruct, NUM_MAX_POINT_IN_POINT_BUFFER> pointBuffer;
 extern int numOfPoints;
 
 void transformPoint(float* ax, float* bx, float* cx);

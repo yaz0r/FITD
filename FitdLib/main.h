@@ -62,12 +62,10 @@ void setMoveMode(int trackMode, int trackNumber);
 void InitRealValue(s16 beta, s16 newBeta, s16 param, RealValue* rotatePtr);
 s16 updateActorRotation(RealValue* rotatePtr);
 s16 GetNbFramesAnim(char* animPtr);
-int SetAnimObjet(int frame, char* anim, char* body);
 void deleteObject(int objIdx);
 void removeFromBGIncrust(int actorIdx);
 void makeMessage(int messageIdx);
 int drawTextOverlay(void);
-s16 SetInterAnimObjet(int frame, char* animPtr, char* bodyPtr);
 void handleCollision(ZVStruct* startZv, ZVStruct* zvPtr2, ZVStruct* zvPtr3);
 
 void addActorToBgInscrust(int actorIdx);

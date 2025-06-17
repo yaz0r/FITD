@@ -494,7 +494,7 @@ int loadSave(int saveNumber)
     {
         if(objectTable[i].indexInWorld != -1 && objectTable[i].bodyNum != -1)
         {
-            char* bodyPtr = HQR_Get(HQ_Bodys,objectTable[i].bodyNum);
+            sBody* bodyPtr = getBodyFromPtr(HQR_Get(HQ_Bodys,objectTable[i].bodyNum));
 
             if(objectTable[i].ANIM != -1)
             {

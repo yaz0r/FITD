@@ -77,7 +77,7 @@ int renderZ;
 int numOfPoints;
 int numOfBones;
 
-s16 pointBuffer[NUM_MAX_POINT_IN_POINT_BUFFER*3];
+std::array<point3dStruct, NUM_MAX_POINT_IN_POINT_BUFFER> pointBuffer;
 s16 cameraSpaceBuffer[NUM_MAX_POINT_IN_POINT_BUFFER*3];
 s16 bonesBuffer[NUM_MAX_BONES];
 
@@ -208,19 +208,19 @@ void InitGroupeRot(int transX,int transY,int transZ)
     }
 }
 
-void RotateList(s16* pointPtr, int numOfPoint)
+void RotateList(point3dStruct* pointPtr, int numOfPoint)
 {
     for(int i=0;i<numOfPoint;i++)
     {
-        int x = *(s16*)pointPtr;
-        int y = *(s16*)(pointPtr+1);
-        int z = *(s16*)(pointPtr+2);
+        point3dStruct& point = pointPtr[i];
+        int x = point.x;
+        int y = point.y;
+        int z = point.z;
 
         if(boneRotateY)
         {
             int tempX = x;
             int tempZ = z;
-
             x = ((((tempX * boneRotateYSin) - (tempZ * boneRotateYCos)))>>16)<<1;
             z = ((((tempX * boneRotateYCos) + (tempZ * boneRotateYSin)))>>16)<<1;
         }
@@ -241,11 +241,9 @@ void RotateList(s16* pointPtr, int numOfPoint)
 			y = ((((tempX * boneRotateZCos) + ( tempY * boneRotateZSin)))>>16)<<1;
 		}
 
-        *(s16*)(pointPtr) = x;
-        *(s16*)(pointPtr+1) = y;
-        *(s16*)(pointPtr+2) = z;
-
-        pointPtr+=3;
+        point.x = x;
+        point.y = y;
+        point.z = z;
     }
 }
 
@@ -256,7 +254,7 @@ void RotateGroupeOptimise(sGroup* ptr)
         int baseBone = ptr->m_start;
         int numPoints = ptr->m_numVertices;
 
-        RotateList(pointBuffer + baseBone * 3, numPoints);
+        RotateList(pointBuffer.data() + baseBone, numPoints);
     }
 }
 
@@ -267,7 +265,7 @@ void RotateGroupe(sGroup* ptr)
     int temp;
     int temp2;
 
-    RotateList(pointBuffer + baseBone * 3, numPoints);
+    RotateList(pointBuffer.data() + baseBone, numPoints);
 
     temp = ptr->m_numGroup; // group number
 
@@ -286,25 +284,23 @@ void RotateGroupe(sGroup* ptr)
 
 void TranslateGroupe(int transX, int transY, int transZ, sGroup* ptr)
 {
-    s16* ptrSource = &pointBuffer[ptr->m_start * 3];
-
     for (int i = 0; i < ptr->m_numVertices; i++)
     {
-        *(ptrSource++) += transX;
-        *(ptrSource++) += transY;
-        *(ptrSource++) += transZ;
+        point3dStruct& point = pointBuffer[ptr->m_start + i];
+        point.x += transX;
+        point.y += transY;
+        point.z += transZ;
     }
 }
 
 void ZoomGroupe(int zoomX, int zoomY, int zoomZ, sGroup* ptr)
 {
-    s16* ptrSource = &pointBuffer[ptr->m_start * 3];
-
     for (int i = 0; i < ptr->m_numVertices; i++)
     {
-        *(ptrSource++) = (*(ptrSource) * (zoomX + 256)) / 256;
-        *(ptrSource++) = (*(ptrSource) * (zoomY + 256)) / 256;
-        *(ptrSource++) = (*(ptrSource) * (zoomZ + 256)) / 256;
+        point3dStruct& point = pointBuffer[ptr->m_start + i];
+        point.x = (point.x * (zoomX + 256)) / 256;
+        point.y = (point.y * (zoomY + 256)) / 256;
+        point.z = (point.z * (zoomZ + 256)) / 256;
     }
 }
 
@@ -318,9 +314,7 @@ int AnimNuage(int x,int y,int z,int alpha,int beta,int gamma, sBody* pBody)
 
     for (int i = 0; i < pBody->m_vertices.size(); i++)
     {
-        pointBuffer[i * 3 + 0] = pBody->m_vertices[i].x;
-        pointBuffer[i * 3 + 1] = pBody->m_vertices[i].y;
-        pointBuffer[i * 3 + 2] = pBody->m_vertices[i].z;
+        pointBuffer[i] = pBody->m_vertices[i];
     }
 
     numOfPoints = pBody->m_vertices.size();
@@ -397,70 +391,28 @@ int AnimNuage(int x,int y,int z,int alpha,int beta,int gamma, sBody* pBody)
     for(int i=0;i<pBody->m_groups.size();i++)
     {
         sGroup* pGroup = &pBody->m_groups[i];
-
-        int j;
-
-        int point1;
-        int point2;
-
-        s16* ptr1;
-        s16* ptr2;
-
-        int number;
-
-        int ax;
-        int bx;
-        int dx;
-
-        point1 = pGroup->m_baseVertices * 6;
-        point2 = pGroup->m_start * 6;
-
-        ASSERT(point1%2 == 0);
-        ASSERT(point2%2 == 0);
-
-        point1/=2;
-        point2/=2;
-
-        ASSERT(point1/3<NUM_MAX_POINT_IN_POINT_BUFFER);
-        ASSERT(point2/3<NUM_MAX_POINT_IN_POINT_BUFFER);
-
-        ptr1 = (s16*)&pointBuffer[point1];
-        ptr2 = (s16*)&pointBuffer[point2];
-
-        number = pGroup->m_numVertices;
-
-        ax = ptr1[0];
-        bx = ptr1[1];
-        dx = ptr1[2];
-
-        for(j=0;j<number;j++)
+        for(int j=0;j< pGroup->m_numVertices;j++)
         {
-            *(ptr2++) += ax;
-            *(ptr2++) += bx;
-            *(ptr2++) += dx;
+            pointBuffer[pGroup->m_start + j].x += pointBuffer[pGroup->m_baseVertices].x;
+            pointBuffer[pGroup->m_start + j].y += pointBuffer[pGroup->m_baseVertices].y;
+            pointBuffer[pGroup->m_start + j].z += pointBuffer[pGroup->m_baseVertices].z;
         }
     }
 
     if(modelFlags & INFO_OPTIMISE)
     {
         InitGroupeRot(alpha,beta,gamma);
-        RotateList(pointBuffer,numOfPoints);
+        RotateList(pointBuffer.data(),numOfPoints);
     }
 
     {
-        char* ptr = (char*)pointBuffer;
         s16* outPtr = cameraSpaceBuffer;
-        int k = numOfPoints;
-
-
-        float* outPtr2;
-
         for(int i=0;i<numOfPoints;i++)
         {
-            float X = *(s16*)ptr;
-            float Y = *(s16*)(ptr+2);
-            float Z = *(s16*)(ptr+4);
-            ptr+=6;
+            float X = pointBuffer[i].x;
+            float Y = pointBuffer[i].y;
+            float Z = pointBuffer[i].z;
+
 
             X += renderX;
             Y += renderY;
@@ -490,21 +442,20 @@ int AnimNuage(int x,int y,int z,int alpha,int beta,int gamma, sBody* pBody)
 #endif
         }
 
-        ptr = (char*)cameraSpaceBuffer;
-        outPtr2 = renderPointList;
+        s16* ptr = cameraSpaceBuffer;
+        float* outPtr2 = renderPointList;
 
+        int k = numOfPoints;
         do
         {
             float X;
             float Y;
             float Z;
 
-            X = *(s16*)ptr;
-            ptr+=2;
-            Y = *(s16*)ptr;
-            ptr+=2;
-            Z = *(s16*)ptr;
-            ptr+=2;
+            X = ptr[0];
+            Y = ptr[1];
+            Z = ptr[2];
+            ptr+=3;
 
 #if defined(AITD_UE4)
             *(outPtr2++) = X;
@@ -960,7 +911,6 @@ renderFunction renderFunctions[]={
 
 int AffObjet(int x,int y,int z,int alpha,int beta,int gamma, sBody* pBody)
 {
-    char* ptr = (char*)pBody->m_raw;
     int numPrim;
     int i;
     char* out;
@@ -981,14 +931,10 @@ int AffObjet(int x,int y,int z,int alpha,int beta,int gamma, sBody* pBody)
 
     renderVar2 = renderBuffer;
 
-    modelFlags = READ_LE_S16(ptr); ptr+=2;
-    ptr+=12; // skip the ZV
-
-    ptr+=READ_LE_S16(ptr) + 2; // skip scratch buffer
+    modelFlags = pBody->m_flags;
 
     if(modelFlags&INFO_ANIM)
     {
-        pBody->sync();
         if(!AnimNuage(x,y,z,alpha,beta,gamma, pBody))
         {
             BBox3D3 = -32000;
@@ -1059,7 +1005,6 @@ int AffObjet(int x,int y,int z,int alpha,int beta,int gamma, sBody* pBody)
             case processPrim_PolyTexture9:
             case processPrim_PolyTexture10:
                 processPrim_Poly(primType, pPrimitive, &out);
-                ptr += 3 * 2;
                 break;
 			default:
 				return 0;
@@ -1168,37 +1113,6 @@ void computeScreenBox(int x, int y, int z, int alpha, int beta, int gamma, char*
 
     if(modelFlags&INFO_ANIM)
     {
-        pBody->sync();
         AnimNuage(x,y,z,alpha,beta,gamma, pBody);
-    }
-}
-
-void sBody::sync()
-{
-    u8* ptr = (u8*)m_raw;
-
-    ptr += 2; // skip the flag
-    ptr += 12; // skip the ZV
-    ptr += READ_LE_S16(ptr) + 2; // skip scratch buffer
-    ptr += READ_LE_S16(ptr) * 6 + 2; // skip vertices
-    u16 numGroups = READ_LE_U16(ptr);
-    ptr += numGroups * 2 + 2; // skip group order
-
-    assert(numGroups == m_groups.size());
-
-    for (int i = 0; i < numGroups; i++)
-    {
-        m_groups[i].m_state.m_type = READ_LE_S16(ptr + 8);
-        m_groups[i].m_state.m_delta[0] = READ_LE_S16(ptr + 10);
-        m_groups[i].m_state.m_delta[1] = READ_LE_S16(ptr + 12);
-        m_groups[i].m_state.m_delta[2] = READ_LE_S16(ptr + 14);
-        ptr += 16;
-        if (m_flags & INFO_OPTIMISE)
-        {
-            m_groups[i].m_state.m_rotateDelta[0] = READ_LE_S16(ptr + 0);
-            m_groups[i].m_state.m_rotateDelta[1] = READ_LE_S16(ptr + 2);
-            m_groups[i].m_state.m_rotateDelta[2] = READ_LE_S16(ptr + 4);
-            ptr += 8;
-        }
     }
 }

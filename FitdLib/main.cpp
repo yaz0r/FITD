@@ -3073,12 +3073,10 @@ void getHotPoint(int hotPointIdx, sBody* bodyPtr, point3dStruct* hotPoint)
 
 		if(hotPointIdx < bodyPtr->m_groups.size())
 		{
-            auto& group = bodyPtr->m_groups[bodyPtr->m_groupOrder[hotPointIdx]];
+            auto& group = bodyPtr->m_groups[hotPointIdx];
 
 			int pointIdx = group.m_baseVertices; // first point
-			auto& vertex = bodyPtr->m_vertices[pointIdx];
-
-            *hotPoint = vertex;
+            *hotPoint = pointBuffer[pointIdx];
 		}
 	}
 }

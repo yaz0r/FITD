@@ -226,7 +226,7 @@ sBody* createBodyFromPtr(void* ptr)
                 newBody->m_groups[i].m_state.m_rotateDelta[0] = READ_LE_S16(bodyBuffer); bodyBuffer += 2;
                 newBody->m_groups[i].m_state.m_rotateDelta[1] = READ_LE_S16(bodyBuffer); bodyBuffer += 2;
                 newBody->m_groups[i].m_state.m_rotateDelta[2] = READ_LE_S16(bodyBuffer); bodyBuffer += 2;
-                bodyBuffer += 2; // padding?
+                newBody->m_groups[i].m_state.m_padding = READ_LE_S16(bodyBuffer); bodyBuffer += 2;
             }
         }
         else

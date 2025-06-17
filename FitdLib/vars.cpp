@@ -217,7 +217,6 @@ int animStepZ;
 int animStepY;
 
 char* animVar1;
-char* animVar3;
 char* animVar4;
 
 s16 NewNumEtage;
