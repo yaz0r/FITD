@@ -10,7 +10,6 @@ int musicEnabled;
 
 char* aux;
 char* aux2;
-std::vector<std::vector<s16>> BufferAnim;
 
 char* logicalScreen;
 
@@ -215,9 +214,6 @@ int animMoveZ;
 int animStepX;
 int animStepZ;
 int animStepY;
-
-char* animVar1;
-char* animVar4;
 
 s16 NewNumEtage;
 

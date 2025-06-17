@@ -398,12 +398,8 @@ void OpenProgram(void)
 	InitSpecialCopyPoly(aux2); */
 
     BufferAnim.resize(NB_BUFFER_ANIM);
-    for (int i = 0; i < NB_BUFFER_ANIM; i++)
-    {
-        BufferAnim[i].resize(SIZE_BUFFER_ANIM);
-    }
 
-	switch(g_gameId)
+    switch(g_gameId)
 	{
 	case AITD3:
         PtrFont = CheckLoadMallocPak("ITD_RESS", 1);

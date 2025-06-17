@@ -9,6 +9,6 @@ void HQR_Reset(hqrEntryStruct* hqrPtr);
 void HQR_Free(hqrEntryStruct* hqrPtr);
 
 sBody* getBodyFromPtr(void* ptr);
-sAnimation* getAnimationFromPtr(void* ptr);
+struct sAnimation* getAnimationFromPtr(void* ptr);
 
 #endif

@@ -277,11 +277,6 @@ extern int musicEnabled;
 extern char* aux;
 extern char* aux2;
 
-#define NB_BUFFER_ANIM 25 // AITD1 was  20
-#define SIZE_BUFFER_ANIM (8*41) // AITD1 was 4*31
-
-extern std::vector<std::vector<s16>> BufferAnim;
-
 extern char* logicalScreen;
 
 extern int screenBufferSize;
@@ -457,8 +452,6 @@ extern int animMoveZ;
 extern int animStepZ;
 extern int animStepX;
 extern int animStepY;
-extern char* animVar1;
-extern char* animVar4;
 
 extern s16 NewNumEtage;
 
@@ -532,9 +525,9 @@ extern collisiosDisplayMode sceColDisplayMode;
 struct sGroupState
 {
     s16 m_type; // 0
-    s16 m_delta[3]; // 2
+    point3dStruct m_delta; // 2
     // (AITD2+) if Info_optimise
-    s16 m_rotateDelta[3]; // 8
+    point3dStruct m_rotateDelta; // 8
     s16 m_padding;
     // 8 / 0x10
 };
@@ -590,27 +583,10 @@ struct sBody
 
     u16 m_flags; //0 size 0x2
     ZVStruct16 m_zv; //2 size 0xC
-    char* startAnim = nullptr; // This is normally stored as 4 bytes at the beginning of scratchBuffer, but we store it here due to pointer size
+    struct sFrame* startAnim = nullptr; // This is normally stored as 4 bytes at the beginning of scratchBuffer, but we store it here due to pointer size
     std::vector<u8> m_scratchBuffer; //0xE size u16 + data
     std::vector<point3dStruct> m_vertices; // size u16 count * 6
     std::vector<uint16> m_groupOrder; // size u16 * 2
     std::vector<sGroup> m_groups; // size u16 
     std::vector<sPrimitive> m_primitives;
 };
-
-struct sFrame
-{
-    u16 m_timestamp;
-    s16 m_animStep[3];
-    std::vector<sGroupState> m_groups;
-};
-
-struct sAnimation
-{
-    void* m_raw;
-
-    u16 m_numFrames;
-    u16 m_numGroups;
-    std::vector<sFrame> m_frames;
-};
-

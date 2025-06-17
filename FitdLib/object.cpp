@@ -101,7 +101,7 @@ int copyObjectToActor(int body, int typeZv, int hardZvIdx, s16 objectType, int x
 
         if(anim != -1)
         {
-            char* animPtr = HQR_Get(listAnim,anim);
+            sAnimation* animPtr = getAnimationFromPtr(HQR_Get(listAnim,anim));
 
             SetAnimObjet(frame,animPtr, bodyPtr);
 

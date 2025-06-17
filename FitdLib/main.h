@@ -61,7 +61,6 @@ s16 GiveDistance2D(int x1, int z1, int x2, int z2);
 void setMoveMode(int trackMode, int trackNumber);
 void InitRealValue(s16 beta, s16 newBeta, s16 param, RealValue* rotatePtr);
 s16 updateActorRotation(RealValue* rotatePtr);
-s16 GetNbFramesAnim(char* animPtr);
 void deleteObject(int objIdx);
 void removeFromBGIncrust(int actorIdx);
 void makeMessage(int messageIdx);

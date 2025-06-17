@@ -331,37 +331,37 @@ int AnimNuage(int x,int y,int z,int alpha,int beta,int gamma, sBody* pBody)
             switch(pGroup->m_state.m_type)
             {
             case 1:
-                if(pGroup->m_state.m_delta[0] || pGroup->m_state.m_delta[1] || pGroup->m_state.m_delta[2])
+                if(pGroup->m_state.m_delta.x || pGroup->m_state.m_delta.y || pGroup->m_state.m_delta.z)
                 {
-                    TranslateGroupe(pGroup->m_state.m_delta[0], pGroup->m_state.m_delta[1], pGroup->m_state.m_delta[2], pGroup);
+                    TranslateGroupe(pGroup->m_state.m_delta.x, pGroup->m_state.m_delta.y, pGroup->m_state.m_delta.z, pGroup);
                 }
                 break;
             case 2:
-                if (pGroup->m_state.m_delta[0] || pGroup->m_state.m_delta[1] || pGroup->m_state.m_delta[2])
+                if (pGroup->m_state.m_delta.x || pGroup->m_state.m_delta.y || pGroup->m_state.m_delta.z)
                 {
-                    ZoomGroupe(pGroup->m_state.m_delta[0], pGroup->m_state.m_delta[1], pGroup->m_state.m_delta[2], pGroup);
+                    ZoomGroupe(pGroup->m_state.m_delta.x, pGroup->m_state.m_delta.y, pGroup->m_state.m_delta.z, pGroup);
                 }
                 break;
             }
 
-            InitGroupeRot(pGroup[0].m_state.m_rotateDelta[0], pGroup[0].m_state.m_rotateDelta[1], pGroup[0].m_state.m_rotateDelta[2]);
+            InitGroupeRot(pGroup[0].m_state.m_rotateDelta.x, pGroup[0].m_state.m_rotateDelta.y, pGroup[0].m_state.m_rotateDelta.z);
             RotateGroupeOptimise(pGroup);
         }
     }
     else
     {
-        pBody->m_groups[0].m_state.m_delta[0] = alpha;
-        pBody->m_groups[0].m_state.m_delta[1] = beta;
-        pBody->m_groups[0].m_state.m_delta[2] = gamma;
+        pBody->m_groups[0].m_state.m_delta.x = alpha;
+        pBody->m_groups[0].m_state.m_delta.y = beta;
+        pBody->m_groups[0].m_state.m_delta.z = gamma;
 
         for(int i=0;i<pBody->m_groups.size();i++)
         {
             int boneDataOffset = pBody->m_groupOrder[i];
             sGroup* pGroup = &pBody->m_groups[pBody->m_groupOrder[i]];
 
-            int transX = pGroup->m_state.m_delta[0];
-            int transY = pGroup->m_state.m_delta[1];
-            int transZ = pGroup->m_state.m_delta[2];
+            int transX = pGroup->m_state.m_delta.x;
+            int transY = pGroup->m_state.m_delta.y;
+            int transZ = pGroup->m_state.m_delta.z;
 
             if(transX || transY || transZ)
             {

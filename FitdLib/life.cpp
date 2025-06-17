@@ -746,7 +746,7 @@ void processLife(int lifeNum, bool callFoundLife)
                     {
                         if ((currentProcessedActorPtr->ANIM != -1) && (currentProcessedActorPtr->bodyNum != -1))
                         {
-                            char* pAnim = HQR_Get(listAnim, currentProcessedActorPtr->ANIM);
+                            sAnimation* pAnim = getAnimationFromPtr(HQR_Get(listAnim, currentProcessedActorPtr->ANIM));
 
                             if (g_gameId >= JACK)
                             {
@@ -787,7 +787,7 @@ void processLife(int lifeNum, bool callFoundLife)
 
                 if (currentProcessedActorPtr->objectType & AF_ANIMATED)
                 {
-                    char* pAnim = HQR_Get(listAnim, currentProcessedActorPtr->ANIM);
+                    sAnimation* pAnim = getAnimationFromPtr(HQR_Get(listAnim, currentProcessedActorPtr->ANIM));
 
                     if (g_gameId >= JACK)
                     {

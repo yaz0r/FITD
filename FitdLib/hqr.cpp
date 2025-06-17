@@ -137,9 +137,9 @@ sAnimation* createAnimationFromPtr(void* ptr)
         sFrame* pFrame = &pAnimation->m_frames[i];
 
         pFrame->m_timestamp = READ_LE_U16(animPtr); animPtr += 2;
-        pFrame->m_animStep[0] = READ_LE_S16(animPtr); animPtr += 2;
-        pFrame->m_animStep[1] = READ_LE_S16(animPtr); animPtr += 2;
-        pFrame->m_animStep[2] = READ_LE_S16(animPtr); animPtr += 2;
+        pFrame->m_animStep.x = READ_LE_S16(animPtr); animPtr += 2;
+        pFrame->m_animStep.y = READ_LE_S16(animPtr); animPtr += 2;
+        pFrame->m_animStep.z = READ_LE_S16(animPtr); animPtr += 2;
 
         pFrame->m_groups.resize(pAnimation->m_numGroups);
         for (int i = 0; i < pAnimation->m_numGroups; i++)
@@ -147,9 +147,9 @@ sAnimation* createAnimationFromPtr(void* ptr)
             sGroupState* pGroup = &pFrame->m_groups[i];
 
             pGroup->m_type = READ_LE_S16(animPtr); animPtr += 2;
-            pGroup->m_delta[0] = READ_LE_S16(animPtr); animPtr += 2;
-            pGroup->m_delta[1] = READ_LE_S16(animPtr); animPtr += 2;
-            pGroup->m_delta[2] = READ_LE_S16(animPtr); animPtr += 2;
+            pGroup->m_delta.x = READ_LE_S16(animPtr); animPtr += 2;
+            pGroup->m_delta.y = READ_LE_S16(animPtr); animPtr += 2;
+            pGroup->m_delta.z = READ_LE_S16(animPtr); animPtr += 2;
         }
     }
 
@@ -220,12 +220,12 @@ sBody* createBodyFromPtr(void* ptr)
                 newBody->m_groups[i].m_orgGroup = READ_LE_S8(bodyBuffer); bodyBuffer += 1;
                 newBody->m_groups[i].m_numGroup = READ_LE_S8(bodyBuffer); bodyBuffer += 1;
                 newBody->m_groups[i].m_state.m_type = READ_LE_S16(bodyBuffer); bodyBuffer += 2;
-                newBody->m_groups[i].m_state.m_delta[0] = READ_LE_S16(bodyBuffer); bodyBuffer += 2;
-                newBody->m_groups[i].m_state.m_delta[1] = READ_LE_S16(bodyBuffer); bodyBuffer += 2;
-                newBody->m_groups[i].m_state.m_delta[2] = READ_LE_S16(bodyBuffer); bodyBuffer += 2;
-                newBody->m_groups[i].m_state.m_rotateDelta[0] = READ_LE_S16(bodyBuffer); bodyBuffer += 2;
-                newBody->m_groups[i].m_state.m_rotateDelta[1] = READ_LE_S16(bodyBuffer); bodyBuffer += 2;
-                newBody->m_groups[i].m_state.m_rotateDelta[2] = READ_LE_S16(bodyBuffer); bodyBuffer += 2;
+                newBody->m_groups[i].m_state.m_delta.x = READ_LE_S16(bodyBuffer); bodyBuffer += 2;
+                newBody->m_groups[i].m_state.m_delta.y = READ_LE_S16(bodyBuffer); bodyBuffer += 2;
+                newBody->m_groups[i].m_state.m_delta.z = READ_LE_S16(bodyBuffer); bodyBuffer += 2;
+                newBody->m_groups[i].m_state.m_rotateDelta.x = READ_LE_S16(bodyBuffer); bodyBuffer += 2;
+                newBody->m_groups[i].m_state.m_rotateDelta.y = READ_LE_S16(bodyBuffer); bodyBuffer += 2;
+                newBody->m_groups[i].m_state.m_rotateDelta.z = READ_LE_S16(bodyBuffer); bodyBuffer += 2;
                 newBody->m_groups[i].m_state.m_padding = READ_LE_S16(bodyBuffer); bodyBuffer += 2;
             }
         }
@@ -247,9 +247,9 @@ sBody* createBodyFromPtr(void* ptr)
                 newBody->m_groups[i].m_orgGroup = READ_LE_S8(bodyBuffer); bodyBuffer += 1;
                 newBody->m_groups[i].m_numGroup = READ_LE_S8(bodyBuffer); bodyBuffer += 1;
                 newBody->m_groups[i].m_state.m_type = READ_LE_S16(bodyBuffer); bodyBuffer += 2;
-                newBody->m_groups[i].m_state.m_delta[0] = READ_LE_S16(bodyBuffer); bodyBuffer += 2;
-                newBody->m_groups[i].m_state.m_delta[1] = READ_LE_S16(bodyBuffer); bodyBuffer += 2;
-                newBody->m_groups[i].m_state.m_delta[2] = READ_LE_S16(bodyBuffer); bodyBuffer += 2;
+                newBody->m_groups[i].m_state.m_delta.x = READ_LE_S16(bodyBuffer); bodyBuffer += 2;
+                newBody->m_groups[i].m_state.m_delta.y = READ_LE_S16(bodyBuffer); bodyBuffer += 2;
+                newBody->m_groups[i].m_state.m_delta.z = READ_LE_S16(bodyBuffer); bodyBuffer += 2;
             }
         }
 

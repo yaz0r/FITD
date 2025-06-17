@@ -2,35 +2,19 @@
 
 #include "common.h"
 
-int SetAnimObjet(int frame, char* anim, sBody* body)
+std::vector<sFrame> BufferAnim;
+
+int SetAnimObjet(int frame, sAnimation* pAnimation, sBody* body)
 {
-    sAnimation* pAnimation = getAnimationFromPtr(anim);
-
-    s16 bx;
-
-    anim+=2;
-
     if(frame >= pAnimation->m_numFrames)
     {
         return(0);
     }
 
     int numGroupsInAnimation = pAnimation->m_numGroups;
-    anim+=2;
+    sFrame& keyframe = pAnimation->m_frames[frame];
 
-    int ax;
-    if(body->m_flags & INFO_OPTIMISE)
-    {
-        ax = ((numGroupsInAnimation <<4)+8)*frame;
-    }
-    else
-    {
-        ax = ((numGroupsInAnimation +1)<<3)*frame;
-    }
-
-    anim+=ax;
-
-    animCurrentTime = *(s16*)anim;
+    animCurrentTime = keyframe.m_timestamp;
     animKeyframeLength = animCurrentTime;
 
     if(!(body->m_flags & INFO_ANIM))
@@ -38,30 +22,25 @@ int SetAnimObjet(int frame, char* anim, sBody* body)
         return(0);
     }
 
-    body->startAnim = anim;
+    body->startAnim = &keyframe;
     *(u16*)(body->m_scratchBuffer.data() + 4) = timer;
 
     if(numGroupsInAnimation > body->m_groupOrder.size())
         numGroupsInAnimation = body->m_groupOrder.size();
 
-    anim += 2; // skip key length
-    animStepX = *(s16*)(anim); anim += 2;
-    animStepY = *(s16*)(anim); anim += 2;
-    animStepZ = *(s16*)(anim); anim += 2;
+    animStepX = keyframe.m_animStep.x;
+    animStepY = keyframe.m_animStep.y;
+    animStepZ = keyframe.m_animStep.z;
 
     for(int i=0;i< numGroupsInAnimation;i++)
     {
-        body->m_groups[i].m_state.m_type = *(s16*)(anim); anim += 2;
-        body->m_groups[i].m_state.m_delta[0] = *(s16*)(anim); anim += 2;
-        body->m_groups[i].m_state.m_delta[1] = *(s16*)(anim); anim += 2;
-        body->m_groups[i].m_state.m_delta[2] = *(s16*)(anim); anim += 2;
+        body->m_groups[i].m_state.m_type = keyframe.m_groups[i].m_type;
+        body->m_groups[i].m_state.m_delta = keyframe.m_groups[i].m_delta;
 
         if(body->m_flags & INFO_OPTIMISE)
         {
-            body->m_groups[i].m_state.m_rotateDelta[0] = *(s16*)(anim); anim += 2;
-            body->m_groups[i].m_state.m_rotateDelta[1] = *(s16*)(anim); anim += 2;
-            body->m_groups[i].m_state.m_rotateDelta[2] = *(s16*)(anim); anim += 2;
-            body->m_groups[i].m_state.m_padding = *(s16*)(anim); anim += 2;
+            body->m_groups[i].m_state.m_rotateDelta = keyframe.m_groups[i].m_rotateDelta;
+            body->m_groups[i].m_state.m_padding = keyframe.m_groups[i].m_padding;
         }
     }
 
@@ -82,7 +61,7 @@ int InitAnim(int animNum,int animType, int animInfo)
 
             currentProcessedActorPtr->objectType |= AF_ANIMATED;
 
-            SetAnimObjet(currentProcessedActorPtr->frame, HQR_Get(listAnim,animNum), getBodyFromPtr(HQR_Get(HQ_Bodys, currentProcessedActorPtr->bodyNum)));
+            SetAnimObjet(currentProcessedActorPtr->frame, getAnimationFromPtr(HQR_Get(listAnim,animNum)), getBodyFromPtr(HQR_Get(HQ_Bodys, currentProcessedActorPtr->bodyNum)));
 
             currentProcessedActorPtr->animType = animType;
             currentProcessedActorPtr->animInfo = animInfo;
@@ -117,7 +96,7 @@ int InitAnim(int animNum,int animType, int animInfo)
             removeFromBGIncrust(currentProcessedActorIdx);
         }
 
-        SetAnimObjet(0, HQR_Get(listAnim,animNum), getBodyFromPtr(HQR_Get(HQ_Bodys, currentProcessedActorPtr->bodyNum)));
+        SetAnimObjet(0, getAnimationFromPtr(HQR_Get(listAnim,animNum)), getBodyFromPtr(HQR_Get(HQ_Bodys, currentProcessedActorPtr->bodyNum)));
 
 		currentProcessedActorPtr->newAnim = animNum;
 		currentProcessedActorPtr->newAnimType = animType;
@@ -269,7 +248,6 @@ void GereAnim(void)
                 }
 
                 // TODO: AITD3 has some extra code here to handle bufferAnimCounter
-
                 StockInterAnim(BufferAnim[bufferAnimCounter], getBodyFromPtr(HQR_Get(HQ_Bodys, currentProcessedActorPtr->bodyNum)));
 
                 bufferAnimCounter++;
@@ -292,7 +270,7 @@ void GereAnim(void)
             currentProcessedActorPtr->flagEndAnim = 0;
             currentProcessedActorPtr->frame = 0;
 
-            currentProcessedActorPtr->numOfFrames = GetNbFramesAnim(HQR_Get(listAnim, newAnim));
+            currentProcessedActorPtr->numOfFrames = GetNbFramesAnim(getAnimationFromPtr(HQR_Get(listAnim, newAnim)));
         }
     }
 
@@ -338,7 +316,7 @@ void GereAnim(void)
 		oldStepY = currentProcessedActorPtr->stepY;
 		oldStepZ = currentProcessedActorPtr->stepZ;
 
-		currentProcessedActorPtr->END_FRAME = SetInterAnimObjet(currentProcessedActorPtr->frame, HQR_Get(listAnim, currentProcessedActorPtr->ANIM), getBodyFromPtr(HQR_Get(HQ_Bodys, currentProcessedActorPtr->bodyNum)));
+		currentProcessedActorPtr->END_FRAME = SetInterAnimObjet(currentProcessedActorPtr->frame, getAnimationFromPtr(HQR_Get(listAnim, currentProcessedActorPtr->ANIM)), getBodyFromPtr(HQR_Get(HQ_Bodys, currentProcessedActorPtr->bodyNum)));
 
 		walkStep(animStepX,animStepZ,currentProcessedActorPtr->beta);
 
@@ -704,35 +682,16 @@ void GereAnim(void)
 }
 
 
-void StockInterAnim(std::vector<s16>& buffer, sBody* bodyPtr)
+void StockInterAnim(sFrame& buffer, sBody* bodyPtr)
 {
-    std::vector<s16>::iterator bufferIt = buffer.begin();
-
     if(bodyPtr->m_flags & INFO_ANIM)
     {
         *(u16*)(bodyPtr->m_scratchBuffer.data()+4) = (u16)timer;
-        bodyPtr->startAnim = (char*) & buffer[0];
+        bodyPtr->startAnim = &buffer;
 
-        bufferIt += 4;
-
-        for(int i=0;i< bodyPtr->m_groups.size();i++)
-        {
-            bufferIt[0] = bodyPtr->m_groups[i].m_state.m_type;
-            bufferIt[1] = bodyPtr->m_groups[i].m_state.m_delta[0];
-            bufferIt[2] = bodyPtr->m_groups[i].m_state.m_delta[1];
-            bufferIt[3] = bodyPtr->m_groups[i].m_state.m_delta[2];
-
-            bufferIt +=4;
-
-            if(bodyPtr->m_flags & INFO_OPTIMISE)
-            {
-                bufferIt[0] = bodyPtr->m_groups[i].m_state.m_rotateDelta[0];
-                bufferIt[1] = bodyPtr->m_groups[i].m_state.m_rotateDelta[1];
-                bufferIt[2] = bodyPtr->m_groups[i].m_state.m_rotateDelta[2];
-                bufferIt[3] = bodyPtr->m_groups[i].m_state.m_padding;
-
-                bufferIt +=4;
-            }
+        buffer.m_groups.resize(bodyPtr->m_groups.size());
+        for (int i = 0; i < bodyPtr->m_groups.size(); i++) {
+            buffer.m_groups[i] = bodyPtr->m_groups[i].m_state;
         }
     }
 }
@@ -742,40 +701,25 @@ void ResetStartAnim(sBody* bodyPtr) {
     bodyPtr->startAnim = nullptr;
 }
 
-s16 GetNbFramesAnim(char* animPtr)
+s16 GetNbFramesAnim(sAnimation* animPtr)
 {
-    return(*(s16*)animPtr);
+    return animPtr->m_numFrames;
 }
 
-s16 PatchType(sGroupState* bodyPtr) // local
+s16 PatchType(sGroupState* bodyPtr, u16 type) // local
 {
-    s16 temp = *(s16*)animVar1;
+    bodyPtr->m_type = type;
 
-    animVar1+=2;
-
-    animVar4+=2;
-
-    bodyPtr->m_type = temp;
-
-    return(temp);
+    return(bodyPtr->m_type);
 }
 
-void PatchInterAngle(s16* value, int bp, int bx) // local
+void PatchInterAngle(s16* value, s16 previousValue, s16 nextValue, int bp, int bx) // local
 {
-    s16 oldRotation = *(s16*)animVar4;
-    s16 newRotation;
-    s16 diff;
-
-    animVar4+=2;
-
-    newRotation = *(s16*)animVar1;
-    animVar1+=2;
-
-    diff = newRotation - oldRotation;
+    s16 diff = nextValue - previousValue;
 
     if(diff == 0)
     {
-        *value = newRotation;
+        *value = nextValue;
     }
     else
     {
@@ -783,34 +727,30 @@ void PatchInterAngle(s16* value, int bp, int bx) // local
         {
             if(diff >= -0x200)
             {
-                *value = ((diff*bp)/bx) + oldRotation;
+                *value = ((diff*bp)/bx) + previousValue;
             }
             else
             {
-                newRotation += 0x400;
-                newRotation -= oldRotation;
+                nextValue += 0x400;
+                nextValue -= previousValue;
 
-                *value = ((newRotation*bp)/bx) + oldRotation;
+                *value = ((nextValue *bp)/bx) + previousValue;
             }
         }
         else
         {
-            oldRotation += 0x400;
-            newRotation -= oldRotation;
+            previousValue += 0x400;
+            nextValue -= previousValue;
 
-            *value = ((newRotation*bp)/bx) + oldRotation;
+            *value = ((nextValue *bp)/bx) + previousValue;
         }
     }
 }
 
-void PatchInterStep(s16* value, int bp, int bx) // local
+void PatchInterStep(s16* value, s16 previousValue, s16 nextValue, int bp, int bx) // local
 {
-    s16 cx = *(s16*)animVar4;
-    s16 ax;
-    animVar4+=2;
-
-    ax = *(s16*)animVar1;
-    animVar1+=2;
+    s16 cx = previousValue;
+    s16 ax = nextValue;
 
     if(ax == cx)
     {
@@ -822,9 +762,9 @@ void PatchInterStep(s16* value, int bp, int bx) // local
     }
 }
 
-s16 SetInterAnimObjet(int frame, char* animPtr, sBody* pBody)
+s16 SetInterAnimObjet(int frame, sAnimation* pAnim, sBody* pBody)
 {
-    int numOfBonesInAnim = *(s16*)(animPtr+2);
+    int numOfBonesInAnim = pAnim->m_numGroups;
     u16 keyframeLength;
     u16 timeOfKeyframeStart;
     int ax;
@@ -835,21 +775,9 @@ s16 SetInterAnimObjet(int frame, char* animPtr, sBody* pBody)
 
     flag = pBody->m_flags;
 
-    animPtr+=4;
+    sFrame* pKeyframe = &pAnim->m_frames[frame];
 
-    if(flag&INFO_OPTIMISE)
-    {
-        animPtr += ((numOfBonesInAnim<<4)+8)*frame; // seek to keyframe
-    }
-    else
-    {
-        animPtr += ((numOfBonesInAnim+1)*8)*frame; // seek to keyframe
-    }
-
-    // animVar1 = ptr to the current keyFrame
-    animVar1 = animPtr;
-
-    keyframeLength = *(u16*)animPtr; // keyframe length
+    keyframeLength = pKeyframe->m_timestamp; // keyframe length
 
     if(!(pBody->m_flags & INFO_ANIM)) // do not anim if the model can't be animated
     {
@@ -858,15 +786,12 @@ s16 SetInterAnimObjet(int frame, char* animPtr, sBody* pBody)
 
     timeOfKeyframeStart = *(u16*)(pBody->m_scratchBuffer.data() + 4); // time of start of keyframe
 
-    char* animBufferPtr = pBody->startAnim;
+	sFrame* pPreviousKeyframe = pBody->startAnim;
 
-    if(!animBufferPtr)
+    if(!pPreviousKeyframe)
     {
-        animBufferPtr = animVar1;
+		pPreviousKeyframe = pKeyframe;
     }
-
-    // animVar4 = ptr to previous key frame
-    animVar4 = animBufferPtr;
 
     if(numOfBonesInAnim > pBody->m_groupOrder.size())
     {
@@ -880,32 +805,25 @@ s16 SetInterAnimObjet(int frame, char* animPtr, sBody* pBody)
 
     if(time<keyframeLength) // interpolate keyframe
     {
-        char* animVar1Backup = animVar1;
-        // skip bone 0 anim
-        animVar4 += 8; // anim buffer
-        animVar1 += 8; // current keyframe ptr
-
         if(!(flag&INFO_OPTIMISE))
         {
             for (int i = 0; i < numOfBonesInAnim; i++)
             {
-                switch(PatchType(&pBody->m_groups[i].m_state))
+                point3dStruct& state = pBody->m_groups[i].m_state.m_delta;
+                point3dStruct& previousState = pPreviousKeyframe->m_groups[i].m_delta;
+                point3dStruct& nextState = pKeyframe->m_groups[i].m_delta;
+                switch(PatchType(&pBody->m_groups[i].m_state, pKeyframe->m_groups[i].m_type))
                 {
                 case 0: // rotate
-                    PatchInterAngle(&pBody->m_groups[i].m_state.m_delta[0], bp, bx);
-                    PatchInterAngle(&pBody->m_groups[i].m_state.m_delta[1], bp, bx);
-                    PatchInterAngle(&pBody->m_groups[i].m_state.m_delta[2], bp, bx);
+                    PatchInterAngle(&state.x, previousState.x, nextState.x, bp, bx);
+                    PatchInterAngle(&state.y, previousState.y, nextState.y, bp, bx);
+                    PatchInterAngle(&state.z, previousState.z, nextState.z, bp, bx);
                     break;
                 case 1: // translate
-					PatchInterStep(&pBody->m_groups[i].m_state.m_delta[0], bp, bx);
-					PatchInterStep(&pBody->m_groups[i].m_state.m_delta[1], bp, bx);
-					PatchInterStep(&pBody->m_groups[i].m_state.m_delta[2], bp, bx);
-					break;
-
                 case 2: // zoom
-                    PatchInterStep(&pBody->m_groups[i].m_state.m_delta[0], bp, bx);
-                    PatchInterStep(&pBody->m_groups[i].m_state.m_delta[1], bp, bx);
-                    PatchInterStep(&pBody->m_groups[i].m_state.m_delta[2], bp, bx);
+                    PatchInterStep(&state.x, previousState.x, nextState.x, bp, bx);
+                    PatchInterStep(&state.y, previousState.y, nextState.y, bp, bx);
+                    PatchInterStep(&state.z, previousState.z, nextState.z, bp, bx);
                     break;
                 }
             }
@@ -914,38 +832,36 @@ s16 SetInterAnimObjet(int frame, char* animPtr, sBody* pBody)
         {
             for (int i = 0; i < numOfBonesInAnim; i++)
             {
-                switch (PatchType(&pBody->m_groups[i].m_state))
+                point3dStruct& state = pBody->m_groups[i].m_state.m_delta;
+                point3dStruct& previousState = pPreviousKeyframe->m_groups[i].m_delta;
+                point3dStruct& nextState = pKeyframe->m_groups[i].m_delta;
+                switch (PatchType(&pBody->m_groups[i].m_state, pKeyframe->m_groups[i].m_type))
                 {
                 case 0:
-                        animVar4 += 6;
-                        animVar1 += 6;
                         break;
                 case 1:
                 case 2:
-                    PatchInterStep(&pBody->m_groups[i].m_state.m_delta[0], bp, bx);
-                    PatchInterStep(&pBody->m_groups[i].m_state.m_delta[1], bp, bx);
-                    PatchInterStep(&pBody->m_groups[i].m_state.m_delta[2], bp, bx);
+                    PatchInterStep(&state.x, previousState.x, nextState.x, bp, bx);
+                    PatchInterStep(&state.y, previousState.y, nextState.y, bp, bx);
+                    PatchInterStep(&state.z, previousState.z, nextState.z, bp, bx);
                     break;
                 }
 
-                PatchInterStep(&pBody->m_groups[i].m_state.m_rotateDelta[0], bp, bx);
-                PatchInterStep(&pBody->m_groups[i].m_state.m_rotateDelta[1], bp, bx);
-                PatchInterStep(&pBody->m_groups[i].m_state.m_rotateDelta[2], bp, bx);
+                {
+                    point3dStruct& state = pBody->m_groups[i].m_state.m_rotateDelta;
+                    point3dStruct& previousState = pPreviousKeyframe->m_groups[i].m_rotateDelta;
+                    point3dStruct& nextState = pKeyframe->m_groups[i].m_rotateDelta;
 
-                animVar4 += 2;
-                animVar1 += 2;
+                    PatchInterStep(&state.x, previousState.x, nextState.x, bp, bx);
+                    PatchInterStep(&state.y, previousState.y, nextState.y, bp, bx);
+                    PatchInterStep(&state.z, previousState.z, nextState.z, bp, bx);
+                }
             }
         }
 
-        animVar1 = animVar1Backup;
-
-        animVar1+=2;
-
-        animStepX = ((*(s16*)(animVar1))*bp)/bx; // X
-        animStepY = ((*(s16*)(animVar1+2))*bp)/bx; // Y
-        animStepZ = ((*(s16*)(animVar1+4))*bp)/bx; // Z
-
-        animVar1+=6;
+        animStepX = (pKeyframe->m_animStep.x * bp) / bx;
+        animStepY = (pKeyframe->m_animStep.y * bp) / bx;
+        animStepZ = (pKeyframe->m_animStep.z * bp) / bx;
 
         animCurrentTime = bx;
         animKeyframeLength = bp;
@@ -953,46 +869,23 @@ s16 SetInterAnimObjet(int frame, char* animPtr, sBody* pBody)
     }
     else // change keyframe
     {
-        char* tempBx = animVar1;
-        char* si = animVar1;
-
-
-        si+=8;
-
         for (int i = 0; i < numOfBonesInAnim; i++)
         {
-            pBody->m_groups[i].m_state.m_type = *(s16*)(si);
-            pBody->m_groups[i].m_state.m_delta[0] = *(s16*)(si + 2);
-            pBody->m_groups[i].m_state.m_delta[1] = *(s16*)(si + 4);
-            pBody->m_groups[i].m_state.m_delta[2] = *(s16*)(si + 6);
-            si += 8;
-
-            if (flag & INFO_OPTIMISE)
-            {
-                pBody->m_groups[i].m_state.m_rotateDelta[0] = *(s16*)(si + 2);
-                pBody->m_groups[i].m_state.m_rotateDelta[1] = *(s16*)(si + 4);
-                pBody->m_groups[i].m_state.m_rotateDelta[2] = *(s16*)(si + 6);
-                pBody->m_groups[i].m_state.m_padding = *(s16*)(si);
-                si += 8;
-            }
+            sGroupState& nextState = pKeyframe->m_groups[i];
+            pBody->m_groups[i].m_state = nextState;
         };
 
-        pBody->startAnim = animVar1;
+        pBody->startAnim = pKeyframe;
 
         *(u16*)(pBody->m_scratchBuffer.data()+4) = (u16)timer;
-
-        tempBx+=2;
 
         animCurrentTime = bx;
         animKeyframeLength = bx;
 
-        animStepX = *(s16*)(tempBx);
-        animStepY = *(s16*)(tempBx+2);
-        animStepZ = *(s16*)(tempBx+4);
-
-        tempBx += 6;
+        animStepX = pKeyframe->m_animStep.x;
+        animStepY = pKeyframe->m_animStep.y;
+        animStepZ = pKeyframe->m_animStep.z;
         return(1);
-
     }
 
 }

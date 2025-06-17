@@ -498,7 +498,7 @@ int loadSave(int saveNumber)
 
             if(objectTable[i].ANIM != -1)
             {
-                char* animPtr = HQR_Get(listAnim,objectTable[i].ANIM);
+                sAnimation* animPtr = getAnimationFromPtr(HQR_Get(listAnim,objectTable[i].ANIM));
                 SetAnimObjet(objectTable[i].frame,animPtr,bodyPtr);
             }
         }
