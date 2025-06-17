@@ -3265,7 +3265,7 @@ void mainDraw(int flagFlip)
                     {
                         if (actorPtr->hotPointID != -1)
                         {
-                            getHotPoint(actorPtr->hotPointID, (char*)bodyPtr->m_raw, &actorPtr->hotPoint);
+                            getHotPoint(actorPtr->hotPointID, bodyPtr, &actorPtr->hotPoint);
                         }
                     }
 
