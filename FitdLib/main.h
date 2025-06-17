@@ -16,7 +16,6 @@ void GenereAffList();
 void mainDraw(int mode);
 int checkObjectCollisions(int actorIdx, ZVStruct* zvPtr);
 int checkLineProjectionWithActors( int actorIdx, int X, int Y, int Z, int beta, int room, int param );
-void GiveZVObjet(char* bodyPtr, ZVStruct* zvPtr);
 int AsmCheckListCol(ZVStruct* zvPtr, roomDataStruct* pRoomData);
 void DeleteInventoryObjet(int objIdx);
 void walkStep(int angle1, int angle2, int angle3);
@@ -46,7 +45,6 @@ void take(int objIdx);
 void foundObject(int objIdx, int param);
 void hit(int animNumber,int arg_2,int arg_4,int arg_6,int hitForce,int arg_A);
 int checkZvCollision(ZVStruct* zvPtr1,ZVStruct* zvPtr2);
-void getZvCube(char* bodyPtr, ZVStruct* zvPtr);
 void PutAtObjet(int objIdx, int objIdxToPutAt);
 void SetClip(int left, int top, int right, int bottom);
 
@@ -72,9 +70,10 @@ int drawTextOverlay(void);
 s16 SetInterAnimObjet(int frame, char* animPtr, char* bodyPtr);
 void handleCollision(ZVStruct* startZv, ZVStruct* zvPtr2, ZVStruct* zvPtr3);
 
-void getZvRot(char* bodyPtr, ZVStruct* zvPtr, int alpha, int beta, int gamma);
-
 void addActorToBgInscrust(int actorIdx);
+
+void setupPointRotate(int alpha, int beta, int gamma);
+void pointRotate(int x, int y, int z, int* destX, int* destY, int* destZ);
 
 #endif
 

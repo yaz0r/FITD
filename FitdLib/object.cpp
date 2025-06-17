@@ -4,8 +4,7 @@ int copyObjectToActor(int body, int typeZv, int hardZvIdx, s16 objectType, int x
 {
     int i;
     int j;
-    tObject* actorPtr = objectTable.data();
-    char* bodyPtr;
+    tObject* actorPtr = objectTable.data();    
     ZVStruct* zvPtr;
 
     for(i=0;i<NUM_MAX_OBJECT;i++)
@@ -94,15 +93,17 @@ int copyObjectToActor(int body, int typeZv, int hardZvIdx, s16 objectType, int x
     actorPtr->HIT = -1;
     actorPtr->HIT_BY = -1;
 
+    sBody* bodyPtr = nullptr;
+
     if(body != -1)
     {
-        bodyPtr = HQR_Get(HQ_Bodys,actorPtr->bodyNum);
+        bodyPtr = getBodyFromPtr(HQR_Get(HQ_Bodys,actorPtr->bodyNum));
 
         if(anim != -1)
         {
             char* animPtr = HQR_Get(listAnim,anim);
 
-            SetAnimObjet(frame,animPtr,bodyPtr);
+            SetAnimObjet(frame,animPtr,(char*)bodyPtr->m_raw);
 
             actorPtr->numOfFrames = GetNbFramesAnim(animPtr);
             actorPtr->flagEndAnim = 0;
