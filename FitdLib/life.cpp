@@ -104,7 +104,7 @@ int InitSpecialObjet(int mode, int X, int Y, int Z, int stage, int room, int alp
     currentActorPtr->objectType = AF_SPECIAL;
     currentActorPtr->indexInWorld = -2;
     currentActorPtr->life = -1;
-    currentActorPtr->lifeMode = 2;
+    currentActorPtr->lifeMode = 2; // TODO: probably incorrect betweem AITD1/2
     currentActorPtr->bodyNum = 0;
     currentActorPtr->worldX = currentActorPtr->roomX = X;
     currentActorPtr->worldY = currentActorPtr->roomY = Y;
