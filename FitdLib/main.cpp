@@ -2009,9 +2009,9 @@ void GenereActiveList()
 					}
 					break;
 				case 2: // CAMERA
-					if(!isInViewList(currentActor->room))
+					if(isInViewList(currentActor->room))
 					{
-						DeleteObjet(i);
+                        continue;
 					}
 					break;
 				default:
