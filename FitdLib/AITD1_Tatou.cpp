@@ -12,8 +12,6 @@ void clearScreenTatou(void)
 
 int make3dTatou(void)
 {
-    char* tatou2d;
-    char* tatou3d;
     int zoom;
     int deltaTime;
     int beta;
@@ -22,8 +20,11 @@ int make3dTatou(void)
     palette_t tatouPal;
     palette_t paletteBackup;
 
-    tatou2d = CheckLoadMallocPak("ITD_RESS",AITD1_TATOU_MCG);
-    tatou3d = CheckLoadMallocPak("ITD_RESS",AITD1_TATOU_3DO);
+    char* tatou2d = CheckLoadMallocPak("ITD_RESS",AITD1_TATOU_MCG);
+
+    char* tatou3dRaw = CheckLoadMallocPak("ITD_RESS", AITD1_TATOU_3DO);
+    sBody* tatou3d = createBodyFromPtr(tatou3dRaw);
+
     char* tatouPalRaw = CheckLoadMallocPak("ITD_RESS",AITD1_TATOU_PAL);
     copyPalette(tatouPalRaw, tatouPal);
 
@@ -125,7 +126,9 @@ int make3dTatou(void)
         }
     }while(1);
 
-    free(tatou3d);
+    delete[] tatou3dRaw;
+    delete tatou3d;
+
     free(tatou2d);
 
     if(key || Click || JoyD)

@@ -1,53 +1,68 @@
 #include "common.h"
 
-hqrSubEntryStruct* quickFindEntry(int index, int numMax, hqrSubEntryStruct* ptr) // no RE. Original was probably faster
+template <typename T>
+struct hqrSubEntryStruct
 {
-    int i;
+    s16 key;
+    s16 size;
+    unsigned int lastTimeUsed;
+    T* ptr;
+};
 
-    for(i=0;i<numMax;i++)
+template <typename T>
+struct hqrEntryStruct
+{
+    char string[10];
+    u16 maxFreeData;
+    u16 sizeFreeData;
+    u16 numMaxEntry;
+    u16 numUsedEntry;
+    std::vector<hqrSubEntryStruct<T>> entries;
+};
+
+template <typename T>
+hqrSubEntryStruct<T>* quickFindEntry(int index, int numMax, std::vector<hqrSubEntryStruct<T>>& ptr) // no RE. Original was probably faster
+{
+    for(int i=0;i<numMax;i++)
     {
         if((ptr[i].key == index) && ptr[i].ptr)
         {
-            return(&ptr[i]);
+            return &ptr[i];
         }
     }
 
-    return(NULL);
+    return nullptr;
 }
 
-hqrEntryStruct* HQR_InitRessource(const char* name, int size, int numEntries)
+template <typename T>
+hqrEntryStruct<T>* HQR_InitRessource(const char* name, int size, int numEntries)
 {
-    int i;
-    hqrEntryStruct* dest;
-
-    dest = (hqrEntryStruct*)malloc(sizeof(hqrEntryStruct));
+    hqrEntryStruct<T>* dest = new hqrEntryStruct<T>();
 
     if(!dest)
         return NULL;
 
     numEntries = 2000;
 
-    strcpy(dest->string,"        ");
-    strncpy(dest->string,name,8);
+    strcpy_s(dest->string, sizeof(dest->string), "        ");
+    strncpy_s(dest->string, sizeof(dest->string), name,8);
 
     dest->sizeFreeData = size;
     dest->maxFreeData = size;
     dest->numMaxEntry = numEntries;
     dest->numUsedEntry = 0;
-    dest->entries = (hqrSubEntryStruct*)malloc(numEntries*sizeof(hqrSubEntryStruct));
+    dest->entries.resize(numEntries);
 
-    for(i=0;i<numEntries;i++)
+    for(int i=0;i<numEntries;i++)
     {
-        dest->entries[i].ptr = NULL;
+        dest->entries[i].ptr = nullptr;
     }
 
     return(dest);
 }
 
-int HQ_Malloc(hqrEntryStruct* hqrPtr,int size)
+int HQ_Malloc(hqrEntryStruct<char>* hqrPtr,int size)
 {
-    hqrSubEntryStruct* dataPtr1;
-    hqrSubEntryStruct* dataPtr2;
     int key;
     int entryNum;
 
@@ -56,15 +71,13 @@ int HQ_Malloc(hqrEntryStruct* hqrPtr,int size)
 
     entryNum = hqrPtr->numUsedEntry;
 
-    dataPtr1 = dataPtr2 = hqrPtr->entries;
-
     key = hqrKeyGen;
 
-    dataPtr1[entryNum].key = key;
+    hqrPtr->entries[entryNum].key = key;
 
     //  dataPtr1[entryNum].offset = hqrPtr->maxFreeData - hqrPtr->sizeFreeData;
-    dataPtr1[entryNum].size = size;
-	dataPtr1[entryNum].ptr = (char*)malloc(size);
+    hqrPtr->entries[entryNum].size = size;
+    hqrPtr->entries[entryNum].ptr = (char*)malloc(size);
 
     hqrPtr->numUsedEntry++;
     hqrPtr->sizeFreeData -= size;
@@ -74,52 +87,19 @@ int HQ_Malloc(hqrEntryStruct* hqrPtr,int size)
     return(key);
 }
 
-char* HQ_PtrMalloc(hqrEntryStruct* hqrPtr, int index)
+char* HQ_PtrMalloc(hqrEntryStruct<char>* hqrPtr, int index)
 {
-    hqrSubEntryStruct* ptr;
-    hqrSubEntryStruct* dataPtr;
 
     if(index<0)
         return NULL;
 
-    dataPtr = hqrPtr->entries;
-
-    ptr = quickFindEntry(index, hqrPtr->numUsedEntry, dataPtr);
+    hqrSubEntryStruct<char>* ptr = quickFindEntry(index, hqrPtr->numUsedEntry, hqrPtr->entries);
 
     if(!ptr)
         return NULL;
 
     return(ptr->ptr);
 }
-
-void moveHqrEntry(hqrEntryStruct* hqrPtr, int index)
-{
-    /*  hqrSubEntryStruct* hqrSubPtr = (hqrSubEntryStruct*)(((char*)hqrPtr)+sizeof(hqrEntryStruct));
-    hqrSubEntryStruct* hqrSubPtr2 = hqrSubPtr;
-
-    int size = hqrSubPtr[index].size;
-
-    if(hqrPtr->numUsedEntry - 1 > index ) //if not last entry
-    {
-    char* dest = hqrPtr->dataPtr + hqrSubPtr2[index].offset;
-    char* src = dest + size;
-
-    memcpy(dest,src,hqrPtr->dataPtr + hqrPtr->maxFreeData - src);
-
-    dest = (char*)&hqrSubPtr2[index];
-    src = (char*)&hqrSubPtr2[index+1];
-    memcpy(dest,src,hqrPtr->numMaxEntry-(index+1) * sizeof(hqrSubEntryStruct));
-    }*/
-
-    int size = hqrPtr->entries[index].size;
-
-    free(hqrPtr->entries[index].ptr);
-
-    hqrPtr->numUsedEntry --;
-    hqrPtr->sizeFreeData += size;
-}
-
-std::vector<sAnimation*> vAnimations;
 
 sAnimation* createAnimationFromPtr(void* ptr)
 {
@@ -152,12 +132,8 @@ sAnimation* createAnimationFromPtr(void* ptr)
             pGroup->m_delta.z = READ_LE_S16(animPtr); animPtr += 2;
         }
     }
-
-    vAnimations.push_back(pAnimation);
     return pAnimation;
 }
-
-std::vector<sBody*> vBodies;
 
 sBody* createBodyFromPtr(void* ptr)
 {
@@ -336,13 +312,13 @@ sBody* createBodyFromPtr(void* ptr)
         }
     }
 
-    vBodies.push_back(newBody);
     return newBody;
 }
 
-char* HQR_Get(hqrEntryStruct* hqrPtr, int index)
+template <typename T>
+T* HQR_Get(hqrEntryStruct<T>* hqrPtr, int index)
 {
-    hqrSubEntryStruct* foundEntry;
+    hqrSubEntryStruct<T>* foundEntry;
 
     if(index<0)
         return NULL;
@@ -358,66 +334,8 @@ char* HQR_Get(hqrEntryStruct* hqrPtr, int index)
     }
     else
     {
-        /*    int size;
-        unsigned int time;
-        char* ptr;
-
-        freezeTime();
-        size = getPakSize(hqrPtr->string,index);
-
-        if(size>=hqrPtr->maxFreeData)
-        {
-        theEnd(1,hqrPtr->string);
-        }
-
-        time = timer;
-
-        foundEntry = hqrSubPtr;
-
-        while(size>hqrPtr->sizeFreeData || hqrPtr->numUsedEntry>= hqrPtr->numMaxEntry)
-        {
-        int bestEntry = 0;
-        unsigned int bestTime = 0;
-        int entryIdx = 0;
-
-        for(entryIdx = 0; entryIdx<hqrPtr->numUsedEntry; entryIdx++)
-        {
-        if(time - foundEntry[entryIdx].lastTimeUsed > bestTime)
-        {
-        bestTime = time - foundEntry[entryIdx].lastTimeUsed;
-        bestEntry = entryIdx;
-        }
-        }
-
-        moveHqrEntry(hqrPtr,bestEntry);
-        }
-
-        ptr = hqrPtr->dataPtr + (hqrPtr->maxFreeData - hqrPtr->sizeFreeData);
-
-        if(!loadPakToPtr(hqrPtr->string,index,ptr))
-        {
-        theEnd(1,hqrPtr->string);
-        }
-
-        hqrVar1 = 1;
-
-        foundEntry[hqrPtr->numUsedEntry].key = index;
-        foundEntry[hqrPtr->numUsedEntry].lastTimeUsed = timer;
-        foundEntry[hqrPtr->numUsedEntry].offset = hqrPtr->maxFreeData - hqrPtr->sizeFreeData;
-        foundEntry[hqrPtr->numUsedEntry].size = size;
-
-        hqrPtr->numUsedEntry++;
-        hqrPtr->sizeFreeData -= size;
-
-        unfreezeTime();*/
-
-        int size;
-        unsigned int time;
-        char* ptr;
-        int i;
-
         SaveTimerAnim();
-        size = getPakSize(hqrPtr->string,index);
+        int size = getPakSize(hqrPtr->string,index);
 
 		if(size == 0)
 			return NULL;
@@ -427,9 +345,9 @@ char* HQR_Get(hqrEntryStruct* hqrPtr, int index)
             fatalError(1,hqrPtr->string);
         }
 
-        time = timer;
+        unsigned int time = timer;
 
-        for(i=0;i<hqrPtr->numMaxEntry;i++)
+        for(int i=0;i<hqrPtr->numMaxEntry;i++)
         {
             if(hqrPtr->entries[i].ptr == NULL)
             {
@@ -448,31 +366,40 @@ char* HQR_Get(hqrEntryStruct* hqrPtr, int index)
         foundEntry->lastTimeUsed = timer;
         //foundEntry[hqrPtr->numUsedEntry].offset = hqrPtr->maxFreeData - hqrPtr->sizeFreeData;
         foundEntry->size = size;
-        foundEntry->ptr = (char*)malloc(size);
 
-        ptr = foundEntry->ptr;
+        char* buffer = new char[size];
+        LoadPak(hqrPtr->string, index, buffer);
 
-        LoadPak(hqrPtr->string,index,foundEntry->ptr);
+        if constexpr (std::is_same_v<T, char>) {
+            foundEntry->ptr = buffer;
+        }
+        else if constexpr (std::is_same_v<T, sBody>) {
+            foundEntry->ptr = createBodyFromPtr(buffer);
+            delete[] buffer;
+        }
+        else if constexpr (std::is_same_v<T, sAnimation>) {
+            foundEntry->ptr = createAnimationFromPtr(buffer);
+            delete[] buffer;
+        }
+        else {
+            assert(0);
+        }
 
         hqrPtr->numUsedEntry++;
         hqrPtr->sizeFreeData -= size;
 
         RestoreTimerAnim();
 
-        return(ptr);
+        return(foundEntry->ptr);
     }
 }
 
-hqrEntryStruct* HQR_Init(int size,int numEntry)
+hqrEntryStruct<char>* HQR_Init(int size,int numEntry)
 {
-    int i;
-    hqrEntryStruct* dest;
-    char* dest2;
-
     ASSERT(size > 0);
     ASSERT(numEntry > 0);
 
-    dest = (hqrEntryStruct*)malloc(sizeof(hqrEntryStruct));
+    hqrEntryStruct<char>* dest = new hqrEntryStruct<char>();
 
     numEntry = 2000;
 
@@ -481,115 +408,86 @@ hqrEntryStruct* HQR_Init(int size,int numEntry)
     if(!dest)
         return NULL;
 
-    dest2 = (char*)malloc(size);
-
-    ASSERT_PTR(dest2);
-
-    if(!dest2)
-        return NULL;
-
-    strcpy(dest->string,"_MEMORY_");
+    strcpy_s(dest->string, sizeof(dest->string), "_MEMORY_");
 
     dest->sizeFreeData = size;
     dest->maxFreeData = size;
     dest->numMaxEntry = numEntry;
     dest->numUsedEntry = 0;
-    dest->entries = (hqrSubEntryStruct*)malloc(numEntry*sizeof(hqrSubEntryStruct));
+    dest->entries.resize(numEntry);
 
-    for(i=0;i<numEntry;i++)
+    for(int i=0;i<numEntry;i++)
     {
-        dest->entries[i].ptr = NULL;
+        dest->entries[i].ptr = nullptr;
     }
 
     return(dest);
 }
 
-void HQR_Reset(hqrEntryStruct* hqrPtr)
+template <typename T>
+void HQR_Reset(hqrEntryStruct<T>* hqrPtr)
 {
-    int i;
     hqrPtr->sizeFreeData = hqrPtr->maxFreeData;
     hqrPtr->numUsedEntry = 0;
 
-    if (hqrPtr == HQ_Bodys)
+    for(int i =0;i<hqrPtr->numMaxEntry;i++)
     {
-        for (int i = 0; i < vBodies.size(); i++)
+        if (hqrPtr->entries[i].ptr)
         {
-            delete vBodies[i];
+            if constexpr (std::is_same_v<T, char>) {
+                delete[] hqrPtr->entries[i].ptr;
+            }
+            else {
+                delete hqrPtr->entries[i].ptr;
+            }
+            hqrPtr->entries[i].ptr = nullptr;
         }
-        vBodies.resize(0);
-    }
-    if (hqrPtr == HQ_Anims) {
-        for (int i = 0; i < vAnimations.size(); i++)
-        {
-            delete vAnimations[i];
-        }
-        vAnimations.resize(0);
-    }
-
-    for(i=0;i<hqrPtr->numMaxEntry;i++)
-    {
-        if(hqrPtr->entries[i].ptr)
-            free(hqrPtr->entries[i].ptr);
-
-        hqrPtr->entries[i].ptr = NULL;
     }
 
 }
 
-void HQR_Free(hqrEntryStruct* hqrPtr)
+template <typename T>
+void HQR_Free(hqrEntryStruct<T>* hqrPtr)
 {
-    int i;
+    HQR_Reset(hqrPtr);
 
-    if(!hqrPtr)
-        return;
-
-    if (hqrPtr == HQ_Bodys)
-    {
-        for (int i = 0; i < vBodies.size(); i++)
-        {
-            delete vBodies[i];
-        }
-        vBodies.clear();
-    }
-    if (hqrPtr == HQ_Anims) {
-        for (int i = 0; i < vAnimations.size(); i++)
-        {
-            delete vAnimations[i];
-        }
-        vAnimations.clear();
-    }
-
-    for(i=0;i<hqrPtr->numMaxEntry;i++)
-    {
-        if(hqrPtr->entries[i].ptr)
-            free(hqrPtr->entries[i].ptr);
-    }
-
-    free(hqrPtr);
+    delete hqrPtr;
 }
 
-sBody* getBodyFromPtr(void* ptr)
+template <typename T>
+void configureHqrHero(hqrEntryStruct<T>* hqrPtr, const char* name)
 {
-    for (int i = 0; i < vBodies.size(); i++)
-    {
-        if (vBodies[i]->m_raw == ptr)
-        {
-            return vBodies[i];
-        }
-    }
-
-    return createBodyFromPtr(ptr);
+    strcpy_s(hqrPtr->string, sizeof(hqrPtr->string), "        ");
+    strncpy_s(hqrPtr->string, sizeof(hqrPtr->string), name, 8);
 }
 
-sAnimation* getAnimationFromPtr(void* ptr)
+void HQ_Free_Malloc(hqrEntryStruct<char>* hqrPtr, int index)
 {
-    for (int i = 0; i < vAnimations.size(); i++)
-    {
-        if (vAnimations[i]->m_raw == ptr)
-        {
-            return vAnimations[i];
-        }
-    }
-
-    return createAnimationFromPtr(ptr);
 }
+
+template
+hqrEntryStruct<char>* HQR_InitRessource(const char* name, int size, int numEntries);
+
+template
+char* HQR_Get(hqrEntryStruct<char>* hqrPtr, int index);
+
+template
+void HQR_Free(hqrEntryStruct<char>* hqrPtr);
+
+template
+void HQR_Reset(hqrEntryStruct<char>* hqrPtr);
+
+template
+void configureHqrHero(hqrEntryStruct<char>* hqrPtr, const char* name);
+
+/// body
+template hqrEntryStruct<sBody>* HQR_InitRessource(const char* name, int size, int numEntries);
+template sBody* HQR_Get(hqrEntryStruct<sBody>* hqrPtr, int index);
+template void HQR_Free(hqrEntryStruct<sBody>* hqrPtr);
+template void configureHqrHero(hqrEntryStruct<sBody>* hqrPtr, const char* name);
+
+/// anim
+template hqrEntryStruct<sAnimation>* HQR_InitRessource(const char* name, int size, int numEntries);
+template sAnimation* HQR_Get(hqrEntryStruct<sAnimation>* hqrPtr, int index);
+template void HQR_Free(hqrEntryStruct<sAnimation>* hqrPtr);
+template void configureHqrHero(hqrEntryStruct<sAnimation>* hqrPtr, const char* name);

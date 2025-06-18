@@ -20,6 +20,8 @@ struct sAnimation
     std::vector<sFrame> m_frames;
 };
 
+extern hqrEntryStruct<sAnimation>* HQ_Anims;
+
 #define NB_BUFFER_ANIM 25 // AITD1 was  20
 #define SIZE_BUFFER_ANIM (8*41) // AITD1 was 4*31
 

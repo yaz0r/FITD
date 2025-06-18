@@ -2,7 +2,7 @@
 
 enum gameTypeEnum g_gameId;
 
-hqrEntryStruct* HQ_Memory;
+hqrEntryStruct<char>* HQ_Memory;
 
 int videoMode;
 int musicConfigured;
@@ -79,12 +79,11 @@ s16 currentWorldTarget;
 
 int fileSize;
 
-hqrEntryStruct* HQ_Bodys = nullptr;
-hqrEntryStruct* HQ_Anims = nullptr;
-hqrEntryStruct* listLife = nullptr;
-hqrEntryStruct* listTrack = nullptr;
-hqrEntryStruct* listHybrides = nullptr;
-hqrEntryStruct* HQ_Matrices = nullptr;
+hqrEntryStruct<sBody>* HQ_Bodys = nullptr;
+hqrEntryStruct<char>* listLife = nullptr;
+hqrEntryStruct<char>* listTrack = nullptr;
+hqrEntryStruct<char>* listHybrides = nullptr;
+hqrEntryStruct<char>* HQ_Matrices = nullptr;
 
 s16 maxObjects;
 
@@ -271,8 +270,8 @@ int clipBottom = 119;
 
 unsigned char* g_MaskPtr = NULL;
 
-hqrEntryStruct* listMus;
-hqrEntryStruct* listSamp;
+hqrEntryStruct<char>* listMus;
+hqrEntryStruct<char>* listSamp;
 
 #if defined(FITD_DEBUGGER)
 backgroundModeEnum backgroundMode = backgroundModeEnum_2D;

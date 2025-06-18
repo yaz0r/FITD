@@ -327,7 +327,7 @@ void processInventory(void)
 
                 ShowBody = ListWorldObjets[selectedWorldObjectIdx].foundBody;
 
-                ShowObjet = getBodyFromPtr(HQR_Get(HQ_Bodys,ShowBody));
+                ShowObjet = HQR_Get(HQ_Bodys,ShowBody);
 
                 var_C = ListWorldObjets[selectedWorldObjectIdx].foundFlag;
 
@@ -464,7 +464,7 @@ void DrawFoundWindow(int menuState, int objectName, int zoomFactor)
 
     setCameraTarget(0, 0, 0, 60, ShowBeta, 0, zoomFactor);
 
-    AffObjet(0, 0, 0, 0, 0, 0, getBodyFromPtr(HQR_Get(HQ_Bodys, ShowBody)));
+    AffObjet(0, 0, 0, 0, 0, 0, HQR_Get(HQ_Bodys, ShowBody));
 
     SimpleMessage(160, WindowY1, 20, 1);
     SimpleMessage(160, WindowY1 + 16, objectName, 1);
@@ -536,7 +536,7 @@ void foundObject(int objIdx, int param)
     }
 
     ShowBody = objPtr->foundBody;
-    ShowObjet = getBodyFromPtr(HQR_Get(HQ_Bodys, ShowBody));
+    ShowObjet = HQR_Get(HQ_Bodys, ShowBody);
 
     SetProjection(160, 100, 128, 300, 298);
 

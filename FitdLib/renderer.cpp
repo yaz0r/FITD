@@ -1087,16 +1087,8 @@ int AffObjet(int x,int y,int z,int alpha,int beta,int gamma, sBody* pBody)
         return(0);
 }
 
-int AffObjet(int x, int y, int z, int alpha, int beta, int gamma, void* modelPtr)
+void computeScreenBox(int x, int y, int z, int alpha, int beta, int gamma, sBody* bodyPtr)
 {
-    sBody* pBody = getBodyFromPtr(modelPtr);
-    return AffObjet(x, y, z, alpha, beta, gamma, pBody);
-}
-
-void computeScreenBox(int x, int y, int z, int alpha, int beta, int gamma, char* bodyPtr)
-{
-    sBody* pBody = getBodyFromPtr(bodyPtr);
-
     BBox3D1 = 0x7FFF;
     BBox3D2 = 0x7FFF;
 
@@ -1109,10 +1101,10 @@ void computeScreenBox(int x, int y, int z, int alpha, int beta, int gamma, char*
 
     renderVar2 = renderBuffer;
 
-    modelFlags = pBody->m_flags;
+    modelFlags = bodyPtr->m_flags;
 
     if(modelFlags&INFO_ANIM)
     {
-        AnimNuage(x,y,z,alpha,beta,gamma, pBody);
+        AnimNuage(x,y,z,alpha,beta,gamma, bodyPtr);
     }
 }

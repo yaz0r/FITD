@@ -23,13 +23,12 @@ void throwStoppedAt(int x, int z);
 sceZoneStruct* processActor2Sub(int x, int y, int z, roomDataStruct* pRoomData);
 void LoadWorld(void);
 void initVars();
-void configureHqrHero(hqrEntryStruct* hqrPtr, const char* name);
+
 void flushScreen(void);
 int parseAllSaves(int arg);
 textEntryStruct* getTextFromIdx(int index);
 void cleanupAndExit(void);
 void drawProjectedBox(int x1,int x2,int y1,int y2,int z1,int z2, int color, int transparency);
-void HQ_Free_Malloc(hqrEntryStruct* hqrPtr, int index);
 
 void playSequence(int sequenceIdx, int fadeStart, int fadeOutVar);
 

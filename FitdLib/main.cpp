@@ -466,7 +466,7 @@ void OpenProgram(void)
 
 	//  if(musicConfigured)
 	{
-		listMus = HQR_InitRessource("LISTMUS",110000,40);
+		listMus = HQR_InitRessource<char>("LISTMUS",110000,40);
 	}
 
     char sampleFileName[256] = "";
@@ -479,7 +479,7 @@ void OpenProgram(void)
         strcpy(sampleFileName, "LISTSAMP");
     }
 
-	listSamp = HQR_InitRessource(sampleFileName,64000,30);
+	listSamp = HQR_InitRessource<char>(sampleFileName,64000,30);
 
 	HQ_Memory = HQR_Init(10000,50);
 }
@@ -568,10 +568,6 @@ void loadPalette(void)
 	//  fadeInSub1(localPalette);
 
 	// to finish
-}
-
-void HQ_Free_Malloc(hqrEntryStruct* hqrPtr, int index)
-{
 }
 
 void turnPageForward()
@@ -1157,25 +1153,25 @@ void LoadWorld(void)
 		CVars[getCVarsIdx(CHOOSE_PERSO)] = choosePersoBackup;
 	}
 
-	listLife = HQR_InitRessource("LISTLIFE", 65000, 100);
-	listTrack = HQR_InitRessource("LISTTRAK", 20000, 100);
+	listLife = HQR_InitRessource<char>("LISTLIFE", 65000, 100);
+	listTrack = HQR_InitRessource<char>("LISTTRAK", 20000, 100);
     if (g_gameId >= JACK) {
-        listHybrides = HQR_InitRessource("LISTHYB", 20000, 10); // TODO: recheck size for other games
+        listHybrides = HQR_InitRessource<char>("LISTHYB", 20000, 10); // TODO: recheck size for other games
     }
 
 	// TODO: missing dos memory check here
 
 	if(g_gameId == AITD1)
 	{
-		HQ_Bodys = HQR_InitRessource(listBodySelect[CVars[getCVarsIdx(CHOOSE_PERSO)]],37000, 50); // was calculated from free mem size
-		HQ_Anims = HQR_InitRessource(listAnimSelect[CVars[getCVarsIdx(CHOOSE_PERSO)]],30000, 80); // was calculated from free mem size
+        HQ_Bodys = HQR_InitRessource<sBody>(listBodySelect[CVars[getCVarsIdx(CHOOSE_PERSO)]], 37000, 50); // was calculated from free mem size
+        HQ_Anims = HQR_InitRessource<sAnimation>(listAnimSelect[CVars[getCVarsIdx(CHOOSE_PERSO)]], 30000, 80); // was calculated from free mem size
 	}
 	else
 	{
-		HQ_Bodys = HQR_InitRessource("LISTBODY",37000, 50); // was calculated from free mem size
-		HQ_Anims = HQR_InitRessource("LISTANIM",30000, 80); // was calculated from free mem size
+		HQ_Bodys = HQR_InitRessource<sBody>("LISTBODY", 37000, 50); // was calculated from free mem size
+        HQ_Anims = HQR_InitRessource<sAnimation>("LISTANIM",30000, 80); // was calculated from free mem size
 
-		HQ_Matrices = HQR_InitRessource("LISTMAT",64000,5);
+		HQ_Matrices = HQR_InitRessource<char>("LISTMAT",64000,5);
 	}
 
 
@@ -3042,7 +3038,7 @@ void mainDraw(int flagFlip)
                 }
                 else
                 {
-                    sBody* bodyPtr = getBodyFromPtr(HQR_Get(HQ_Bodys, actorPtr->bodyNum));
+                    sBody* bodyPtr = HQR_Get(HQ_Bodys, actorPtr->bodyNum);
 
                     if (HQ_Load)
                     {
@@ -4019,7 +4015,7 @@ void throwStoppedAt(int x, int z)
 	ZVStruct zvCopy;
 	ZVStruct zvLocal;
 
-	sBody* bodyPtr = getBodyFromPtr(HQR_Get(HQ_Bodys,currentProcessedActorPtr->bodyNum));
+	sBody* bodyPtr = HQR_Get(HQ_Bodys,currentProcessedActorPtr->bodyNum);
 
 	GiveZVObjet(bodyPtr,&zvLocal);
 
@@ -4133,12 +4129,6 @@ int parseAllSaves(int arg)
 {
 	return(0);
 	// TODO : make real implementation
-}
-
-void configureHqrHero(hqrEntryStruct* hqrPtr, const char* name)
-{
-	strcpy(hqrPtr->string,"        ");
-	strncpy(hqrPtr->string,name,8);
 }
 
 void detectGame(void)

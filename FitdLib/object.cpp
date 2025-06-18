@@ -97,11 +97,11 @@ int InitObjet(int body, int typeZv, int hardZvIdx, s16 objectType, int x, int y,
 
     if(body != -1)
     {
-        bodyPtr = getBodyFromPtr(HQR_Get(HQ_Bodys,actorPtr->bodyNum));
+        bodyPtr = HQR_Get(HQ_Bodys,actorPtr->bodyNum);
 
         if(anim != -1)
         {
-            sAnimation* animPtr = getAnimationFromPtr(HQR_Get(HQ_Anims,anim));
+            sAnimation* animPtr = HQR_Get(HQ_Anims,anim);
 
             SetAnimObjet(frame,animPtr, bodyPtr);
 

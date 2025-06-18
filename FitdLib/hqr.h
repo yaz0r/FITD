@@ -1,14 +1,31 @@
-#ifndef _HQR_
-#define _HQR_
-char* HQR_Get(hqrEntryStruct* hqrPtr, int index);
-int HQ_Malloc(hqrEntryStruct* hqrPtr,int size);
-char* HQ_PtrMalloc(hqrEntryStruct* hqrPtr, int index);
-hqrEntryStruct* HQR_InitRessource(const char* name, int size, int numEntries);
-hqrEntryStruct* HQR_Init(int size,int numEntry);
-void HQR_Reset(hqrEntryStruct* hqrPtr);
-void HQR_Free(hqrEntryStruct* hqrPtr);
+#pragma once
 
-sBody* getBodyFromPtr(void* ptr);
-struct sAnimation* getAnimationFromPtr(void* ptr);
+template <typename T>
+struct hqrSubEntryStruct;
 
-#endif
+template <typename T>
+struct hqrEntryStruct;
+
+template <typename T>
+T* HQR_Get(hqrEntryStruct<T>* hqrPtr, int index);
+
+hqrEntryStruct<char>* HQR_Init(int size, int numEntry);
+int HQ_Malloc(hqrEntryStruct<char>* hqrPtr,int size);
+char* HQ_PtrMalloc(hqrEntryStruct<char>* hqrPtr, int index);
+void HQ_Free_Malloc(hqrEntryStruct<char>* hqrPtr, int index);
+
+template <typename T>
+void HQR_Free(hqrEntryStruct<T>* hqrPtr);
+
+template <typename T>
+hqrEntryStruct<T>* HQR_InitRessource(const char* name, int size, int numEntries);
+
+template <typename T>
+void HQR_Reset(hqrEntryStruct<T>* hqrPtr);
+
+template <typename T>
+void configureHqrHero(hqrEntryStruct<T>* hqrPtr, const char* name);
+
+struct sBody* createBodyFromPtr(void* ptr);
+
+

@@ -494,11 +494,11 @@ int loadSave(int saveNumber)
     {
         if(objectTable[i].indexInWorld != -1 && objectTable[i].bodyNum != -1)
         {
-            sBody* bodyPtr = getBodyFromPtr(HQR_Get(HQ_Bodys,objectTable[i].bodyNum));
+            sBody* bodyPtr = HQR_Get(HQ_Bodys,objectTable[i].bodyNum);
 
             if(objectTable[i].ANIM != -1)
             {
-                sAnimation* animPtr = getAnimationFromPtr(HQR_Get(HQ_Anims,objectTable[i].ANIM));
+                sAnimation* animPtr = HQR_Get(HQ_Anims,objectTable[i].ANIM);
                 SetAnimObjet(objectTable[i].frame,animPtr,bodyPtr);
             }
         }

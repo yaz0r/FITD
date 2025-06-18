@@ -103,44 +103,29 @@ int calcDist(int X1, int Y1, int Z1, int X2, int Y2, int Z2)
     return(Xdist + Ydist + Zdist); // recheck overflow
 }
 
-int testZvEndAnim(tObject* actorPtr,char* animPtr, int param)
+int testZvEndAnim(tObject* actorPtr,sAnimation* animPtr, int param)
 {
-    s16 var_16;
-    s16 var_14;
-    s16 var_E = 0;
-    s16 var_12 = 0;
-    s16 var_10 = param;
-    s16 var_18;
-    ZVStruct localZv;
-
     ASSERT(actorPtr);
     ASSERT(animPtr);
 
-    var_16 = *(s16*)(animPtr);
-    animPtr += 2;
-    var_14 = *(s16*)(animPtr);
-    animPtr += 2;
+    s16 stepX = 0;
+    s16 stepZ = 0;
 
-    for(var_18 = 0; var_18 < var_16; var_18 ++)
+    for(int i=0; i< animPtr->m_numFrames; i++)
     {
-        animPtr += 2;
-        var_12 += *(s16*)animPtr;
-        animPtr += 2;
-        animPtr += 2;
-        var_E += *(s16*)animPtr; // step depth
-        animPtr += 2;
-
-        animPtr+= var_14*8;
+        stepZ += animPtr->m_frames[i].m_animStep.x;
+        stepX += animPtr->m_frames[i].m_animStep.z;
     }
 
+    ZVStruct localZv;
     copyZv(&actorPtr->zv, &localZv);
 
-    walkStep(0,var_E,actorPtr->beta);
+    walkStep(0,stepX,actorPtr->beta);
 
     localZv.ZVX1 += animMoveX;
     localZv.ZVX2 += animMoveX;
-    localZv.ZVY1 += var_10;
-    localZv.ZVY2 += var_10;
+    localZv.ZVY1 += param;
+    localZv.ZVY2 += param;
     localZv.ZVZ1 += animMoveZ;
     localZv.ZVZ2 += animMoveZ;
 

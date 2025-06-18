@@ -55,28 +55,6 @@ struct regularTextEntryStruct
 
 typedef struct regularTextEntryStruct regularTextEntryStruct;
 
-struct hqrSubEntryStruct
-{
-    s16 key;
-    s16 size;
-    unsigned int lastTimeUsed;
-    char* ptr;
-};
-
-typedef struct hqrSubEntryStruct hqrSubEntryStruct;
-
-struct hqrEntryStruct
-{
-    char string[10];
-    u16 maxFreeData;
-    u16 sizeFreeData;
-    u16 numMaxEntry;
-    u16 numUsedEntry;
-    hqrSubEntryStruct* entries;
-};
-
-typedef struct hqrEntryStruct hqrEntryStruct;
-
 struct ZVStruct
 {
     s32 ZVX1;
@@ -265,10 +243,10 @@ struct roomDefStruct
 
 typedef struct roomDefStruct roomDefStruct;
 
-extern hqrEntryStruct* HQ_Memory;
-
-extern hqrEntryStruct* listMus;
-extern hqrEntryStruct* listSamp;
+#include "hqr.h"
+extern hqrEntryStruct<char>* HQ_Memory;
+extern hqrEntryStruct<char>* listMus;
+extern hqrEntryStruct<char>* listSamp;
 
 extern int videoMode;
 extern int musicConfigured;
@@ -335,12 +313,11 @@ extern s16 currentWorldTarget;
 
 extern int fileSize;
 
-extern hqrEntryStruct* HQ_Bodys;
-extern hqrEntryStruct* HQ_Anims;
-extern hqrEntryStruct* listLife;
-extern hqrEntryStruct* listTrack;
-extern hqrEntryStruct* listHybrides;
-extern hqrEntryStruct* HQ_Matrices;
+extern hqrEntryStruct<sBody>* HQ_Bodys;
+extern hqrEntryStruct<char>* listLife;
+extern hqrEntryStruct<char>* listTrack;
+extern hqrEntryStruct<char>* listHybrides;
+extern hqrEntryStruct<char>* HQ_Matrices;
 
 extern s16 maxObjects;
 
