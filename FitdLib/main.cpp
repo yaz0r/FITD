@@ -2003,7 +2003,7 @@ void GenereActiveList()
 				case 0: // STAGE
                     continue;
 				case 1: // ROOM
-					if(currentActor->room != currentRoom)
+					if(currentActor->room == currentRoom)
 					{
                         continue;
 					}
@@ -2022,7 +2022,7 @@ void GenereActiveList()
 			}
 			else
 			{
-				if(!isInViewList(currentActor->room))
+				if(isInViewList(currentActor->room))
 				{
                     continue;
 				}
