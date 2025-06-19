@@ -12,7 +12,7 @@ struct hqrSubEntryStruct
 template <typename T>
 struct hqrEntryStruct
 {
-    char string[10];
+    std::string string;
     u16 maxFreeData;
     u16 sizeFreeData;
     u16 numMaxEntry;
@@ -43,10 +43,7 @@ hqrEntryStruct<T>* HQR_InitRessource(const char* name, int size, int numEntries)
         return NULL;
 
     numEntries = 2000;
-
-    strcpy_s(dest->string, sizeof(dest->string), "        ");
-    strncpy_s(dest->string, sizeof(dest->string), name,8);
-
+    dest->string = name;
     dest->sizeFreeData = size;
     dest->maxFreeData = size;
     dest->numMaxEntry = numEntries;
@@ -335,14 +332,14 @@ T* HQR_Get(hqrEntryStruct<T>* hqrPtr, int index)
     else
     {
         SaveTimerAnim();
-        int size = getPakSize(hqrPtr->string,index);
+        int size = getPakSize(hqrPtr->string.c_str(),index);
 
 		if(size == 0)
 			return NULL;
 
         if(size>=hqrPtr->maxFreeData)
         {
-            fatalError(1,hqrPtr->string);
+            fatalError(1,hqrPtr->string.c_str());
         }
 
         unsigned int time = timer;
@@ -368,7 +365,7 @@ T* HQR_Get(hqrEntryStruct<T>* hqrPtr, int index)
         foundEntry->size = size;
 
         char* buffer = new char[size];
-        LoadPak(hqrPtr->string, index, buffer);
+        LoadPak(hqrPtr->string.c_str(), index, buffer);
 
         if constexpr (std::is_same_v<T, char>) {
             foundEntry->ptr = buffer;
@@ -408,8 +405,7 @@ hqrEntryStruct<char>* HQR_Init(int size,int numEntry)
     if(!dest)
         return NULL;
 
-    strcpy_s(dest->string, sizeof(dest->string), "_MEMORY_");
-
+    dest->string = "_MEMORY_";
     dest->sizeFreeData = size;
     dest->maxFreeData = size;
     dest->numMaxEntry = numEntry;
@@ -457,8 +453,7 @@ void HQR_Free(hqrEntryStruct<T>* hqrPtr)
 template <typename T>
 void configureHqrHero(hqrEntryStruct<T>* hqrPtr, const char* name)
 {
-    strcpy_s(hqrPtr->string, sizeof(hqrPtr->string), "        ");
-    strncpy_s(hqrPtr->string, sizeof(hqrPtr->string), name, 8);
+    hqrPtr->string = name;
 }
 
 void HQ_Free_Malloc(hqrEntryStruct<char>* hqrPtr, int index)
