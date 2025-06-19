@@ -179,6 +179,7 @@ int ChoosePerso(void)
     int firsttime = 1;
     int choiceMade = 0;
 
+    uiLayer.fill(0);
     InitCopyBox(aux, logicalScreen);
 
     while (choiceMade == 0)

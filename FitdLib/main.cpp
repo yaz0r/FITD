@@ -534,7 +534,8 @@ void AffRect(int x1, int y1, int x2, int y2, char color) // fast recode. No RE
 	int width = x2 - x1 + 1;
 	int height = y2 - y1 + 1;
 
-	char* dest = (char*)uiLayer.data() + y1*320 + x1;
+	char* dest = logicalScreen + y1*320 + x1;
+	char* dest2 = (char*)uiLayer.data() + y1*320 + x1;
 
 	int i;
 	int j;
@@ -544,9 +545,11 @@ void AffRect(int x1, int y1, int x2, int y2, char color) // fast recode. No RE
 		for(j=0;j<width;j++)
 		{
 			*(dest++)= color;
+			*(dest2++)= color;
 		}
 
 		dest += 320-width;
+		dest2 += 320-width;
 	}
 }
 
@@ -641,6 +644,7 @@ int Lire(int index, int startx, int top, int endx, int bottom, int demoMode, int
 		process_events();
 		SetClip(startx,top,endx,bottom);
 
+		uiLayer.fill(0);
 		ptrt = ptrpage[page];
 
 		currentTextY = top;

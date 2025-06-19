@@ -454,6 +454,7 @@ void cleanClip()
         for (int y = clipTop; y < clipBottom; y++)
         {
             logicalScreen[y * 320 + x] = 0;
+            uiLayer[y * 320 + x] = 0;
         }
     }
 }
