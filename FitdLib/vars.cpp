@@ -28,8 +28,6 @@ palette_t currentGamePalette;
 
 //OSystem osystem;
 
-char rgbaBuffer[320*200*4];
-
 unsigned int timer;
 unsigned int timeGlobal;
 

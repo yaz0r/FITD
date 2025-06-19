@@ -81,6 +81,7 @@
 	void osystem_drawSphere(float X, float Y, float Z, u8 color, u8 material, float size);
 	void osystem_drawPoint(float X, float Y, float Z, u8 color, u8 material, float size);
 	void osystem_flushPendingPrimitives();
+    void osystem_drawUILayer();
 
 	void osystem_startBgPoly();
 	void osystem_endBgPoly();

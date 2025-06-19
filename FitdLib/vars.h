@@ -270,7 +270,6 @@ extern char* PtrCadre;
 
 //extern OSystem osystem;
 extern unsigned char frontBuffer[320*200];
-extern char rgbaBuffer[320*200*4];
 
 extern unsigned int timer;
 extern unsigned int timeGlobal;
@@ -476,6 +475,8 @@ extern int clipRight;
 extern int clipBottom;
 
 extern unsigned char* g_MaskPtr;
+
+extern std::array<unsigned char, 320 * 200> uiLayer;
 
 #if defined(FITD_DEBUGGER)
 enum backgroundModeEnum

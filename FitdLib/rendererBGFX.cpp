@@ -27,6 +27,7 @@ email                : yaz0r@yaz0r.net
 
 unsigned int gameViewId = 1;
 bgfx::TextureHandle g_backgroundTexture = BGFX_INVALID_HANDLE;
+bgfx::TextureHandle g_uiLayerTexture = BGFX_INVALID_HANDLE;
 bgfx::TextureHandle g_paletteTexture = BGFX_INVALID_HANDLE;
 extern int outputResolution[2];
 extern bool debuggerVar_debugMenuDisplayed;
@@ -242,6 +243,17 @@ bgfx::ShaderHandle loadBgfxShader(const std::string& filename)
     return handle;
 }
 
+bgfx::ProgramHandle getUIShader()
+{
+    static bgfx::ProgramHandle programHandle = BGFX_INVALID_HANDLE;
+    if (!bgfx::isValid(programHandle))
+    {
+        programHandle = loadBgfxProgram("ui_vs", "ui_ps");
+    }
+
+    return programHandle;
+}
+
 bgfx::ProgramHandle getBackgroundShader()
 {
     static bgfx::ProgramHandle programHandle = BGFX_INVALID_HANDLE;
@@ -306,6 +318,107 @@ bgfx::ProgramHandle getSphereShader()
     }
 
     return programHandle;
+}
+
+void osystem_drawUILayer()
+{
+    bgfx::updateTexture2D(g_uiLayerTexture, 0, 0, 0, 0, 320, 200, bgfx::copy(uiLayer.data(), 320 * 200));
+
+    if (backgroundMode == backgroundModeEnum_2D)
+    {
+        bgfx::VertexLayout layout;
+        layout
+            .begin()
+            .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
+            .add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
+            .end();
+
+        bgfx::TransientVertexBuffer transientBuffer;
+        bgfx::allocTransientVertexBuffer(&transientBuffer, 6, layout);
+
+        struct sVertice
+        {
+            float position[3];
+            float texcoord[2];
+        };
+
+        sVertice* pVertices = (sVertice*)transientBuffer.data;
+
+        float quadVertices[6 * 3];
+        float quadUV[6 * 2];
+
+        // 0
+        pVertices->position[0] = 0.f;
+        pVertices->position[1] = 0.f;
+        pVertices->position[2] = 1000.f;
+        pVertices->texcoord[0] = 0.f;
+        pVertices->texcoord[1] = 0.f;
+        pVertices++;
+
+        //2
+        pVertices->position[0] = 320.f;
+        pVertices->position[1] = 200.f;
+        pVertices->position[2] = 1000.f;
+        pVertices->texcoord[0] = 1.f;
+        pVertices->texcoord[1] = 1.f;
+        pVertices++;
+
+        //1
+        pVertices->position[0] = 320.f;
+        pVertices->position[1] = 0.f;
+        pVertices->position[2] = 1000.f;
+        pVertices->texcoord[0] = 1.f;
+        pVertices->texcoord[1] = 0.f;
+        pVertices++;
+
+        //------------------------
+        //3
+        pVertices->position[0] = 0.f;
+        pVertices->position[1] = 0.f;
+        pVertices->position[2] = 1000.f;
+        pVertices->texcoord[0] = 0.f;
+        pVertices->texcoord[1] = 0.f;
+        pVertices++;
+
+        //4
+        pVertices->position[0] = 0.f;
+        pVertices->position[1] = 200.f;
+        pVertices->position[2] = 1000.f;
+        pVertices->texcoord[0] = 0.f;
+        pVertices->texcoord[1] = 1.f;
+        pVertices++;
+
+        //5
+        pVertices->position[0] = 320.f;
+        pVertices->position[1] = 200.f;
+        pVertices->position[2] = 1000.f;
+        pVertices->texcoord[0] = 1.f;
+        pVertices->texcoord[1] = 1.f;
+        pVertices++;
+
+        static bgfx::UniformHandle backgroundTextureUniform = BGFX_INVALID_HANDLE;
+        if (!bgfx::isValid(backgroundTextureUniform))
+        {
+            backgroundTextureUniform = bgfx::createUniform("s_backgroundTexture", bgfx::UniformType::Sampler);
+        }
+        static bgfx::UniformHandle paletteTextureUniform = BGFX_INVALID_HANDLE;
+        if (!bgfx::isValid(paletteTextureUniform))
+        {
+            paletteTextureUniform = bgfx::createUniform("s_paletteTexture", bgfx::UniformType::Sampler);
+        }
+
+
+        bgfx::setState(0 | BGFX_STATE_WRITE_RGB
+            | BGFX_STATE_MSAA
+            | BGFX_STATE_DEPTH_TEST_ALWAYS
+        );
+
+        bgfx::setVertexBuffer(0, &transientBuffer);
+
+        bgfx::setTexture(0, backgroundTextureUniform, g_uiLayerTexture);
+        bgfx::setTexture(1, paletteTextureUniform, g_paletteTexture);
+        bgfx::submit(gameViewId, getUIShader());
+    }
 }
 
 void osystem_drawBackground()
@@ -418,6 +531,7 @@ void initBgfxMainResources()
 {
     // create background texture
     g_backgroundTexture = bgfx::createTexture2D(320, 200, false, 1, bgfx::TextureFormat::R8U);
+    g_uiLayerTexture = bgfx::createTexture2D(320, 200, false, 1, bgfx::TextureFormat::R8U);
     g_paletteTexture = bgfx::createTexture2D(3, 256, false, 1, bgfx::TextureFormat::R8U);
 }
 
@@ -446,6 +560,8 @@ void osystem_startFrame()
         initBgfxMainResources();
         g_bgfxMainResourcesInitialized = true;
     }
+
+    //uiLayer.fill(0x0);
 
     static ImVec2 oldWindowSize = { -1,-1 };
 
@@ -516,6 +632,7 @@ void osystem_startFrame()
 
 unsigned char frontBuffer[320 * 200];
 unsigned char physicalScreen[320 * 200];
+std::array<unsigned char, 320 * 200> uiLayer;
 
 void osystem_CopyBlockPhys(unsigned char* videoBuffer, int left, int top, int right, int bottom)
 {

@@ -2,6 +2,8 @@
 #include "config.h"
 
 #if BGFX_PLATFORM_SUPPORTS_SPIRV
+#include "shaders/generated/spirv/ui_vs.sc.bin.h"
+#include "shaders/generated/spirv/ui_ps.sc.bin.h"
 #include "shaders/generated/spirv/background_vs.sc.bin.h"
 #include "shaders/generated/spirv/background_ps.sc.bin.h"
 #include "shaders/generated/spirv/maskBackground_vs.sc.bin.h"
@@ -17,6 +19,8 @@
 #endif
 
 #if BGFX_PLATFORM_SUPPORTS_METAL
+#include "shaders/generated/metal/ui_vs.sc.bin.h"
+#include "shaders/generated/metal/ui_ps.sc.bin.h"
 #include "shaders/generated/metal/background_vs.sc.bin.h"
 #include "shaders/generated/metal/background_ps.sc.bin.h"
 #include "shaders/generated/metal/maskBackground_vs.sc.bin.h"
@@ -32,6 +36,8 @@
 #endif
 
 #if BGFX_PLATFORM_SUPPORTS_GLSL
+#include "shaders/generated/glsl/ui_vs.sc.bin.h"
+#include "shaders/generated/glsl/ui_ps.sc.bin.h"
 #include "shaders/generated/glsl/background_vs.sc.bin.h"
 #include "shaders/generated/glsl/background_ps.sc.bin.h"
 #include "shaders/generated/glsl/maskBackground_vs.sc.bin.h"
@@ -47,6 +53,8 @@
 #endif
 
 #if BGFX_PLATFORM_SUPPORTS_DXBC
+#include "shaders/generated/dx11/ui_vs.sc.bin.h"
+#include "shaders/generated/dx11/ui_ps.sc.bin.h"
 #include "shaders/generated/dx11/background_vs.sc.bin.h"
 #include "shaders/generated/dx11/background_ps.sc.bin.h"
 #include "shaders/generated/dx11/maskBackground_vs.sc.bin.h"
@@ -63,7 +71,9 @@
 
 static const bgfx::EmbeddedShader s_embeddedShaders[] =
 {
-	BGFX_EMBEDDED_SHADER(background_vs),
+    BGFX_EMBEDDED_SHADER(ui_vs),
+    BGFX_EMBEDDED_SHADER(ui_ps),
+    BGFX_EMBEDDED_SHADER(background_vs),
 	BGFX_EMBEDDED_SHADER(background_ps),
 	BGFX_EMBEDDED_SHADER(maskBackground_vs),
 	BGFX_EMBEDDED_SHADER(maskBackground_ps),

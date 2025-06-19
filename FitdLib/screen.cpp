@@ -16,14 +16,12 @@ void setupScreen(void)
 
 void flushScreen(void)
 {
-    int i;
-    int j;
-
-    for(i=0;i<200;i++)
+    for(int i=0;i<200;i++)
     {
-        for(j=0;j<320;j++)
+        for(int j=0;j<320;j++)
         {
-            *(logicalScreen+i*320+j) = 0;
+            *(uiLayer.data()+i*320+j) = 0;
+            *(logicalScreen + i * 320 + j) = 0;
         }
     }
 }

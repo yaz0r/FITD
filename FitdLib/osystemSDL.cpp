@@ -219,6 +219,8 @@ void osystem_endOfFrame()
 {
     osystem_flushPendingPrimitives();
 
+    osystem_drawUILayer();
+
 #ifdef FITD_DEBUGGER
     debugger_draw();
 #endif

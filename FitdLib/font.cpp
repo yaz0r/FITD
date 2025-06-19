@@ -134,7 +134,7 @@ void PrintFont(int x, int y, char* surface, u8* string)
             {
                 if (bp >= 200)
                     return;
-                char* outPtr = logicalScreen + bp*320 + fontSm8;
+                char* outPtr = (char*)uiLayer.data() + bp * 320 + fontSm8;
 
 
                 int dh = fontSm9;

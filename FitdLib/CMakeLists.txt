@@ -77,6 +77,7 @@ macro(addShaderProgram vsname psname varyingname)
 
 endmacro()
 
+addShaderProgram(ui_vs ui_ps ui.varying.def)
 addShaderProgram(background_vs background_ps background.varying.def)
 addShaderProgram(maskBackground_vs maskBackground_ps maskBackground.varying.def)
 addShaderProgram(flat_vs flat_ps flat.varying.def)

@@ -534,7 +534,7 @@ void AffRect(int x1, int y1, int x2, int y2, char color) // fast recode. No RE
 	int width = x2 - x1 + 1;
 	int height = y2 - y1 + 1;
 
-	char* dest = logicalScreen + y1*320 + x1;
+	char* dest = (char*)uiLayer.data() + y1*320 + x1;
 
 	int i;
 	int j;
@@ -2982,6 +2982,8 @@ void getHotPoint(int hotPointIdx, sBody* bodyPtr, point3dStruct* hotPoint)
 
 void mainDraw(int flagFlip)
 {
+    uiLayer.fill(0);
+
 	int i;
 	//if(flagFlip == 2)
 	{
