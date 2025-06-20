@@ -80,7 +80,6 @@ int fileSize;
 hqrEntryStruct<sBody>* HQ_Bodys = nullptr;
 hqrEntryStruct<char>* listLife = nullptr;
 hqrEntryStruct<char>* listTrack = nullptr;
-hqrEntryStruct<char>* listHybrides = nullptr;
 hqrEntryStruct<char>* HQ_Matrices = nullptr;
 
 s16 maxObjects;

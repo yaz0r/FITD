@@ -7,6 +7,8 @@
 // seg002
 
 #include "common.h"
+#include "hybrid.h"
+
 #include <time.h>
 
 #ifndef AITD_UE4
@@ -1160,7 +1162,7 @@ void LoadWorld(void)
 	listLife = HQR_InitRessource<char>("LISTLIFE", 65000, 100);
 	listTrack = HQR_InitRessource<char>("LISTTRAK", 20000, 100);
     if (g_gameId >= JACK) {
-        listHybrides = HQR_InitRessource<char>("LISTHYB", 20000, 10); // TODO: recheck size for other games
+        HQ_Hybrides = HQR_InitRessource<sHybrid>("LISTHYB", 20000, 10); // TODO: recheck size for other games
     }
 
 	// TODO: missing dos memory check here
@@ -3030,15 +3032,9 @@ void mainDraw(int flagFlip)
 			else 
 			{
                 if (actorPtr->objectType & AF_OBJ_2D) {
-                    char* pHybrid = HQR_Get(listHybrides, actorPtr->ANIM);
-                    char* pData = pHybrid + READ_LE_U32(pHybrid + 8);
-                    pData += READ_LE_U32(pData + actorPtr->bodyNum * 4);
-
-                    char* pAnim = pData + 2;
-                    pAnim += 8 * actorPtr->frame;
-                    s16 numHybrid = READ_LE_U16(pAnim);
-
-                    //AffHyb(numHybrid, 0, 0, pHybrid);
+                    sHybrid* pHybrid = HQR_Get(HQ_Hybrides, actorPtr->ANIM);
+                    s16 numHybrid = pHybrid->anims[actorPtr->bodyNum].animations[actorPtr->frame].id;
+                    AffHyb(numHybrid, 0, 0, pHybrid);
 
                     // TODO: bounding volume
                 }

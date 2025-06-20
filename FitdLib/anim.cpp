@@ -1,4 +1,5 @@
 #include "common.h"
+#include "hybrid.h"
 
 hqrEntryStruct<sAnimation>* HQ_Anims = nullptr;
 
@@ -204,6 +205,12 @@ int manageFall(int actorIdx, ZVStruct* zvPtr)
 
 void GereAnim(void)
 {
+    if (currentProcessedActorPtr->objectType & AF_OBJ_2D) {
+        if ((currentProcessedActorPtr->ANIM != -1) && (currentProcessedActorPtr->bodyNum != -1)) {
+            sHybrid* pHybrid = HQR_Get(HQ_Hybrides, currentProcessedActorPtr->ANIM);
+        }
+    }
+
 	int oldStepZ=0;
 	int oldStepY=0;
 	int oldStepX=0;

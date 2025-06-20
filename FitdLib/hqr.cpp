@@ -1,4 +1,5 @@
 #include "common.h"
+#include "hybrid.h"
 
 template <typename T>
 struct hqrSubEntryStruct
@@ -378,6 +379,10 @@ T* HQR_Get(hqrEntryStruct<T>* hqrPtr, int index)
             foundEntry->ptr = createAnimationFromPtr(buffer);
             delete[] buffer;
         }
+        else if constexpr (std::is_same_v<T, sHybrid>) {
+            foundEntry->ptr = new sHybrid((uint8_t*)buffer, size);
+            delete[] buffer;
+        }
         else {
             assert(0);
         }
@@ -486,3 +491,8 @@ template hqrEntryStruct<sAnimation>* HQR_InitRessource(const char* name, int siz
 template sAnimation* HQR_Get(hqrEntryStruct<sAnimation>* hqrPtr, int index);
 template void HQR_Free(hqrEntryStruct<sAnimation>* hqrPtr);
 template void configureHqrHero(hqrEntryStruct<sAnimation>* hqrPtr, const char* name);
+
+/// hybrids
+template hqrEntryStruct<sHybrid>* HQR_InitRessource(const char* name, int size, int numEntries);
+template sHybrid* HQR_Get(hqrEntryStruct<sHybrid>* hqrPtr, int index);
+template void HQR_Free(hqrEntryStruct<sHybrid>* hqrPtr);

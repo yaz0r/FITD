@@ -315,7 +315,6 @@ extern int fileSize;
 extern hqrEntryStruct<sBody>* HQ_Bodys;
 extern hqrEntryStruct<char>* listLife;
 extern hqrEntryStruct<char>* listTrack;
-extern hqrEntryStruct<char>* listHybrides;
 extern hqrEntryStruct<char>* HQ_Matrices;
 
 extern s16 maxObjects;

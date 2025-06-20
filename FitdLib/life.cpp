@@ -1,6 +1,7 @@
 #include <string>
 
 #include "common.h"
+#include "hybrid.h"
 
 int groundLevel;
 s16 specialTable[4] = { 144, 192, 48, 112 };
@@ -1004,11 +1005,8 @@ void processLife(int lifeNum, bool callFoundLife)
                     currentProcessedActorPtr->frame = 0;
 
                     if ((currentProcessedActorPtr->ANIM != -1) && (currentProcessedActorPtr->bodyNum != -1)) {
-                        char* pHybrid = HQR_Get(listHybrides, currentProcessedActorPtr->ANIM);
-                        pHybrid += READ_LE_U32(pHybrid + 8);
-                        pHybrid += READ_LE_U32(pHybrid + currentProcessedActorPtr->bodyNum * 4);
-
-                        currentProcessedActorPtr->numOfFrames = pHybrid[1];
+                        sHybrid* pHybrid = HQR_Get(HQ_Hybrides, currentProcessedActorPtr->ANIM);
+                        currentProcessedActorPtr->numOfFrames = pHybrid->anims[currentProcessedActorPtr->bodyNum].count;
                         currentProcessedActorPtr->animInfo = -1;
                         currentProcessedActorPtr->animType = ANIM_ONCE;
                         currentProcessedActorPtr->objectType |= AF_OBJ_2D;
@@ -1034,11 +1032,8 @@ void processLife(int lifeNum, bool callFoundLife)
                     currentProcessedActorPtr->frame = 0;
 
                     if ((currentProcessedActorPtr->ANIM != -1) && (currentProcessedActorPtr->bodyNum != -1)) {
-                        char* pHybrid = HQR_Get(listHybrides, currentProcessedActorPtr->ANIM);
-                        pHybrid += READ_LE_U32(pHybrid + 8);
-                        pHybrid += READ_LE_U32(pHybrid + currentProcessedActorPtr->bodyNum * 4);
-
-                        currentProcessedActorPtr->numOfFrames = pHybrid[1];
+                        sHybrid* pHybrid = HQR_Get(HQ_Hybrides, currentProcessedActorPtr->ANIM);
+                        currentProcessedActorPtr->numOfFrames = pHybrid->anims[currentProcessedActorPtr->bodyNum].count;
                         currentProcessedActorPtr->animInfo = -1;
                         currentProcessedActorPtr->animType = ANIM_REPEAT;
                         currentProcessedActorPtr->objectType |= AF_OBJ_2D;
