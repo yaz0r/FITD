@@ -410,8 +410,8 @@ extern int flagRedraw;
 
 extern float renderPointList[6400];
 
-extern int numActorInList;
-extern std::array<int, NUM_MAX_OBJECT> sortedActorTable;
+extern int NbAffObjets;
+extern std::array<int, NUM_MAX_OBJECT> Index;
 
 extern int angleCompX;
 extern int angleCompZ;

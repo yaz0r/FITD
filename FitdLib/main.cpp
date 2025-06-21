@@ -8,6 +8,7 @@
 
 #include "common.h"
 #include "hybrid.h"
+#include "anim2d.h"
 
 #include <time.h>
 
@@ -1364,8 +1365,8 @@ void loadMask(int cameraIdx)
 		cameraViewedRoomStruct* pRoomView = &cameraDataTable[NumCamera]->viewedRoomTable[i];
 		unsigned char* pViewedRoomMask = g_MaskPtr + READ_LE_U32(g_MaskPtr + i*4);
 
-        g_maskBuffers[i].reserve(pRoomView->numMask);
-		for(int j=0; j<pRoomView->numMask; j++)
+        g_maskBuffers[i].reserve(pRoomView->masks.size());
+		for(int j=0; j<pRoomView->masks.size(); j++)
 		{
             sMaskStruct* pDestMask = &g_maskBuffers[i].emplace_back();
 			unsigned char* pMaskData = pViewedRoomMask + READ_LE_U32(pViewedRoomMask + j*4);
@@ -2138,7 +2139,7 @@ int checkActorInRoom(int room)
 
 void GenereAffList()
 {
-	numActorInList = 0;
+	NbAffObjets = 0;
 
 	for(int i=0;i< objectTable.size();i++)
 	{
@@ -2147,13 +2148,13 @@ void GenereAffList()
 		{
 			if(checkActorInRoom(actorPtr->room))
 			{
-				sortedActorTable[numActorInList] = i;
+				Index[NbAffObjets] = i;
 				if(!(actorPtr->objectType & (AF_SPECIAL & AF_ANIMATED)))
 				{
 					actorPtr->objectType |= AF_BOXIFY;
 					//  FlagRefreshAux2 = 1;
 				}
-				numActorInList++;
+				NbAffObjets++;
 			}
 		}
 	}
@@ -2166,6 +2167,8 @@ void InitView()
 	int z;
 
 	SaveTimerAnim();
+
+    resetAnim2D();
 
 	NumCamera = NewNumCamera;
 
@@ -2183,7 +2186,7 @@ void InitView()
 	cameraBackgroundChanged = true;
 
     if (g_gameId >= JACK) {
-        printf("Load 2d animations\n");
+        load2dAnims(roomDataTable[currentRoom].cameraIdxTable[NewNumCamera]);
     }
 
     cameraDataStruct* pCamera = cameraDataTable[NumCamera];
@@ -2240,6 +2243,10 @@ void InitView()
 
 	FlagInitView = 0;
 	RestoreTimerAnim();
+
+    for (int i = 0; i < currentCameraZoneList[NumCamera]->hybrids.size(); i++) {
+        startAnim2d(i);
+    }
 }
 
 s16 GiveDistance2D(int x1, int z1, int x2, int z2)
@@ -2506,7 +2513,7 @@ void drawConverZones()
 
 			if(cameraDataTable[i]->viewedRoomTable[j].viewedRoomIdx == currentRoom)
 			{
-				for(k=0;k<cameraDataTable[i]->viewedRoomTable[j].numCoverZones;k++)
+				for(k=0;k<cameraDataTable[i]->viewedRoomTable[j].coverZones.size();k++)
 				{
 					drawConverZone(&cameraDataTable[i]->viewedRoomTable[j].coverZones[k]);
 				}
@@ -2542,7 +2549,7 @@ void drawMaskZones()
 
 			//if(cameraDataTable[i]->viewedRoomTable[j].viewedRoomIdx == currentDisplayedRoom)
 			{
-				for(k=0;k<pCamera->viewedRoomTable[j].numMask;k++)
+				for(k=0;k<pCamera->viewedRoomTable[j].masks.size();k++)
 				{
 					drawMaskZone(&pCamera->viewedRoomTable[j].masks[k]);
 				}
@@ -2930,7 +2937,7 @@ void drawBgOverlay(tObject* actorPtr)
 	}
 	else
 	{
-		for(int i=0;i<pcameraViewedRoomData->numMask;i++)
+		for(int i=0;i<pcameraViewedRoomData->masks.size();i++)
 		{
 			cameraMaskStruct* pMaskZones = &pcameraViewedRoomData->masks[i];
 
@@ -2957,7 +2964,7 @@ void drawBgOverlay(tObject* actorPtr)
 	SetClip(0,0,319,199);
 }
 
-void mainDrawSub2(int actorIdx) // draw flow
+void AffSpecialObjet(int actorIdx) // draw flow
 {
 	//actorStruct* actorPtr = &actorTable[actorIdx];
 
@@ -2986,11 +2993,10 @@ void getHotPoint(int hotPointIdx, sBody* bodyPtr, point3dStruct* hotPoint)
 	}
 }
 
-void mainDraw(int flagFlip)
+void AllRedraw(int flagFlip)
 {
     uiLayer.fill(0);
 
-	int i;
 	//if(flagFlip == 2)
 	{
 		if(cameraBackgroundChanged)
@@ -3002,7 +3008,7 @@ void mainDraw(int flagFlip)
 
 	if(flagFlip== 0)
 	{
-		//restoreDirtyRects();
+		//ClsAuxLog();
 	}
 	else
 	{
@@ -3013,107 +3019,116 @@ void mainDraw(int flagFlip)
 	SetClip(0,0,319,199);
 	NbLogBoxs = 0;
 
-	for(i=0;i<numActorInList;i++)
+	for(int i=0;i<NbAffObjets + NbAnim2D;i++)
 	{
-		int currentDrawActor = sortedActorTable[i];
-		tObject* actorPtr;
+		int currentDrawActor = Index[i];
+        if (currentDrawActor & 0x8000) {
+            // Anim2d
+            SetClip(0, 0, 319, 199);
+            int num = currentDrawActor & 0x7FFF;
+            AffHyb(TabAnim2d[num].pAnim->id, 0, 0, PtrAnim2D);
 
-		actorPtr = &objectTable[currentDrawActor];
+            // TODO: Clipping stuff
+            osystem_CopyBlockPhys((unsigned char*)logicalScreen, 0, 0, 320, 200);
+        }
+        else {
+            tObject* actorPtr = &objectTable[currentDrawActor];
 
-		// this is commented out to draw actors incrusted in background
-		//if(actorPtr->_flags & (AF_ANIMATED + AF_DRAWABLE + AF_SPECIAL))
-		{
-			actorPtr->objectType &= ~AF_DRAWABLE;
+            // this is commented out to draw actors backed into the background
+            //if(actorPtr->_flags & (AF_ANIMATED + AF_DRAWABLE + AF_SPECIAL))
+            {
+                actorPtr->objectType &= ~AF_DRAWABLE;
 
-			if(actorPtr->objectType & AF_SPECIAL)
-			{
-				mainDrawSub2(currentDrawActor);
-			}
-			else 
-			{
-                if (actorPtr->objectType & AF_OBJ_2D) {
-                    sHybrid* pHybrid = HQR_Get(HQ_Hybrides, actorPtr->ANIM);
-                    s16 numHybrid = pHybrid->anims[actorPtr->bodyNum].animations[actorPtr->frame].id;
-                    AffHyb(numHybrid, 0, 0, pHybrid);
-
-                    // TODO: bounding volume
+                if (actorPtr->objectType & AF_SPECIAL)
+                {
+                    AffSpecialObjet(currentDrawActor);
                 }
                 else
                 {
-                    sBody* bodyPtr = HQR_Get(HQ_Bodys, actorPtr->bodyNum);
+                    if (actorPtr->objectType & AF_OBJ_2D) {
+                        sHybrid* pHybrid = HQR_Get(HQ_Hybrides, actorPtr->ANIM);
+                        s16 numHybrid = pHybrid->animations[actorPtr->bodyNum].anims[actorPtr->frame].id;
+                        AffHyb(numHybrid, 0, 0, pHybrid);
 
-                    if (HQ_Load)
-                    {
-                        //          initAnimInBody(actorPtr->FRAME, HQR_Get(listAnim, actorPtr->ANIM), bodyPtr);
+                        // TODO: bounding volume
                     }
-
-                    AffObjet(actorPtr->worldX + actorPtr->stepX, actorPtr->worldY + actorPtr->stepY, actorPtr->worldZ + actorPtr->stepZ, actorPtr->alpha, actorPtr->beta, actorPtr->gamma, bodyPtr);
-
-
-                    if (actorPtr->animActionType != 0)
+                    else
                     {
-                        if (actorPtr->hotPointID != -1)
+                        sBody* bodyPtr = HQR_Get(HQ_Bodys, actorPtr->bodyNum);
+
+                        if (HQ_Load)
                         {
-                            getHotPoint(actorPtr->hotPointID, bodyPtr, &actorPtr->hotPoint);
+                            //          initAnimInBody(actorPtr->FRAME, HQR_Get(listAnim, actorPtr->ANIM), bodyPtr);
                         }
-                    }
 
-                    ///////////////////////////////////// DEBUG
+                        AffObjet(actorPtr->worldX + actorPtr->stepX, actorPtr->worldY + actorPtr->stepY, actorPtr->worldZ + actorPtr->stepZ, actorPtr->alpha, actorPtr->beta, actorPtr->gamma, bodyPtr);
+
+
+                        if (actorPtr->animActionType != 0)
+                        {
+                            if (actorPtr->hotPointID != -1)
+                            {
+                                getHotPoint(actorPtr->hotPointID, bodyPtr, &actorPtr->hotPoint);
+                            }
+                        }
+
+                        ///////////////////////////////////// DEBUG
 #ifdef FITD_DEBUGGER
                 //  if(debuggerVar_drawModelZv)
-                    {
-                        if (backgroundMode == backgroundModeEnum_3D)
                         {
-                            drawZv(actorPtr);
+                            if (backgroundMode == backgroundModeEnum_3D)
+                            {
+                                drawZv(actorPtr);
+                            }
+                        }
+#endif
+                        /////////////////////////////////////
+                    }
+                }
+
+                if (BBox3D1 < 0)
+                    BBox3D1 = 0;
+                if (BBox3D3 > 319)
+                    BBox3D3 = 319;
+                if (BBox3D2 < 0)
+                    BBox3D2 = 0;
+                if (BBox3D4 > 199)
+                    BBox3D4 = 199;
+
+                if (BBox3D1 <= 319 && BBox3D2 <= 199 && BBox3D3 >= 0 && BBox3D4 >= 0) // is the character on screen ?
+                {
+                    if (g_gameId == AITD1)
+                    {
+                        if (actorPtr->indexInWorld == CVars[getCVarsIdx(LIGHT_OBJECT)])
+                        {
+                            lightX = (BBox3D3 + BBox3D1) / 2;
+                            lightY = (BBox3D4 + BBox3D2) / 2;
                         }
                     }
-#endif
-                    /////////////////////////////////////
-                }
-			}
-
-			if(BBox3D1 < 0)
-				BBox3D1 = 0;
-			if(BBox3D3 > 319)
-				BBox3D3 = 319;
-			if(BBox3D2 < 0)
-				BBox3D2 = 0;
-			if(BBox3D4 > 199)
-				BBox3D4 = 199;
-
-			if(BBox3D1<=319 && BBox3D2<=199 && BBox3D3>=0 && BBox3D4>=0) // is the character on screen ?
-			{
-				if(g_gameId == AITD1)
-				{
-					if(actorPtr->indexInWorld == CVars[getCVarsIdx(LIGHT_OBJECT)])
-					{
-						lightX = (BBox3D3 + BBox3D1) / 2;
-						lightY = (BBox3D4 + BBox3D2) / 2;
-					}
-				}
 
 #ifdef FITD_DEBUGGER
-				if(backgroundMode == backgroundModeEnum_2D)
+                    if (backgroundMode == backgroundModeEnum_2D)
 #endif
-				{
-					//if(g_gameId == AITD1)
-					drawBgOverlay(actorPtr);
-				}
-				//addToRedrawBox();
-			}
-			else
-			{
-				actorPtr->screenYMax = -1;
-				actorPtr->screenXMax = -1;
-				actorPtr->screenYMin = -1;
-				actorPtr->screenXMin = -1;
-			}
-		}
+                    {
+                        //if(g_gameId == AITD1)
+                        drawBgOverlay(actorPtr);
+                    }
+                    //addToRedrawBox();
+                }
+                else
+                {
+                    actorPtr->screenYMax = -1;
+                    actorPtr->screenXMax = -1;
+                    actorPtr->screenYMin = -1;
+                    actorPtr->screenXMin = -1;
+                }
+            }
+        }
 	}
 
 #ifdef FITD_DEBUGGER
     {
-        for (i = 0; i < getNumberOfRoom(); i++)
+        for (int i = 0; i < getNumberOfRoom(); i++)
         {
             if (hardColDisplayMode != displayNone) {
                 drawHardCol(i);
@@ -3548,7 +3563,7 @@ int isInPoly(int x1, int x2, int z1, int z2, cameraViewedRoomStruct* pCameraZone
 
 	int i;
 
-	for(i=0;i<pCameraZoneDef->numCoverZones;i++)
+	for(i=0;i<pCameraZoneDef->coverZones.size();i++)
 	{
 		int j;
 		int flag = 0;

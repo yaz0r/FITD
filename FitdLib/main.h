@@ -13,7 +13,7 @@ void InitView();
 void GereSwitchCamera(void);
 void GenereActiveList();
 void GenereAffList();
-void mainDraw(int mode);
+void AllRedraw(int mode);
 int checkObjectCollisions(int actorIdx, ZVStruct* zvPtr);
 int checkLineProjectionWithActors( int actorIdx, int X, int Y, int Z, int beta, int room, int param );
 int AsmCheckListCol(ZVStruct* zvPtr, roomDataStruct* pRoomData);

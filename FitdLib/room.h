@@ -53,6 +53,10 @@ struct cameraMaskStruct
 	std::vector<rectTestStruct> rectTests;
 };
 
+struct cameraHybridStruct {
+    std::vector<rectTestStruct> rects;
+};
+
 struct cameraViewedRoomStruct
 {
   s16 viewedRoomIdx;
@@ -64,10 +68,9 @@ struct cameraViewedRoomStruct
   s16 lightY;
   s16 lightZ;
 
-  u16 numMask;
   std::vector<cameraMaskStruct> masks;
-  u16 numCoverZones;
   std::vector<cameraZoneEntryStruct> coverZones;
+  std::vector<cameraHybridStruct> hybrids;
 };
 
 struct cameraDataStruct

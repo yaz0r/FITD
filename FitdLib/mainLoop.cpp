@@ -1,4 +1,5 @@
 #include "common.h"
+#include "anim2d.h"
 
 #ifndef WIN32
 #include <sys/time.h>
@@ -255,6 +256,8 @@ void PlayWorld(int allowSystemMenu, int deltaTime)
 
         sortActorList();
 
+        handleAnim2d();
+
         //    if(FlagRefreshAux2)
         {
             //      setupCameraSub4();
@@ -264,7 +267,7 @@ void PlayWorld(int allowSystemMenu, int deltaTime)
 
         //osystem_delay(100);
 
-        mainDraw(flagRedraw);
+        AllRedraw(flagRedraw);
 
         updatePendingEvents();
     }

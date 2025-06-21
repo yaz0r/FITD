@@ -21,6 +21,9 @@ sHybrid::sHybrid(uint8_t* buffer, int size) {
             case 0: // Entities
                 readEntites(buffer + startOffset, blockSize);
                 break;
+            case 1: // Sprites
+                readSprites(buffer + startOffset, blockSize);
+                break;
             case 2: // Animation
                 readAnimations(buffer + startOffset, blockSize);
                 break;
@@ -28,6 +31,22 @@ sHybrid::sHybrid(uint8_t* buffer, int size) {
                 break;
             }
         }
+    }
+}
+
+void sHybrid::readSprites(uint8_t* buffer, int size) {
+    int count = (READ_LE_U32(buffer) - 2) / 4;
+    sprites.reserve(count);
+    for (int i = 0; i < count; i++) {
+        uint8_t* data = buffer + READ_LE_U32(buffer + i * 4) - 2;
+        uint32_t spriteSize;
+        if (i < count - 1) {
+            spriteSize = (READ_LE_U32(buffer + (i + 1) * 4) - 2) - (READ_LE_U32(buffer + i * 4) - 2);
+        }
+        else {
+            spriteSize = size - (READ_LE_U32(buffer + i * 4) - 2);
+        }
+        sprites.emplace_back().read(data, spriteSize);
     }
 }
 
@@ -62,15 +81,15 @@ void sHybrid::readEntites(uint8_t* buffer, int size) {
 
 void sHybrid::readAnimations(uint8_t* buffer, int size) {
     int count = READ_LE_U32(buffer) / 4;
-    anims.reserve(count);
+    animations.reserve(count);
     for (int i = 0; i < count; i++) {
         uint8_t* animStart = buffer + READ_LE_U32(buffer + i * 4);
-        auto& anim = anims.emplace_back();
+        auto& anim = animations.emplace_back();
         anim.flag = READ_LE_U8(animStart); animStart++;
         anim.count = READ_LE_U8(animStart); animStart++;
-        anim.animations.reserve(anim.count);
+        anim.anims.reserve(anim.count);
         for (int j = 0; j < anim.count; j++) {
-            auto& animation = anim.animations.emplace_back();
+            auto& animation = anim.anims.emplace_back();
             animation.id = READ_LE_U16(animStart); animStart += 2;
             animation.flag = READ_LE_U16(animStart); animStart += 2;
             animation.deltaX = READ_LE_S16(animStart); animStart += 2;
@@ -84,7 +103,14 @@ void AffHyb(int index, int X, int Y, sHybrid* pHybrid) {
     for (int i = 0; i < entity.parts.size(); i++) {
         auto& part = entity.parts[i];
         switch (part.id) {
-        case 6:
+        case 1: // sprite
+        {
+            int spriteNumber = part.cout + (((int)part.cin) << 8);
+            // TODO: dx/dy
+            AffSpr(spriteNumber, part.XY[0][0] + X, part.XY[0][1] + Y + 1, logicalScreen, pHybrid->sprites);
+            break;
+        }
+        case 6: // line
             for (int i = 0; i < part.XY.size()-1; i++) {
                 osystem_draw3dLine(part.XY[i][0], part.XY[i][1], 0, part.XY[i+1][0], part.XY[i+1][1], 0, part.cin);
             }

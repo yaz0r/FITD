@@ -1,6 +1,6 @@
 #include "common.h"
 
-void afficheSprite(int left, int top, int index, char* gfxData)
+void AffSpf(int left, int top, int index, char* gfxData)
 {
     char* outPtr;
     char* inPtr;
@@ -17,13 +17,13 @@ void afficheSprite(int left, int top, int index, char* gfxData)
         return;
 
     outPtr = logicalScreen + top*320 + left;
-    inPtr = gfxData + READ_LE_U16(index * 2 + gfxData); // alignement unsafe
+    inPtr = gfxData + READ_LE_U16(index * 2 + gfxData);
 
     inPtr +=4;
 
-    width = READ_LE_U16(inPtr); // alignement unsafe
+    width = READ_LE_U16(inPtr);
     inPtr+=2;
-    height = READ_LE_U16(inPtr); // alignement unsafe
+    height = READ_LE_U16(inPtr);
     inPtr+=2;
 
     offset = 320 - width;
@@ -113,7 +113,7 @@ void AffBigCadre(int x, int y, int width, int height)
     right = x + halfWidth;
     bottom = y + halfHeight;
 
-    afficheSprite(currentLeftPosition,currentTopPosition,0,PtrCadre); // draw top left corner
+    AffSpf(currentLeftPosition,currentTopPosition,0,PtrCadre); // draw top left corner
 
     while(1) // draw top bar
     {
@@ -122,10 +122,10 @@ void AffBigCadre(int x, int y, int width, int height)
         if(right - 20 <= currentLeftPosition)
             break;
 
-        afficheSprite(currentLeftPosition,currentTopPosition,4,PtrCadre);
+        AffSpf(currentLeftPosition,currentTopPosition,4,PtrCadre);
     }
 
-    afficheSprite(currentLeftPosition,currentTopPosition,1,PtrCadre); // draw top right corner
+    AffSpf(currentLeftPosition,currentTopPosition,1,PtrCadre); // draw top right corner
 
     currentLeftPosition = left;
 
@@ -136,7 +136,7 @@ void AffBigCadre(int x, int y, int width, int height)
         if(bottom - 20 <= currentTopPosition)
             break;
 
-        afficheSprite(currentLeftPosition,currentTopPosition,6,PtrCadre);
+        AffSpf(currentLeftPosition,currentTopPosition,6,PtrCadre);
     }
 
     currentLeftPosition = right - 8;
@@ -144,14 +144,14 @@ void AffBigCadre(int x, int y, int width, int height)
 
     while(bottom - 20 > currentTopPosition)
     {
-        afficheSprite(currentLeftPosition,currentTopPosition,7,PtrCadre);
+        AffSpf(currentLeftPosition,currentTopPosition,7,PtrCadre);
 
         currentTopPosition += 20;
     }
 
     currentLeftPosition = left;
 
-    afficheSprite(currentLeftPosition,currentTopPosition,2,PtrCadre); // draw bottom left corner
+    AffSpf(currentLeftPosition,currentTopPosition,2,PtrCadre); // draw bottom left corner
 
     while(1) // draw bottom bar
     {
@@ -160,12 +160,12 @@ void AffBigCadre(int x, int y, int width, int height)
         if(right-20 <= currentLeftPosition)
             break;
 
-        afficheSprite(currentLeftPosition,currentTopPosition+12,5,PtrCadre);
+        AffSpf(currentLeftPosition,currentTopPosition+12,5,PtrCadre);
     }
 
-    afficheSprite(currentLeftPosition,currentTopPosition,3,PtrCadre); // draw bottom right corner
+    AffSpf(currentLeftPosition,currentTopPosition,3,PtrCadre); // draw bottom right corner
 
-    afficheSprite(x-20,currentTopPosition+12,8,PtrCadre); // draw "in the dark"
+    AffSpf(x-20,currentTopPosition+12,8,PtrCadre); // draw "in the dark"
 
     WindowX1 = left + 8;
     WindowY1 = top + 8;

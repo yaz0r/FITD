@@ -191,8 +191,8 @@ int flagRedraw;
 
 float renderPointList[6400];
 
-int numActorInList;
-std::array<int, NUM_MAX_OBJECT> sortedActorTable;
+int NbAffObjets;
+std::array<int, NUM_MAX_OBJECT> Index;
 
 int angleCompX;
 int angleCompZ;

@@ -134,5 +134,5 @@ int sortCompareFunction(const void* param1, const void* param2)
 
 void sortActorList()
 {
-    qsort(sortedActorTable.data(), numActorInList, sizeof(int), sortCompareFunction);
+    qsort(Index.data(), NbAffObjets, sizeof(int), sortCompareFunction);
 }

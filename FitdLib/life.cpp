@@ -1006,7 +1006,7 @@ void processLife(int lifeNum, bool callFoundLife)
 
                     if ((currentProcessedActorPtr->ANIM != -1) && (currentProcessedActorPtr->bodyNum != -1)) {
                         sHybrid* pHybrid = HQR_Get(HQ_Hybrides, currentProcessedActorPtr->ANIM);
-                        currentProcessedActorPtr->numOfFrames = pHybrid->anims[currentProcessedActorPtr->bodyNum].count;
+                        currentProcessedActorPtr->numOfFrames = pHybrid->animations[currentProcessedActorPtr->bodyNum].count;
                         currentProcessedActorPtr->animInfo = -1;
                         currentProcessedActorPtr->animType = ANIM_ONCE;
                         currentProcessedActorPtr->objectType |= AF_OBJ_2D;
@@ -1033,7 +1033,7 @@ void processLife(int lifeNum, bool callFoundLife)
 
                     if ((currentProcessedActorPtr->ANIM != -1) && (currentProcessedActorPtr->bodyNum != -1)) {
                         sHybrid* pHybrid = HQR_Get(HQ_Hybrides, currentProcessedActorPtr->ANIM);
-                        currentProcessedActorPtr->numOfFrames = pHybrid->anims[currentProcessedActorPtr->bodyNum].count;
+                        currentProcessedActorPtr->numOfFrames = pHybrid->animations[currentProcessedActorPtr->bodyNum].count;
                         currentProcessedActorPtr->animInfo = -1;
                         currentProcessedActorPtr->animType = ANIM_REPEAT;
                         currentProcessedActorPtr->objectType |= AF_OBJ_2D;

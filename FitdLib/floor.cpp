@@ -280,12 +280,10 @@ void LoadEtage(int floorNumber)
 					pMaskData = backupDataPtr + g_currentFloorCameraData[i].viewedRoomTable[k].offsetToMask;
 
 					// for this camera, how many masks zone
-					pCurrentCameraViewedRoom->numMask = READ_LE_U16(pMaskData);
-					pMaskData+=2;
+					int numMasks = READ_LE_U16(pMaskData); pMaskData+=2;
+                    pCurrentCameraViewedRoom->masks.reserve(numMasks);
 
-                    pCurrentCameraViewedRoom->masks.reserve(pCurrentCameraViewedRoom->numMask);
-
-					for(int k=0; k<pCurrentCameraViewedRoom->numMask; k++)
+					for(int k=0; k< numMasks; k++)
 					{
 						cameraMaskStruct* pCurrentCameraMask = &pCurrentCameraViewedRoom->masks.emplace_back();
 
@@ -310,23 +308,17 @@ void LoadEtage(int floorNumber)
 
                 // load camera cover
                 {
-                    unsigned char* pZoneData;
-                    int numZones;
-                    int j;
-
-                    pZoneData = backupDataPtr + g_currentFloorCameraData[i].viewedRoomTable[k].offsetToCover;
+                    unsigned char* pZoneData = backupDataPtr + g_currentFloorCameraData[i].viewedRoomTable[k].offsetToCover;
 					if(pMaskData)
 					{
 						assert(pZoneData == pMaskData);
 					}
                     //pZoneData = currentCameraData;
 
-                    pCurrentCameraViewedRoom->numCoverZones = numZones =READ_LE_U16(pZoneData);
-                    pZoneData+=2;
+                    int numCoverZones = READ_LE_U16(pZoneData); pZoneData += 2;
+                    pCurrentCameraViewedRoom->coverZones.resize(numCoverZones);
 
-                    pCurrentCameraViewedRoom->coverZones.resize(numZones);
-
-                    for(j=0;j<pCurrentCameraViewedRoom->numCoverZones;j++)
+                    for(int j=0;j< numCoverZones;j++)
                     {
                         int pointIdx;
                         int numPoints;
@@ -346,6 +338,29 @@ void LoadEtage(int floorNumber)
 
                         pCurrentCameraViewedRoom->coverZones[j].pointTable[numPoints].x = pCurrentCameraViewedRoom->coverZones[j].pointTable[0].x; // copy first point to last position
                         pCurrentCameraViewedRoom->coverZones[j].pointTable[numPoints].y = pCurrentCameraViewedRoom->coverZones[j].pointTable[0].y;
+                    }
+                }
+
+                // load hybrids
+                if(pCurrentCameraViewedRoom->offsetToHybrids)
+                {
+                    unsigned char* pHybridData = backupDataPtr + pCurrentCameraViewedRoom->offsetToHybrids;
+                    int numHybrids = READ_LE_U16(pHybridData); pHybridData += 2;
+                    pCurrentCameraViewedRoom->hybrids.reserve(numHybrids);
+                    for (int i = 0; i < numHybrids; i++) {
+                        auto& hybrid = pCurrentCameraViewedRoom->hybrids.emplace_back();
+                        int numRect = READ_LE_U16(pHybridData); pHybridData += 2;
+                        hybrid.rects.reserve(numRect);
+                        for (int j = 0; j < numRect; j++) {
+                            auto& rect = hybrid.rects.emplace_back();
+                            rect.zoneX1 = READ_LE_S16(pHybridData); pHybridData += 2;
+                            rect.zoneZ1 = READ_LE_S16(pHybridData); pHybridData += 2;
+                            rect.zoneX2 = READ_LE_S16(pHybridData); pHybridData += 2;
+                            rect.zoneZ2 = READ_LE_S16(pHybridData); pHybridData += 2;
+                        }
+                    }
+                    if (pCurrentCameraViewedRoom->offsetCamOptims) {
+                        assert(backupDataPtr + pCurrentCameraViewedRoom->offsetCamOptims == pHybridData);
                     }
                 }
 
