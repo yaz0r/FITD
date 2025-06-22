@@ -99,7 +99,7 @@ char* HQ_PtrMalloc(hqrEntryStruct<char>* hqrPtr, int index)
     return(ptr->ptr);
 }
 
-sAnimation* createAnimationFromPtr(void* ptr)
+sAnimation* createAnimationFromPtr(void* ptr, int size)
 {
     u8* animPtr = (u8*)ptr;
 
@@ -108,6 +108,18 @@ sAnimation* createAnimationFromPtr(void* ptr)
     pAnimation->m_raw = ptr;
     pAnimation->m_numFrames = READ_LE_U16(animPtr); animPtr += 2;
     pAnimation->m_numGroups = READ_LE_U16(animPtr); animPtr += 2;
+
+    int fullSizeNoOptim = 2 + 2 + pAnimation->m_numFrames * (2 + 2 + 2 + 2 + pAnimation->m_numGroups * (2 + 2 + 2 + 2));
+    int fullSizeWithOptim = 2 + 2 + pAnimation->m_numFrames * (2 + 2 + 2 + 2 + pAnimation->m_numGroups * (2 + 2 + 2 + 2 + 2 + 2 + 2 + 2));
+
+    bool bUseOptim = false;
+
+    if (size == fullSizeWithOptim) {
+        bUseOptim = true;
+    }
+    else {
+        assert(size == fullSizeNoOptim);
+    }
 
     pAnimation->m_frames.resize(pAnimation->m_numFrames);
     for (int i = 0; i < pAnimation->m_numFrames; i++)
@@ -128,6 +140,12 @@ sAnimation* createAnimationFromPtr(void* ptr)
             pGroup->m_delta.x = READ_LE_S16(animPtr); animPtr += 2;
             pGroup->m_delta.y = READ_LE_S16(animPtr); animPtr += 2;
             pGroup->m_delta.z = READ_LE_S16(animPtr); animPtr += 2;
+            if (bUseOptim) {
+                pGroup->m_rotateDelta.x = READ_LE_S16(animPtr); animPtr += 2;
+                pGroup->m_rotateDelta.y = READ_LE_S16(animPtr); animPtr += 2;
+                pGroup->m_rotateDelta.z = READ_LE_S16(animPtr); animPtr += 2;
+                pGroup->m_padding = READ_LE_S16(animPtr); animPtr += 2;
+            }
         }
     }
     return pAnimation;
@@ -376,7 +394,7 @@ T* HQR_Get(hqrEntryStruct<T>* hqrPtr, int index)
             delete[] buffer;
         }
         else if constexpr (std::is_same_v<T, sAnimation>) {
-            foundEntry->ptr = createAnimationFromPtr(buffer);
+            foundEntry->ptr = createAnimationFromPtr(buffer, size);
             delete[] buffer;
         }
         else if constexpr (std::is_same_v<T, sHybrid>) {
