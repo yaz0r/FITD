@@ -344,7 +344,7 @@ int AnimNuage(int x,int y,int z,int alpha,int beta,int gamma, sBody* pBody)
                 break;
             }
 
-            InitGroupeRot(pGroup[0].m_state.m_rotateDelta.x, pGroup[0].m_state.m_rotateDelta.y, pGroup[0].m_state.m_rotateDelta.z);
+            InitGroupeRot(pGroup->m_state.m_rotateDelta.value().x, pGroup->m_state.m_rotateDelta.value().y, pGroup->m_state.m_rotateDelta.value().z);
             RotateGroupeOptimise(pGroup);
         }
     }

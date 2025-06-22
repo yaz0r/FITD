@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <format>
+#include <optional>
 #endif
 
 #ifdef __APPLE__
