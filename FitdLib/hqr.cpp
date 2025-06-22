@@ -490,6 +490,7 @@ template void configureHqrHero(hqrEntryStruct<sBody>* hqrPtr, const char* name);
 template hqrEntryStruct<sAnimation>* HQR_InitRessource(const char* name, int size, int numEntries);
 template sAnimation* HQR_Get(hqrEntryStruct<sAnimation>* hqrPtr, int index);
 template void HQR_Free(hqrEntryStruct<sAnimation>* hqrPtr);
+template void HQR_Reset(hqrEntryStruct<sAnimation>* hqrPtr);
 template void configureHqrHero(hqrEntryStruct<sAnimation>* hqrPtr, const char* name);
 
 /// hybrids
