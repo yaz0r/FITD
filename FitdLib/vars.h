@@ -504,8 +504,7 @@ struct sGroupState
     s16 m_type; // 0
     point3dStruct m_delta; // 2
     // (AITD2+) if Info_optimise
-    point3dStruct m_rotateDelta; // 8
-    s16 m_padding;
+    std::optional<point3dStruct> m_rotateDelta; // 8
     // 8 / 0x10
 };
 
