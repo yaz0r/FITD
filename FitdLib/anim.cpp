@@ -859,9 +859,9 @@ s16 SetInterAnimObjet(int frame, sAnimation* pAnim, sBody* pBody)
                     point3dStruct& previousState = pPreviousKeyframe->m_groups[i].m_rotateDelta;
                     point3dStruct& nextState = pKeyframe->m_groups[i].m_rotateDelta;
 
-                    PatchInterStep(&state.x, previousState.x, nextState.x, bp, bx);
-                    PatchInterStep(&state.y, previousState.y, nextState.y, bp, bx);
-                    PatchInterStep(&state.z, previousState.z, nextState.z, bp, bx);
+                    PatchInterAngle(&state.x, previousState.x, nextState.x, bp, bx);
+                    PatchInterAngle(&state.y, previousState.y, nextState.y, bp, bx);
+                    PatchInterAngle(&state.z, previousState.z, nextState.z, bp, bx);
                 }
             }
         }

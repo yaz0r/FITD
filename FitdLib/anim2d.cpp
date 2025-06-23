@@ -47,7 +47,7 @@ void handleAnim2d() {
             }
         }
 
-        std::memmove(&Index2[j + 2], &Index2[j + 1], (NbAffObjets + i - j - 1) * sizeof(Index2[0]));
+        memmove(&Index2[j + 2], &Index2[j + 1], (NbAffObjets + i - j - 1) * sizeof(Index2[0]));
         Index2[j + 1] = 0x8000 + i;
     }
 
