@@ -69,14 +69,14 @@ void GereFrappe(void)
             
             //drawProjectedBox(rangeZv.ZVX1,rangeZv.ZVX2,rangeZv.ZVY1,rangeZv.ZVY2,rangeZv.ZVZ1,rangeZv.ZVZ2,60,255);
 
-            collision = checkObjectCollisions(currentProcessedActorIdx,&rangeZv);
+            collision = CheckObjectCol(currentProcessedActorIdx,&rangeZv);
 
             for(i=0;i<collision;i++)
             {
                 tObject* actorPtr2;
 
                 currentProcessedActorPtr->HIT = currentProcessedActorPtr->COL[i];
-                actorPtr2 = &objectTable[currentProcessedActorPtr->COL[i]];
+                actorPtr2 = &ListObjets[currentProcessedActorPtr->COL[i]];
 
                 actorPtr2->HIT_BY = currentProcessedActorIdx;
                 actorPtr2->hitForce = currentProcessedActorPtr->hitForce;
@@ -141,8 +141,8 @@ void GereFrappe(void)
 
                 currentProcessedActorPtr->HIT = touchedActor;
 
-                objectTable[touchedActor].HIT_BY = currentProcessedActorIdx;
-                objectTable[touchedActor].hitForce = currentProcessedActorPtr->hitForce;
+                ListObjets[touchedActor].HIT_BY = currentProcessedActorIdx;
+                ListObjets[touchedActor].hitForce = currentProcessedActorPtr->hitForce;
 
                 currentProcessedActorPtr->animActionType = 0;
             }
@@ -229,7 +229,7 @@ void GereFrappe(void)
             if(actorIdx == -1)
                 return;
 
-            actorPtr = &objectTable[actorIdx];
+            actorPtr = &ListObjets[actorIdx];
 
             actorPtr->roomX = x;
             actorPtr->roomY = y;
@@ -287,8 +287,8 @@ void GereFrappe(void)
             int z3;
             int step;
 
-            copyZv(&currentProcessedActorPtr->zv, &rangeZv);
-            copyZv(&currentProcessedActorPtr->zv, &rangeZv2);
+            CopyZV(&currentProcessedActorPtr->zv, &rangeZv);
+            CopyZV(&currentProcessedActorPtr->zv, &rangeZv2);
 
             xtemp = currentProcessedActorPtr->roomX + currentProcessedActorPtr->stepX;
             ytemp = currentProcessedActorPtr->roomY + currentProcessedActorPtr->stepY;
@@ -328,7 +328,7 @@ void GereFrappe(void)
                 y2 = y1;
                 z2 = z1 + animMoveZ;
 
-                copyZv(&rangeZv2,&rangeZv);
+                CopyZV(&rangeZv2,&rangeZv);
 
                 rangeZv.ZVX1 = x2 - 200;
                 rangeZv.ZVX2 = x2 + 200;
@@ -337,7 +337,7 @@ void GereFrappe(void)
                 rangeZv.ZVZ1 = z2 - 200;
                 rangeZv.ZVZ2 = z2 + 200;
 
-                collision =  checkObjectCollisions(currentProcessedActorIdx,&rangeZv);
+                collision =  CheckObjectCol(currentProcessedActorIdx,&rangeZv);
 
                 if(collision)
                 {
@@ -352,7 +352,7 @@ void GereFrappe(void)
                     {
                         int currentActorCol = currentProcessedActorPtr->COL[i];
 
-                        if(objectTable[currentActorCol].indexInWorld == objPtr->alpha)
+                        if(ListObjets[currentActorCol].indexInWorld == objPtr->alpha)
                         {
                             collision2--;
                             objPtr->x = xtemp;
@@ -362,7 +362,7 @@ void GereFrappe(void)
                             return;
                         }
 
-                        if(objectTable[currentActorCol].indexInWorld == CVars[getCVarsIdx((enumCVars)REVERSE_OBJECT)])
+                        if(ListObjets[currentActorCol].indexInWorld == CVars[getCVarsIdx((enumCVars)REVERSE_OBJECT)])
                         {
                             objPtr->alpha = CVars[getCVarsIdx((enumCVars)REVERSE_OBJECT)];
                             currentProcessedActorPtr->beta += 0x200;
@@ -376,7 +376,7 @@ void GereFrappe(void)
                             currentProcessedActorPtr->stepX = 0;
                             currentProcessedActorPtr->stepZ = 0;
 
-                            copyZv(&rangeZv2, &rangeZv);
+                            CopyZV(&rangeZv2, &rangeZv);
 
                             rangeZv.ZVX1 += x3;
                             rangeZv.ZVX2 += x3;
@@ -385,7 +385,7 @@ void GereFrappe(void)
                             rangeZv.ZVZ1 += z3;
                             rangeZv.ZVZ2 += z3;
 
-                            copyZv(&rangeZv, &currentProcessedActorPtr->zv);
+                            CopyZV(&rangeZv, &currentProcessedActorPtr->zv);
 
                             objPtr->x = xtemp;
                             objPtr->y = ytemp;
@@ -399,7 +399,7 @@ void GereFrappe(void)
                             tObject* actorPtr;
 
                             currentProcessedActorPtr->HIT = currentActorCol;
-                            actorPtr = &objectTable[currentActorCol];
+                            actorPtr = &ListObjets[currentActorCol];
                             actorPtr->HIT_BY = currentProcessedActorIdx;
                             actorPtr->hitForce = currentProcessedActorPtr->hitForce;
                         }

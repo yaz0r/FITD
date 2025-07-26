@@ -17,23 +17,23 @@ int sortCompareFunction(const void* param1, const void* param2)
     ASSERT(*(int*)param1 >=0 && *(int*)param1 < NUM_MAX_OBJECT);
     ASSERT(*(int*)param2 >=0 && *(int*)param2 < NUM_MAX_OBJECT);
 
-    actor1Ptr = &objectTable[*(int*)param1];
-    actor2Ptr = &objectTable[*(int*)param2];
+    actor1Ptr = &ListObjets[*(int*)param1];
+    actor2Ptr = &ListObjets[*(int*)param2];
 
     actor1ZvPtr = &actor1Ptr->zv;
     actor2ZvPtr = &actor2Ptr->zv;
 
     if(actor1Ptr->room != currentRoom)
     {
-        copyZv(actor1ZvPtr, &localZv1);
-        getZvRelativePosition(&localZv1, actor1Ptr->room, currentRoom);
+        CopyZV(actor1ZvPtr, &localZv1);
+        AdjustZV(&localZv1, actor1Ptr->room, currentRoom);
         actor1ZvPtr = &localZv1;
     }
 
     if(actor2Ptr->room != currentRoom)
     {
-        copyZv(actor2ZvPtr, &localZv2);
-        getZvRelativePosition(&localZv2, actor2Ptr->room, currentRoom);
+        CopyZV(actor2ZvPtr, &localZv2);
+        AdjustZV(&localZv2, actor2Ptr->room, currentRoom);
         actor2ZvPtr = &localZv2;
     }
 

@@ -113,7 +113,7 @@ void PlayWorld(int allowSystemMenu, int deltaTime)
 
             for(currentProcessedActorIdx = 0; currentProcessedActorIdx < NUM_MAX_OBJECT; currentProcessedActorIdx++)
             {
-                currentProcessedActorPtr = &objectTable[currentProcessedActorIdx];
+                currentProcessedActorPtr = &ListObjets[currentProcessedActorIdx];
                 if(currentProcessedActorPtr->indexInWorld >= 0)
                 {
                     currentProcessedActorPtr->COL_BY = -1;
@@ -126,7 +126,7 @@ void PlayWorld(int allowSystemMenu, int deltaTime)
 
             for(currentProcessedActorIdx = 0; currentProcessedActorIdx < NUM_MAX_OBJECT; currentProcessedActorIdx++)
             {
-                currentProcessedActorPtr = &objectTable[currentProcessedActorIdx];
+                currentProcessedActorPtr = &ListObjets[currentProcessedActorIdx];
                 if(currentProcessedActorPtr->indexInWorld >= 0)
                 {
                     int flag = currentProcessedActorPtr->objectType;
@@ -150,7 +150,7 @@ void PlayWorld(int allowSystemMenu, int deltaTime)
             
             for(currentProcessedActorIdx = 0; currentProcessedActorIdx < NUM_MAX_OBJECT; currentProcessedActorIdx++)
             {
-                currentProcessedActorPtr = &objectTable[currentProcessedActorIdx];
+                currentProcessedActorPtr = &ListObjets[currentProcessedActorIdx];
                 if(currentProcessedActorPtr->indexInWorld >= 0)
                 {
                     if(currentProcessedActorPtr->life != -1)
@@ -209,7 +209,7 @@ void PlayWorld(int allowSystemMenu, int deltaTime)
 
             for (currentProcessedActorIdx = 0; currentProcessedActorIdx < NUM_MAX_OBJECT; currentProcessedActorIdx++)
             {
-                currentProcessedActorPtr = &objectTable[currentProcessedActorIdx];
+                currentProcessedActorPtr = &ListObjets[currentProcessedActorIdx];
                 if (currentProcessedActorPtr->indexInWorld >= 0)
                 {
                     if (currentProcessedActorPtr->life != -1)

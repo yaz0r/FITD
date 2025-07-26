@@ -242,7 +242,7 @@ void processTrack(void)
             }
             else
             {
-                tObject* followedActorPtr = &objectTable[followedActorIdx];
+                tObject* followedActorPtr = &ListObjets[followedActorIdx];
 
                 int targetRoomNumber = followedActorPtr->room;
                 int targetX = followedActorPtr->roomX;

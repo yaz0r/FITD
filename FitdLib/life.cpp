@@ -87,7 +87,7 @@ int InitSpecialObjet(int mode, int X, int Y, int Z, int stage, int room, int alp
     s16 localSpecialTable[4];
     memcpy(localSpecialTable, specialTable, 8);
 
-    tObject* currentActorPtr = objectTable.data();
+    tObject* currentActorPtr = ListObjets.data();
 
     int i;
     for (i = 0; i < NUM_MAX_OBJECT; i++) // count the number of active actors
@@ -131,7 +131,7 @@ int InitSpecialObjet(int mode, int X, int Y, int Z, int stage, int room, int alp
     if (zvPtr)
     {
         actorZvPtr = &currentActorPtr->zv;
-        copyZv(zvPtr, actorZvPtr);
+        CopyZV(zvPtr, actorZvPtr);
     }
 
     switch (mode)
@@ -226,7 +226,7 @@ void getHardClip()
         zvCol.ZVZ1 = READ_LE_S16(etageData + 0x08);
         zvCol.ZVZ2 = READ_LE_S16(etageData + 0x0A);
 
-        if (checkZvCollision(zvPtr, &zvCol))
+        if (CubeIntersect(zvPtr, &zvCol))
         {
             hardClip.ZVX1 = zvCol.ZVX1;
             hardClip.ZVX2 = zvCol.ZVX2;
@@ -502,7 +502,7 @@ void processLife(int lifeNum, bool callFoundLife)
 
                 if (currentProcessedActorIdx != -1)
                 {
-                    currentProcessedActorPtr = &objectTable[currentProcessedActorIdx];
+                    currentProcessedActorPtr = &ListObjets[currentProcessedActorIdx];
 
                     goto processOpcode;
                 }
@@ -1284,9 +1284,9 @@ void processLife(int lifeNum, bool callFoundLife)
                     currentProcessedActorPtr->gamma = ListWorldObjets[object].gamma;
                 }
                 else {
-                    currentProcessedActorPtr->alpha = objectTable[localObjectIndex].alpha;
-                    currentProcessedActorPtr->beta = objectTable[localObjectIndex].beta;
-                    currentProcessedActorPtr->gamma = objectTable[localObjectIndex].gamma;
+                    currentProcessedActorPtr->alpha = ListObjets[localObjectIndex].alpha;
+                    currentProcessedActorPtr->beta = ListObjets[localObjectIndex].beta;
+                    currentProcessedActorPtr->gamma = ListObjets[localObjectIndex].gamma;
                 }
                 break;
             }
@@ -1408,7 +1408,7 @@ void processLife(int lifeNum, bool callFoundLife)
                 }
                 case 1: // flow
                 {
-                    currentProcessedActorPtr = &objectTable[currentProcessedActorPtr->HIT_BY];
+                    currentProcessedActorPtr = &ListObjets[currentProcessedActorPtr->HIT_BY];
 
                     InitSpecialObjet(1,
                         currentProcessedActorPtr->roomX + currentProcessedActorPtr->stepX + currentProcessedActorPtr->hotPoint.x,
@@ -1458,17 +1458,17 @@ void processLife(int lifeNum, bool callFoundLife)
 
                 if (g_gameId == AITD1)
                 {
-                    foundObject(lifeTempVar1, 1);
+                    FoundObjet(lifeTempVar1, 1);
                 }
                 else
                 {
                     if (callFoundLife)
                     {
-                        foundObject(lifeTempVar1, 2);
+                        FoundObjet(lifeTempVar1, 2);
                     }
                     else
                     {
-                        foundObject(lifeTempVar1, 1);
+                        FoundObjet(lifeTempVar1, 1);
                     }
                 }
 
@@ -1947,7 +1947,7 @@ void processLife(int lifeNum, bool callFoundLife)
                             currentWorldTarget = lifeTempVar1;
                             currentCameraTargetActor = lifeTempVar2;
 
-                            lifeTempVar3 = objectTable[currentCameraTargetActor].room;
+                            lifeTempVar3 = ListObjets[currentCameraTargetActor].room;
 
                             if (lifeTempVar3 != currentRoom)
                             {
@@ -1959,19 +1959,19 @@ void processLife(int lifeNum, bool callFoundLife)
                         {
                             // security case, the target actor may be still be in list while already changed of stage
                             // TODO: check if AITD1 could use the same code (quite probable as it's only security)
-                            if (objectTable[lifeTempVar2].stage != g_currentFloor)
+                            if (ListObjets[lifeTempVar2].stage != g_currentFloor)
                             {
                                 currentWorldTarget = lifeTempVar1;
                                 FlagChangeEtage = 1;
-                                NewNumEtage = objectTable[lifeTempVar2].stage;
-                                NewNumSalle = objectTable[lifeTempVar2].room;
+                                NewNumEtage = ListObjets[lifeTempVar2].stage;
+                                NewNumSalle = ListObjets[lifeTempVar2].room;
                             }
                             else
                             {
                                 currentWorldTarget = lifeTempVar1;
                                 currentCameraTargetActor = lifeTempVar2;
 
-                                lifeTempVar3 = objectTable[currentCameraTargetActor].room;
+                                lifeTempVar3 = ListObjets[currentCameraTargetActor].room;
 
                                 if (lifeTempVar3 != currentRoom)
                                 {

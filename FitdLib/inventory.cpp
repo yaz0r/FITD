@@ -493,7 +493,7 @@ void DrawFoundWindow(int menuState, int objectName, int zoomFactor)
     }
 }
 
-void foundObject(int objIdx, int param)
+void FoundObjet(int objIdx, int param)
 {
     tWorldObject* objPtr;
 

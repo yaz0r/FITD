@@ -71,7 +71,7 @@ char* screenSm3;
 char* screenSm4;
 char* screenSm5;
 
-std::array<tObject, NUM_MAX_OBJECT> objectTable;
+std::array<tObject, NUM_MAX_OBJECT> ListObjets;
 
 s16 currentWorldTarget;
 

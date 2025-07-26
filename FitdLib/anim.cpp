@@ -166,11 +166,11 @@ int manageFall(int actorIdx, ZVStruct* zvPtr)
 {
 	int fallResult = 0;
 	int i;
-	int room = objectTable[actorIdx].room;
+	int room = ListObjets[actorIdx].room;
 
 	for(i=0;i<NUM_MAX_OBJECT;i++)
 	{
-		tObject* currentTestedActorPtr = &objectTable[i];
+		tObject* currentTestedActorPtr = &ListObjets[i];
 
 		if(currentTestedActorPtr->indexInWorld != -1 && i != actorIdx)
 		{
@@ -179,20 +179,20 @@ int manageFall(int actorIdx, ZVStruct* zvPtr)
 			if(currentTestedActorPtr->room != room)
 			{
 				ZVStruct localZv;
-				copyZv(zvPtr, &localZv);
-				getZvRelativePosition(&localZv, room, currentTestedActorPtr->room);
+				CopyZV(zvPtr, &localZv);
+				AdjustZV(&localZv, room, currentTestedActorPtr->room);
 
-				if(checkZvCollision(&localZv, testedZv))
+				if(CubeIntersect(&localZv, testedZv))
 				{
-					objectTable[i].COL_BY = actorIdx;
+					ListObjets[i].COL_BY = actorIdx;
 					fallResult++;
 				}
 			}
 			else
 			{
-				if(checkZvCollision(zvPtr, testedZv))
+				if(CubeIntersect(zvPtr, testedZv))
 				{
-					objectTable[i].COL_BY = actorIdx;
+					ListObjets[i].COL_BY = actorIdx;
 					fallResult++;
 				}
 			}
@@ -285,11 +285,11 @@ void GereAnim(void)
 		currentProcessedActorPtr->END_FRAME = 0;
 		if(currentProcessedActorPtr->speed == 0)
 		{
-			int numObjectCollisions = checkObjectCollisions(currentProcessedActorIdx, &currentProcessedActorPtr->zv);
+			int numObjectCollisions = CheckObjectCol(currentProcessedActorIdx, &currentProcessedActorPtr->zv);
 
 			for(int i = 0; i<numObjectCollisions; i++)
 			{
-				objectTable[currentProcessedActorPtr->COL[i]].COL_BY = currentProcessedActorIdx; // collision with current actor
+				ListObjets[currentProcessedActorPtr->COL[i]].COL_BY = currentProcessedActorIdx; // collision with current actor
 			}
 
 			oldStepY = 0;
@@ -356,7 +356,7 @@ void GereAnim(void)
 	if(stepX || stepY || stepZ) // start of movement management
 	{
 		zvPtr = &currentProcessedActorPtr->zv;
-		copyZv(&currentProcessedActorPtr->zv,&zvLocal);
+		CopyZV(&currentProcessedActorPtr->zv,&zvLocal);
 
 		zvLocal.ZVX1 += stepX;
 		zvLocal.ZVX2 += stepX;
@@ -367,6 +367,7 @@ void GereAnim(void)
 		zvLocal.ZVZ1 += stepZ;
 		zvLocal.ZVZ2 += stepZ;
 
+        // check for wall collisions
 		if(currentProcessedActorPtr->dynFlags & 1) // hard collision enabled for actor ?
 		{
 			int numCol = AsmCheckListCol(&zvLocal, &roomDataTable[currentProcessedActorPtr->room]);
@@ -380,38 +381,42 @@ void GereAnim(void)
 					currentProcessedActorPtr->HARD_COL = (short)pHardCol->parameter;
 				}
 
+                // climbable wall
 				if(pHardCol->type == 3)
 				{
 					currentProcessedActorPtr->HARD_COL = 255;
 				}
 
-				if(g_gameId == AITD1 || (g_gameId>=JACK && (pHardCol->type != 10 || currentProcessedActorIdx != currentCameraTargetActor)))
+                if (g_gameId >= JACK) {
+                    // monster collision for floor changes
+                    if ((pHardCol->type == 10) && (currentProcessedActorIdx == currentCameraTargetActor))
+                        continue;
+                }
+
+				if(stepX || stepZ) // move on the X or Z axis ? update to avoid entering the hard col
 				{
-					if(stepX || stepZ) // move on the X or Z axis ? update to avoid entering the hard col
-					{
-						//ZVStruct tempZv;
+					//ZVStruct tempZv;
 
-						hardColStepX = stepX;
-						hardColStepZ = stepZ;
+					hardColStepX = stepX;
+					hardColStepZ = stepZ;
 
-						handleCollision(zvPtr, &zvLocal, &pHardCol->zv);
+					GereCollision(zvPtr, &zvLocal, &pHardCol->zv);
 
-						currentProcessedActorPtr->animNegX += hardColStepX - stepX;
-						currentProcessedActorPtr->animNegZ += hardColStepZ - stepZ;
+					currentProcessedActorPtr->animNegX += hardColStepX - stepX;
+					currentProcessedActorPtr->animNegZ += hardColStepZ - stepZ;
 
-						zvLocal.ZVX1 +=  hardColStepX - stepX;
-						zvLocal.ZVX2 +=  hardColStepX - stepX;
-						zvLocal.ZVZ1 +=  hardColStepZ - stepZ;
-						zvLocal.ZVZ2 +=  hardColStepZ - stepZ;
+					zvLocal.ZVX1 +=  hardColStepX - stepX;
+					zvLocal.ZVX2 +=  hardColStepX - stepX;
+					zvLocal.ZVZ1 +=  hardColStepZ - stepZ;
+					zvLocal.ZVZ2 +=  hardColStepZ - stepZ;
 
-						stepX = hardColStepX;
-						stepZ = hardColStepZ;
-					}
+					stepX = hardColStepX;
+					stepZ = hardColStepZ;
+				}
 
-					if(stepY)
-					{
-						//assert(0); //not implemented
-					}
+				if(stepY)
+				{
+					//assert(0); //not implemented
 				}
 			}
 		}
@@ -427,13 +432,14 @@ void GereAnim(void)
 			}
 		}
 
-		int numCol = checkObjectCollisions(currentProcessedActorIdx,&zvLocal); // get the number of actor/actor collision
-
+        // check for object collisions
+        // TODO: AITD2 checks flag collision here
+		int numCol = CheckObjectCol(currentProcessedActorIdx,&zvLocal); // get the number of actor/actor collision
 		for(int j=0;j<numCol;j++) // process the actor/actor collision
 		{
 			int collisionIndex = currentProcessedActorPtr->COL[j];
 
-			tObject* actorTouchedPtr = &objectTable[collisionIndex];
+			tObject* actorTouchedPtr = &ListObjets[collisionIndex];
 
 			actorTouchedPtr->COL_BY = currentProcessedActorIdx;
 
@@ -443,10 +449,10 @@ void GereAnim(void)
 			{
 				if(currentProcessedActorPtr->trackMode == 1 /*&& ((gameId == AITD1 && defines.field_1E == 0) || (gameId >= JACK && defines.field_6 == 0))*/) // TODO: check if character isn't dead...
 				{
-					foundObject(actorTouchedPtr->indexInWorld, 0);
+					FoundObjet(actorTouchedPtr->indexInWorld, 0);
 				}
+                continue;
 			}
-			else
 			{
 				if(actorTouchedPtr->objectType & AF_MOVABLE) // can be pushed ?
 				{
@@ -454,7 +460,7 @@ void GereAnim(void)
 
 					bool isPushPossible = true;
 
-					copyZv(touchedZv, &localZv2);
+					CopyZV(touchedZv, &localZv2);
 
 					localZv2.ZVX1 += stepX;
 					localZv2.ZVX2 += stepX;
@@ -462,17 +468,16 @@ void GereAnim(void)
 					localZv2.ZVZ1 += stepZ;
 					localZv2.ZVZ2 += stepZ;
 
-					if(!AsmCheckListCol(&localZv2, &roomDataTable[currentProcessedActorPtr->room]))
+                    // check pushed object against walls
+					if(AsmCheckListCol(&localZv2, &roomDataTable[currentProcessedActorPtr->room]))
 					{
-						if(checkObjectCollisions(collisionIndex, &localZv2))
-						{
-							isPushPossible = false;
-						}
+                        isPushPossible = false;
 					}
-					else
-					{
-						isPushPossible = false;
-					}
+                    else if (CheckObjectCol(collisionIndex, &localZv2))
+                    {
+                        // if no wall preventing to move object, check is there is a another object in the way
+                        isPushPossible = false;
+                    }
 
 					if(!isPushPossible)
 					{
@@ -482,14 +487,14 @@ void GereAnim(void)
 							{
 								ZVStruct localZv3;
 
-								copyZv(touchedZv, &localZv3);
+								CopyZV(touchedZv, &localZv3);
 
-								getZvRelativePosition(&localZv3, actorTouchedPtr->room, currentProcessedActorPtr->room);
+								AdjustZV(&localZv3, actorTouchedPtr->room, currentProcessedActorPtr->room);
 
 								hardColStepX = stepX;
 								hardColStepZ = stepZ;
 
-								handleCollision(zvPtr, &zvLocal, &localZv3);
+								GereCollision(zvPtr, &zvLocal, &localZv3);
 
 								stepX = hardColStepX;
 								stepZ = hardColStepZ;
@@ -499,7 +504,7 @@ void GereAnim(void)
 								hardColStepX = stepX;
 								hardColStepZ = stepZ;
 
-								handleCollision(zvPtr, &zvLocal, touchedZv); // manage as hard collision
+								GereCollision(zvPtr, &zvLocal, touchedZv); // manage as hard collision
 
 								stepX = hardColStepX;
 								stepZ = hardColStepZ;
@@ -521,7 +526,7 @@ void GereAnim(void)
 						actorTouchedPtr->roomX += stepX;
 						actorTouchedPtr->roomZ += stepZ;
 
-						copyZv(&localZv2,touchedZv);
+						CopyZV(&localZv2,touchedZv);
 					}
 				}
 				else
@@ -536,7 +541,7 @@ void GereAnim(void)
 								hardColStepX = stepX;
 								hardColStepZ = stepZ;
 
-								handleCollision(zvPtr, &zvLocal, touchedZv); // manage as hard collision
+								GereCollision(zvPtr, &zvLocal, touchedZv); // manage as hard collision
 
 								stepX = hardColStepX;
 								stepZ = hardColStepZ;
@@ -545,14 +550,14 @@ void GereAnim(void)
 							{
 								ZVStruct localZv3;
 
-								copyZv(touchedZv, &localZv3);
+								CopyZV(touchedZv, &localZv3);
 
-								getZvRelativePosition(&localZv3, actorTouchedPtr->room, currentProcessedActorPtr->room);
+								AdjustZV(&localZv3, actorTouchedPtr->room, currentProcessedActorPtr->room);
 
 								hardColStepX = stepX;
 								hardColStepZ = stepZ;
 
-								handleCollision(zvPtr, &zvLocal, &localZv3); // manage as hard collision
+								GereCollision(zvPtr, &zvLocal, &localZv3); // manage as hard collision
 
 								stepX = hardColStepX;
 								stepZ = hardColStepZ;
@@ -589,7 +594,7 @@ void GereAnim(void)
 		{
 			zvPtr = &currentProcessedActorPtr->zv;
 
-			copyZv(zvPtr, &zvLocal);
+			CopyZV(zvPtr, &zvLocal);
 
 			zvLocal.ZVY2 += 100;
 
@@ -617,7 +622,7 @@ void GereAnim(void)
 
 		if(collisionIndex != -1)
 		{
-			tObject* actorTouchedPtr = &objectTable[collisionIndex];
+			tObject* actorTouchedPtr = &ListObjets[collisionIndex];
 
 			if(actorTouchedPtr->objectType & AF_MOVABLE)
 			{
