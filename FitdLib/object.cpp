@@ -4,7 +4,7 @@ int InitObjet(int body, int typeZv, int hardZvIdx, s16 objectType, int x, int y,
 {
     int i;
     int j;
-    tObject* actorPtr = objectTable.data();    
+    tObject* actorPtr = ListObjets.data();    
     ZVStruct* zvPtr;
 
     for(i=0;i<NUM_MAX_OBJECT;i++)
@@ -200,7 +200,7 @@ int InitObjet(int body, int typeZv, int hardZvIdx, s16 objectType, int x, int y,
             {
 				if((roomDataTable[room].hardColTable[hardColIdx].type == 9) && (roomDataTable[room].hardColTable[hardColIdx].parameter == hardZvIdx))
 				{
-					copyZv(&roomDataTable[room].hardColTable[hardColIdx].zv, zvPtr);
+					CopyZV(&roomDataTable[room].hardColTable[hardColIdx].zv, zvPtr);
 
                     x = 0;
                     y = 0;

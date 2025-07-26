@@ -278,228 +278,228 @@ int loadSave(int saveNumber)
 
     for(i=0;i<NUM_MAX_OBJECT;i++)
     {
-        ASSERT(sizeof(objectTable[i].indexInWorld) == 2);
-        fread(&objectTable[i].indexInWorld,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].indexInWorld) == 2);
+        fread(&ListObjets[i].indexInWorld,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].bodyNum) == 2);
-        fread(&objectTable[i].bodyNum,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].bodyNum) == 2);
+        fread(&ListObjets[i].bodyNum,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].objectType) == 2);
-        fread(&objectTable[i].objectType,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].objectType) == 2);
+        fread(&ListObjets[i].objectType,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].dynFlags) == 2);
-        fread(&objectTable[i].dynFlags,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].dynFlags) == 2);
+        fread(&ListObjets[i].dynFlags,2,1,fHandle);
 
         //    ASSERT(sizeof(actorTable[i].zv.ZVX1) == 2);
-        fread(&objectTable[i].zv.ZVX1,2,1,fHandle);
-        objectTable[i].zv.ZVX1 = (s16)objectTable[i].zv.ZVX1;
+        fread(&ListObjets[i].zv.ZVX1,2,1,fHandle);
+        ListObjets[i].zv.ZVX1 = (s16)ListObjets[i].zv.ZVX1;
 
         //    ASSERT(sizeof(actorTable[i].zv.ZVX2) == 2);
-        fread(&objectTable[i].zv.ZVX2,2,1,fHandle);
-        objectTable[i].zv.ZVX2 = (s16)objectTable[i].zv.ZVX2;
+        fread(&ListObjets[i].zv.ZVX2,2,1,fHandle);
+        ListObjets[i].zv.ZVX2 = (s16)ListObjets[i].zv.ZVX2;
 
         //    ASSERT(sizeof(actorTable[i].zv.ZVY1) == 2);
-        fread(&objectTable[i].zv.ZVY1,2,1,fHandle);
-        objectTable[i].zv.ZVY1 = (s16)objectTable[i].zv.ZVY1;
+        fread(&ListObjets[i].zv.ZVY1,2,1,fHandle);
+        ListObjets[i].zv.ZVY1 = (s16)ListObjets[i].zv.ZVY1;
 
         //    ASSERT(sizeof(actorTable[i].zv.ZVY2) == 2);
-        fread(&objectTable[i].zv.ZVY2,2,1,fHandle);
-        objectTable[i].zv.ZVY2 = (s16)objectTable[i].zv.ZVY2;
+        fread(&ListObjets[i].zv.ZVY2,2,1,fHandle);
+        ListObjets[i].zv.ZVY2 = (s16)ListObjets[i].zv.ZVY2;
 
         //    ASSERT(sizeof(actorTable[i].zv.ZVZ1) == 2);
-        fread(&objectTable[i].zv.ZVZ1,2,1,fHandle);
-        objectTable[i].zv.ZVZ1 = (s16)objectTable[i].zv.ZVZ1;
+        fread(&ListObjets[i].zv.ZVZ1,2,1,fHandle);
+        ListObjets[i].zv.ZVZ1 = (s16)ListObjets[i].zv.ZVZ1;
 
         //    ASSERT(sizeof(actorTable[i].zv.ZVZ2) == 2);
-        fread(&objectTable[i].zv.ZVZ2,2,1,fHandle);
-        objectTable[i].zv.ZVZ2 = (s16)objectTable[i].zv.ZVZ2;
+        fread(&ListObjets[i].zv.ZVZ2,2,1,fHandle);
+        ListObjets[i].zv.ZVZ2 = (s16)ListObjets[i].zv.ZVZ2;
 
-        ASSERT(sizeof(objectTable[i].screenXMin) == 2);
-        fread(&objectTable[i].screenXMin,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].screenXMin) == 2);
+        fread(&ListObjets[i].screenXMin,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].screenYMin) == 2);
-        fread(&objectTable[i].screenYMin,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].screenYMin) == 2);
+        fread(&ListObjets[i].screenYMin,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].screenXMax) == 2);
-        fread(&objectTable[i].screenXMax,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].screenXMax) == 2);
+        fread(&ListObjets[i].screenXMax,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].screenYMax) == 2);
-        fread(&objectTable[i].screenYMax,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].screenYMax) == 2);
+        fread(&ListObjets[i].screenYMax,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].roomX) == 2);
-        fread(&objectTable[i].roomX,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].roomX) == 2);
+        fread(&ListObjets[i].roomX,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].roomY) == 2);
-        fread(&objectTable[i].roomY,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].roomY) == 2);
+        fread(&ListObjets[i].roomY,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].roomZ) == 2);
-        fread(&objectTable[i].roomZ,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].roomZ) == 2);
+        fread(&ListObjets[i].roomZ,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].worldX) == 2);
-        fread(&objectTable[i].worldX,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].worldX) == 2);
+        fread(&ListObjets[i].worldX,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].worldY) == 2);
-        fread(&objectTable[i].worldY,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].worldY) == 2);
+        fread(&ListObjets[i].worldY,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].worldZ) == 2);
-        fread(&objectTable[i].worldZ,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].worldZ) == 2);
+        fread(&ListObjets[i].worldZ,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].alpha) == 2);
-        fread(&objectTable[i].alpha,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].alpha) == 2);
+        fread(&ListObjets[i].alpha,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].beta) == 2);
-        fread(&objectTable[i].beta,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].beta) == 2);
+        fread(&ListObjets[i].beta,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].gamma) == 2);
-        fread(&objectTable[i].gamma,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].gamma) == 2);
+        fread(&ListObjets[i].gamma,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].room) == 2);
-        fread(&objectTable[i].room,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].room) == 2);
+        fread(&ListObjets[i].room,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].stage) == 2);
-        fread(&objectTable[i].stage,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].stage) == 2);
+        fread(&ListObjets[i].stage,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].lifeMode) == 2);
-        fread(&objectTable[i].lifeMode,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].lifeMode) == 2);
+        fread(&ListObjets[i].lifeMode,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].life) == 2);
-        fread(&objectTable[i].life,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].life) == 2);
+        fread(&ListObjets[i].life,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].CHRONO) == 4);
-        fread(&objectTable[i].CHRONO,4,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].CHRONO) == 4);
+        fread(&ListObjets[i].CHRONO,4,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].ROOM_CHRONO) == 4);
-        fread(&objectTable[i].ROOM_CHRONO,4,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].ROOM_CHRONO) == 4);
+        fread(&ListObjets[i].ROOM_CHRONO,4,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].ANIM) == 2);
-        fread(&objectTable[i].ANIM,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].ANIM) == 2);
+        fread(&ListObjets[i].ANIM,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].animType) == 2);
-        fread(&objectTable[i].animType,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].animType) == 2);
+        fread(&ListObjets[i].animType,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].animInfo) == 2);
-        fread(&objectTable[i].animInfo,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].animInfo) == 2);
+        fread(&ListObjets[i].animInfo,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].newAnim) == 2);
-        fread(&objectTable[i].newAnim,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].newAnim) == 2);
+        fread(&ListObjets[i].newAnim,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].newAnimType) == 2);
-        fread(&objectTable[i].newAnimType,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].newAnimType) == 2);
+        fread(&ListObjets[i].newAnimType,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].newAnimInfo) == 2);
-        fread(&objectTable[i].newAnimInfo,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].newAnimInfo) == 2);
+        fread(&ListObjets[i].newAnimInfo,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].frame) == 2);
-        fread(&objectTable[i].frame,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].frame) == 2);
+        fread(&ListObjets[i].frame,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].numOfFrames) == 2);
-        fread(&objectTable[i].numOfFrames,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].numOfFrames) == 2);
+        fread(&ListObjets[i].numOfFrames,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].END_FRAME) == 2);
-        fread(&objectTable[i].END_FRAME,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].END_FRAME) == 2);
+        fread(&ListObjets[i].END_FRAME,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].flagEndAnim) == 2);
-        fread(&objectTable[i].flagEndAnim,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].flagEndAnim) == 2);
+        fread(&ListObjets[i].flagEndAnim,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].trackMode) == 2);
-        fread(&objectTable[i].trackMode,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].trackMode) == 2);
+        fread(&ListObjets[i].trackMode,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].trackNumber) == 2);
-        fread(&objectTable[i].trackNumber,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].trackNumber) == 2);
+        fread(&ListObjets[i].trackNumber,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].MARK) == 2);
-        fread(&objectTable[i].MARK,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].MARK) == 2);
+        fread(&ListObjets[i].MARK,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].positionInTrack) == 2);
-        fread(&objectTable[i].positionInTrack,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].positionInTrack) == 2);
+        fread(&ListObjets[i].positionInTrack,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].stepX) == 2);
-        fread(&objectTable[i].stepX,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].stepX) == 2);
+        fread(&ListObjets[i].stepX,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].stepY) == 2);
-        fread(&objectTable[i].stepY,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].stepY) == 2);
+        fread(&ListObjets[i].stepY,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].stepZ) == 2); // 45
-        fread(&objectTable[i].stepZ,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].stepZ) == 2); // 45
+        fread(&ListObjets[i].stepZ,2,1,fHandle);
 
-        loadInterpolatedValue(&objectTable[i].YHandler,fHandle);
+        loadInterpolatedValue(&ListObjets[i].YHandler,fHandle);
 
-        ASSERT(sizeof(objectTable[i].falling) == 2);
-        fread(&objectTable[i].falling,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].falling) == 2);
+        fread(&ListObjets[i].falling,2,1,fHandle);
 
-        loadInterpolatedValue(&objectTable[i].rotate,fHandle);
+        loadInterpolatedValue(&ListObjets[i].rotate,fHandle);
 
-        ASSERT(sizeof(objectTable[i].direction) == 2); 
-        fread(&objectTable[i].direction,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].direction) == 2); 
+        fread(&ListObjets[i].direction,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].speed) == 2);
-        fread(&objectTable[i].speed,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].speed) == 2);
+        fread(&ListObjets[i].speed,2,1,fHandle);
 
-        loadInterpolatedValue(&objectTable[i].speedChange,fHandle);
+        loadInterpolatedValue(&ListObjets[i].speedChange,fHandle);
 
-        ASSERT(sizeof(objectTable[i].COL[0]) == 2);
-        fread(&objectTable[i].COL[0],2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].COL[0]) == 2);
+        fread(&ListObjets[i].COL[0],2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].COL[1]) == 2);
-        fread(&objectTable[i].COL[1],2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].COL[1]) == 2);
+        fread(&ListObjets[i].COL[1],2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].COL[2]) == 2);
-        fread(&objectTable[i].COL[2],2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].COL[2]) == 2);
+        fread(&ListObjets[i].COL[2],2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].COL_BY) == 2);
-        fread(&objectTable[i].COL_BY,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].COL_BY) == 2);
+        fread(&ListObjets[i].COL_BY,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].HARD_DEC) == 2);
-        fread(&objectTable[i].HARD_DEC,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].HARD_DEC) == 2);
+        fread(&ListObjets[i].HARD_DEC,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].HARD_COL) == 2);
-        fread(&objectTable[i].HARD_COL,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].HARD_COL) == 2);
+        fread(&ListObjets[i].HARD_COL,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].HIT) == 2);
-        fread(&objectTable[i].HIT,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].HIT) == 2);
+        fread(&ListObjets[i].HIT,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].HIT_BY) == 2);
-        fread(&objectTable[i].HIT_BY,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].HIT_BY) == 2);
+        fread(&ListObjets[i].HIT_BY,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].animActionType) == 2);
-        fread(&objectTable[i].animActionType,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].animActionType) == 2);
+        fread(&ListObjets[i].animActionType,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].animActionANIM) == 2);
-        fread(&objectTable[i].animActionANIM,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].animActionANIM) == 2);
+        fread(&ListObjets[i].animActionANIM,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].animActionFRAME) == 2);
-        fread(&objectTable[i].animActionFRAME,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].animActionFRAME) == 2);
+        fread(&ListObjets[i].animActionFRAME,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].animActionParam) == 2);
-        fread(&objectTable[i].animActionParam,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].animActionParam) == 2);
+        fread(&ListObjets[i].animActionParam,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].hitForce) == 2);
-        fread(&objectTable[i].hitForce,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].hitForce) == 2);
+        fread(&ListObjets[i].hitForce,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].hotPointID) == 2);
-        fread(&objectTable[i].hotPointID,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].hotPointID) == 2);
+        fread(&ListObjets[i].hotPointID,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].hotPoint.x) == 2);
-        fread(&objectTable[i].hotPoint.x,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].hotPoint.x) == 2);
+        fread(&ListObjets[i].hotPoint.x,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].hotPoint.y) == 2);
-        fread(&objectTable[i].hotPoint.x,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].hotPoint.y) == 2);
+        fread(&ListObjets[i].hotPoint.x,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].hotPoint.z) == 2);
-        fread(&objectTable[i].hotPoint.x,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].hotPoint.z) == 2);
+        fread(&ListObjets[i].hotPoint.x,2,1,fHandle);
     }
     fclose(fHandle);
 
     for(i=0;i<NUM_MAX_OBJECT;i++)
     {
-        if(objectTable[i].indexInWorld != -1 && objectTable[i].bodyNum != -1)
+        if(ListObjets[i].indexInWorld != -1 && ListObjets[i].bodyNum != -1)
         {
-            sBody* bodyPtr = HQR_Get(HQ_Bodys,objectTable[i].bodyNum);
+            sBody* bodyPtr = HQR_Get(HQ_Bodys,ListObjets[i].bodyNum);
 
-            if(objectTable[i].ANIM != -1)
+            if(ListObjets[i].ANIM != -1)
             {
-                sAnimation* animPtr = HQR_Get(HQ_Anims,objectTable[i].ANIM);
-                SetAnimObjet(objectTable[i].frame,animPtr,bodyPtr);
+                sAnimation* animPtr = HQR_Get(HQ_Anims,ListObjets[i].ANIM);
+                SetAnimObjet(ListObjets[i].frame,animPtr,bodyPtr);
             }
         }
     }
@@ -556,13 +556,13 @@ int makeSaveFile(int entry)
         // For safety, destroy special objects before mallocs
 		for(i=0;i<NUM_MAX_OBJECT;i++)
 		{
-            if (objectTable[i].indexInWorld == -2) // Special objects
+            if (ListObjets[i].indexInWorld == -2) // Special objects
             {
-                objectTable[i].indexInWorld = -1;
-                if (objectTable[i].ANIM == 4)
+                ListObjets[i].indexInWorld = -1;
+                if (ListObjets[i].ANIM == 4)
                 {
                     CVars[getCVarsIdx(FOG_FLAG)] = 0;
-                    HQ_Free_Malloc(HQ_Memory, objectTable[i].frame);
+                    HQ_Free_Malloc(HQ_Memory, ListObjets[i].frame);
                 }
             }
 		}
@@ -772,211 +772,211 @@ int makeSaveFile(int entry)
 
     for(i=0;i<NUM_MAX_OBJECT;i++)
     {
-        ASSERT(sizeof(objectTable[i].indexInWorld) == 2);
-        fwrite(&objectTable[i].indexInWorld,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].indexInWorld) == 2);
+        fwrite(&ListObjets[i].indexInWorld,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].bodyNum) == 2);
-        fwrite(&objectTable[i].bodyNum,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].bodyNum) == 2);
+        fwrite(&ListObjets[i].bodyNum,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].objectType) == 2);
-        fwrite(&objectTable[i].objectType,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].objectType) == 2);
+        fwrite(&ListObjets[i].objectType,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].dynFlags) == 2);
-        fwrite(&objectTable[i].dynFlags,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].dynFlags) == 2);
+        fwrite(&ListObjets[i].dynFlags,2,1,fHandle);
 
         //    ASSERT(sizeof(actorTable[i].zv.ZVX1) == 2);
-        fwrite(&objectTable[i].zv.ZVX1,2,1,fHandle);
-        objectTable[i].zv.ZVX1 = (s16)objectTable[i].zv.ZVX1;
+        fwrite(&ListObjets[i].zv.ZVX1,2,1,fHandle);
+        ListObjets[i].zv.ZVX1 = (s16)ListObjets[i].zv.ZVX1;
 
         //    ASSERT(sizeof(actorTable[i].zv.ZVX2) == 2);
-        fwrite(&objectTable[i].zv.ZVX2,2,1,fHandle);
-        objectTable[i].zv.ZVX2 = (s16)objectTable[i].zv.ZVX2;
+        fwrite(&ListObjets[i].zv.ZVX2,2,1,fHandle);
+        ListObjets[i].zv.ZVX2 = (s16)ListObjets[i].zv.ZVX2;
 
         //    ASSERT(sizeof(actorTable[i].zv.ZVY1) == 2);
-        fwrite(&objectTable[i].zv.ZVY1,2,1,fHandle);
+        fwrite(&ListObjets[i].zv.ZVY1,2,1,fHandle);
 
         //    ASSERT(sizeof(actorTable[i].zv.ZVY2) == 2);
-        fwrite(&objectTable[i].zv.ZVY2,2,1,fHandle);
+        fwrite(&ListObjets[i].zv.ZVY2,2,1,fHandle);
 
         //    ASSERT(sizeof(actorTable[i].zv.ZVZ1) == 2);
-        fwrite(&objectTable[i].zv.ZVZ1,2,1,fHandle);
+        fwrite(&ListObjets[i].zv.ZVZ1,2,1,fHandle);
 
         //    ASSERT(sizeof(actorTable[i].zv.ZVZ2) == 2);
-        fwrite(&objectTable[i].zv.ZVZ2,2,1,fHandle);
+        fwrite(&ListObjets[i].zv.ZVZ2,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].screenXMin) == 2);
-        fwrite(&objectTable[i].screenXMin,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].screenXMin) == 2);
+        fwrite(&ListObjets[i].screenXMin,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].screenYMin) == 2);
-        fwrite(&objectTable[i].screenYMin,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].screenYMin) == 2);
+        fwrite(&ListObjets[i].screenYMin,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].screenXMax) == 2);
-        fwrite(&objectTable[i].screenXMax,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].screenXMax) == 2);
+        fwrite(&ListObjets[i].screenXMax,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].screenYMax) == 2);
-        fwrite(&objectTable[i].screenYMax,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].screenYMax) == 2);
+        fwrite(&ListObjets[i].screenYMax,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].roomX) == 2);
-        fwrite(&objectTable[i].roomX,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].roomX) == 2);
+        fwrite(&ListObjets[i].roomX,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].roomY) == 2);
-        fwrite(&objectTable[i].roomY,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].roomY) == 2);
+        fwrite(&ListObjets[i].roomY,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].roomZ) == 2);
-        fwrite(&objectTable[i].roomZ,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].roomZ) == 2);
+        fwrite(&ListObjets[i].roomZ,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].worldX) == 2);
-        fwrite(&objectTable[i].worldX,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].worldX) == 2);
+        fwrite(&ListObjets[i].worldX,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].worldY) == 2);
-        fwrite(&objectTable[i].worldY,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].worldY) == 2);
+        fwrite(&ListObjets[i].worldY,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].worldZ) == 2);
-        fwrite(&objectTable[i].worldZ,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].worldZ) == 2);
+        fwrite(&ListObjets[i].worldZ,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].alpha) == 2);
-        fwrite(&objectTable[i].alpha,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].alpha) == 2);
+        fwrite(&ListObjets[i].alpha,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].beta) == 2);
-        fwrite(&objectTable[i].beta,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].beta) == 2);
+        fwrite(&ListObjets[i].beta,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].gamma) == 2);
-        fwrite(&objectTable[i].gamma,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].gamma) == 2);
+        fwrite(&ListObjets[i].gamma,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].room) == 2);
-        fwrite(&objectTable[i].room,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].room) == 2);
+        fwrite(&ListObjets[i].room,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].stage) == 2);
-        fwrite(&objectTable[i].stage,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].stage) == 2);
+        fwrite(&ListObjets[i].stage,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].lifeMode) == 2);
-        fwrite(&objectTable[i].lifeMode,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].lifeMode) == 2);
+        fwrite(&ListObjets[i].lifeMode,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].life) == 2);
-        fwrite(&objectTable[i].life,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].life) == 2);
+        fwrite(&ListObjets[i].life,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].CHRONO) == 4);
-        fwrite(&objectTable[i].CHRONO,4,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].CHRONO) == 4);
+        fwrite(&ListObjets[i].CHRONO,4,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].ROOM_CHRONO) == 4);
-        fwrite(&objectTable[i].ROOM_CHRONO,4,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].ROOM_CHRONO) == 4);
+        fwrite(&ListObjets[i].ROOM_CHRONO,4,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].ANIM) == 2);
-        fwrite(&objectTable[i].ANIM,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].ANIM) == 2);
+        fwrite(&ListObjets[i].ANIM,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].animType) == 2);
-        fwrite(&objectTable[i].animType,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].animType) == 2);
+        fwrite(&ListObjets[i].animType,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].animInfo) == 2);
-        fwrite(&objectTable[i].animInfo,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].animInfo) == 2);
+        fwrite(&ListObjets[i].animInfo,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].newAnim) == 2);
-        fwrite(&objectTable[i].newAnim,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].newAnim) == 2);
+        fwrite(&ListObjets[i].newAnim,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].newAnimType) == 2);
-        fwrite(&objectTable[i].newAnimType,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].newAnimType) == 2);
+        fwrite(&ListObjets[i].newAnimType,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].newAnimInfo) == 2);
-        fwrite(&objectTable[i].newAnimInfo,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].newAnimInfo) == 2);
+        fwrite(&ListObjets[i].newAnimInfo,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].frame) == 2);
-        fwrite(&objectTable[i].frame,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].frame) == 2);
+        fwrite(&ListObjets[i].frame,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].numOfFrames) == 2);
-        fwrite(&objectTable[i].numOfFrames,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].numOfFrames) == 2);
+        fwrite(&ListObjets[i].numOfFrames,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].END_FRAME) == 2);
-        fwrite(&objectTable[i].END_FRAME,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].END_FRAME) == 2);
+        fwrite(&ListObjets[i].END_FRAME,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].flagEndAnim) == 2);
-        fwrite(&objectTable[i].flagEndAnim,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].flagEndAnim) == 2);
+        fwrite(&ListObjets[i].flagEndAnim,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].trackMode) == 2);
-        fwrite(&objectTable[i].trackMode,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].trackMode) == 2);
+        fwrite(&ListObjets[i].trackMode,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].trackNumber) == 2);
-        fwrite(&objectTable[i].trackNumber,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].trackNumber) == 2);
+        fwrite(&ListObjets[i].trackNumber,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].MARK) == 2);
-        fwrite(&objectTable[i].MARK,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].MARK) == 2);
+        fwrite(&ListObjets[i].MARK,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].positionInTrack) == 2);
-        fwrite(&objectTable[i].positionInTrack,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].positionInTrack) == 2);
+        fwrite(&ListObjets[i].positionInTrack,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].stepX) == 2);
-        fwrite(&objectTable[i].stepX,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].stepX) == 2);
+        fwrite(&ListObjets[i].stepX,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].stepY) == 2);
-        fwrite(&objectTable[i].stepY,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].stepY) == 2);
+        fwrite(&ListObjets[i].stepY,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].stepZ) == 2); // 45
-        fwrite(&objectTable[i].stepZ,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].stepZ) == 2); // 45
+        fwrite(&ListObjets[i].stepZ,2,1,fHandle);
 
-        saveInterpolatedValue(&objectTable[i].YHandler,fHandle);
+        saveInterpolatedValue(&ListObjets[i].YHandler,fHandle);
 
-        ASSERT(sizeof(objectTable[i].falling) == 2);
-        fwrite(&objectTable[i].falling,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].falling) == 2);
+        fwrite(&ListObjets[i].falling,2,1,fHandle);
 
-        saveInterpolatedValue(&objectTable[i].rotate,fHandle);
+        saveInterpolatedValue(&ListObjets[i].rotate,fHandle);
 
-        ASSERT(sizeof(objectTable[i].direction) == 2); 
-        fwrite(&objectTable[i].direction,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].direction) == 2); 
+        fwrite(&ListObjets[i].direction,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].speed) == 2);
-        fwrite(&objectTable[i].speed,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].speed) == 2);
+        fwrite(&ListObjets[i].speed,2,1,fHandle);
 
-        saveInterpolatedValue(&objectTable[i].speedChange,fHandle);
+        saveInterpolatedValue(&ListObjets[i].speedChange,fHandle);
 
-        ASSERT(sizeof(objectTable[i].COL[0]) == 2);
-        fwrite(&objectTable[i].COL[0],2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].COL[0]) == 2);
+        fwrite(&ListObjets[i].COL[0],2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].COL[1]) == 2);
-        fwrite(&objectTable[i].COL[1],2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].COL[1]) == 2);
+        fwrite(&ListObjets[i].COL[1],2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].COL[2]) == 2);
-        fwrite(&objectTable[i].COL[2],2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].COL[2]) == 2);
+        fwrite(&ListObjets[i].COL[2],2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].COL_BY) == 2);
-        fwrite(&objectTable[i].COL_BY,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].COL_BY) == 2);
+        fwrite(&ListObjets[i].COL_BY,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].HARD_DEC) == 2);
-        fwrite(&objectTable[i].HARD_DEC,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].HARD_DEC) == 2);
+        fwrite(&ListObjets[i].HARD_DEC,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].HARD_COL) == 2);
-        fwrite(&objectTable[i].HARD_COL,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].HARD_COL) == 2);
+        fwrite(&ListObjets[i].HARD_COL,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].HIT) == 2);
-        fwrite(&objectTable[i].HIT,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].HIT) == 2);
+        fwrite(&ListObjets[i].HIT,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].HIT_BY) == 2);
-        fwrite(&objectTable[i].HIT_BY,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].HIT_BY) == 2);
+        fwrite(&ListObjets[i].HIT_BY,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].animActionType) == 2);
-        fwrite(&objectTable[i].animActionType,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].animActionType) == 2);
+        fwrite(&ListObjets[i].animActionType,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].animActionANIM) == 2);
-        fwrite(&objectTable[i].animActionANIM,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].animActionANIM) == 2);
+        fwrite(&ListObjets[i].animActionANIM,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].animActionFRAME) == 2);
-        fwrite(&objectTable[i].animActionFRAME,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].animActionFRAME) == 2);
+        fwrite(&ListObjets[i].animActionFRAME,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].animActionParam) == 2);
-        fwrite(&objectTable[i].animActionParam,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].animActionParam) == 2);
+        fwrite(&ListObjets[i].animActionParam,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].hitForce) == 2);
-        fwrite(&objectTable[i].hitForce,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].hitForce) == 2);
+        fwrite(&ListObjets[i].hitForce,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].hotPointID) == 2);
-        fwrite(&objectTable[i].hotPointID,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].hotPointID) == 2);
+        fwrite(&ListObjets[i].hotPointID,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].hotPoint.x) == 2);
-        fwrite(&objectTable[i].hotPoint.x,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].hotPoint.x) == 2);
+        fwrite(&ListObjets[i].hotPoint.x,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].hotPoint.y) == 2);
-        fwrite(&objectTable[i].hotPoint.x,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].hotPoint.y) == 2);
+        fwrite(&ListObjets[i].hotPoint.x,2,1,fHandle);
 
-        ASSERT(sizeof(objectTable[i].hotPoint.z) == 2);
-        fwrite(&objectTable[i].hotPoint.x,2,1,fHandle);
+        ASSERT(sizeof(ListObjets[i].hotPoint.z) == 2);
+        fwrite(&ListObjets[i].hotPoint.x,2,1,fHandle);
     }
 
     fclose(fHandle);

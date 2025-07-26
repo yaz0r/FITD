@@ -162,7 +162,7 @@ void ChangeSalle(int roomNumber)
 
         for(i=0;i<NUM_MAX_OBJECT;i++)
         {
-            if(objectTable[i].indexInWorld != -1)
+            if(ListObjets[i].indexInWorld != -1)
             {
                 /*       if(gameId == AITD1) // special case. In AITD1, the load room function was always triggered just after the actor was moved in the new room.
                 // it is not always the case in later games. Maybe we could generalize the AITD2 way...
@@ -175,15 +175,15 @@ void ChangeSalle(int roomNumber)
                 {
                     if(i!=currentCameraTargetActor)
                     {
-                        objectTable[i].worldX -= var_E;
-                        objectTable[i].worldY += var_C;
-                        objectTable[i].worldZ += var_A;
+                        ListObjets[i].worldX -= var_E;
+                        ListObjets[i].worldY += var_C;
+                        ListObjets[i].worldZ += var_A;
                     }
                     else
                     {
-                        objectTable[i].worldX = objectTable[i].roomX;
-                        objectTable[i].worldY = objectTable[i].roomY;
-                        objectTable[i].worldZ = objectTable[i].roomZ;
+                        ListObjets[i].worldX = ListObjets[i].roomX;
+                        ListObjets[i].worldY = ListObjets[i].roomY;
+                        ListObjets[i].worldZ = ListObjets[i].roomZ;
                     }
                 }
             }

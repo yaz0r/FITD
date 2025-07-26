@@ -235,7 +235,7 @@ void debugger_draw(void)
             if (selectedObject > NUM_MAX_OBJECT)
                 selectedObject = NUM_MAX_OBJECT - 1;
 
-            tObject*pObject = &objectTable[selectedObject];
+            tObject*pObject = &ListObjets[selectedObject];
 
             ImGui::PushItemWidth(100);
             

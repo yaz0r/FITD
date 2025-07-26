@@ -9,8 +9,8 @@ int getMatrix(int param1, int actorIdx, int param2)
     int matrixWidth = *matrixPtr++;
     int matrixHeigh = *matrixPtr++;
 
-    matrixPtr+=(objectTable[actorIdx].hardMat-1)*matrixWidth;
-    matrixPtr+=(objectTable[param2].hardMat-1);
+    matrixPtr+=(ListObjets[actorIdx].hardMat-1)*matrixWidth;
+    matrixPtr+=(ListObjets[param2].hardMat-1);
 
 	if(g_gameId == AITD3)
 	{
@@ -43,11 +43,11 @@ int getPosRel(tObject* actor1, tObject* actor2)
     }
 
 
-    copyZv(&actor2->zv, &localZv);
+    CopyZV(&actor2->zv, &localZv);
 
     if(actor1->room != actor2->room)
     {
-        getZvRelativePosition(&localZv, actor2->room, actor1->room);
+        AdjustZV(&localZv, actor2->room, actor1->room);
     }
 
     centerX = (localZv.ZVX1 + localZv.ZVX2) / 2;
@@ -118,7 +118,7 @@ int testZvEndAnim(tObject* actorPtr,sAnimation* animPtr, int param)
     }
 
     ZVStruct localZv;
-    copyZv(&actorPtr->zv, &localZv);
+    CopyZV(&actorPtr->zv, &localZv);
 
     walkStep(0,stepX,actorPtr->beta);
 
@@ -210,7 +210,7 @@ int evalVar(const char* name)
                     }
                 }
                 else {
-                    actorPtr = &objectTable[actorIdx];
+                    actorPtr = &ListObjets[actorIdx];
                 }
                 
             }
@@ -228,7 +228,7 @@ int evalVar(const char* name)
 
                         if(temp1 != -1)
                         {
-                            return(objectTable[temp1].indexInWorld);
+                            return(ListObjets[temp1].indexInWorld);
                         }
                         else
                         {
@@ -256,7 +256,7 @@ int evalVar(const char* name)
                         }
                         else
                         {
-                            return(objectTable[temp].indexInWorld);
+                            return(ListObjets[temp].indexInWorld);
                         }
 
                         break;
@@ -271,7 +271,7 @@ int evalVar(const char* name)
                         }
                         else
                         {
-                            return(objectTable[temp].indexInWorld);
+                            return(ListObjets[temp].indexInWorld);
                         }
 
                         break;
@@ -332,9 +332,9 @@ int evalVar(const char* name)
                         }
                         else
                         {
-                            int tempX = objectTable[actorNumber].worldX;
-                            int tempY = objectTable[actorNumber].worldY;
-                            int tempZ = objectTable[actorNumber].worldZ;
+                            int tempX = ListObjets[actorNumber].worldX;
+                            int tempY = ListObjets[actorNumber].worldY;
+                            int tempZ = ListObjets[actorNumber].worldZ;
 
                             return(calcDist(actorPtr->worldX, actorPtr->worldY, actorPtr->worldZ, tempX, tempY, tempZ));
                         }
@@ -346,7 +346,7 @@ int evalVar(const char* name)
                         if(actorPtr->COL_BY == -1)
                             return(-1);
                         else
-                            return(objectTable[actorPtr->COL_BY].indexInWorld);
+                            return(ListObjets[actorPtr->COL_BY].indexInWorld);
                         break;
                     }
                 case 0x10: // found
@@ -379,7 +379,7 @@ int evalVar(const char* name)
                             return 0;
                         }
 
-                        return (getPosRel(actorPtr, &objectTable[ListWorldObjets[objNum].objIndex]));
+                        return (getPosRel(actorPtr, &ListObjets[ListWorldObjets[objNum].objIndex]));
 
                         break;
                     }
@@ -412,7 +412,7 @@ int evalVar(const char* name)
 								return -1;
 						}
 
-						return objectTable[temp1].indexInWorld;
+						return ListObjets[temp1].indexInWorld;
 						break;
 					}
                 case 0x16:
@@ -626,7 +626,7 @@ int evalVar2(const char* name)
                     }
                 }
                 else {
-                    actorPtr = &objectTable[actorIdx];
+                    actorPtr = &ListObjets[actorIdx];
                 }
             }
             {
@@ -647,7 +647,7 @@ int evalVar2(const char* name)
 
                         if(temp1 != -1)
                         {
-                            return(objectTable[temp1].indexInWorld);
+                            return(ListObjets[temp1].indexInWorld);
                         }
                         else
                         {
@@ -685,7 +685,7 @@ int evalVar2(const char* name)
                         }
                         else
                         {
-                            return(objectTable[temp].indexInWorld);
+                            return(ListObjets[temp].indexInWorld);
                         }
 
                         break;
@@ -700,7 +700,7 @@ int evalVar2(const char* name)
                         }
                         else
                         {
-                            return(objectTable[temp].indexInWorld);
+                            return(ListObjets[temp].indexInWorld);
                         }
 
                         break;
@@ -776,9 +776,9 @@ int evalVar2(const char* name)
                         }
                         else
                         {
-                            tempX = objectTable[objectIdx].worldX;
-                            tempY = objectTable[objectIdx].worldY;
-                            tempZ = objectTable[objectIdx].worldZ;
+                            tempX = ListObjets[objectIdx].worldX;
+                            tempY = ListObjets[objectIdx].worldY;
+                            tempZ = ListObjets[objectIdx].worldZ;
                         }
 
 						return(calcDist(actorPtr->worldX, actorPtr->worldY, actorPtr->worldZ, tempX, tempY, tempZ));
@@ -790,7 +790,7 @@ int evalVar2(const char* name)
                         if(actorPtr->COL_BY == -1)
                             return(-1);
                         else
-                            return(objectTable[actorPtr->COL_BY].indexInWorld);
+                            return(ListObjets[actorPtr->COL_BY].indexInWorld);
                         break;
                     }
                 case 0x10: // found
@@ -823,7 +823,7 @@ int evalVar2(const char* name)
                             return 0;
                         }
 
-                        return (getPosRel(actorPtr, &objectTable[ListWorldObjets[objNum].objIndex]));
+                        return (getPosRel(actorPtr, &ListObjets[ListWorldObjets[objNum].objIndex]));
 
                         break;
                     }
@@ -856,7 +856,7 @@ int evalVar2(const char* name)
 								return -1;
 						}
 
-                        return objectTable[temp1].indexInWorld;
+                        return ListObjets[temp1].indexInWorld;
                         break;
                     }
                 case 0x16:

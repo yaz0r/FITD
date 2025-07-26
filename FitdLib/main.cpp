@@ -197,7 +197,7 @@ void executeFoundLife(int objIdx)
 
 	if(actorIdx==-1)
 	{
-		tObject* currentActorEntryPtr = &objectTable[NUM_MAX_OBJECT-1];
+		tObject* currentActorEntryPtr = &ListObjets[NUM_MAX_OBJECT-1];
 		int currentActorEntry = NUM_MAX_OBJECT-1;
 
 		while(currentActorEntry>=0)
@@ -212,14 +212,14 @@ void executeFoundLife(int objIdx)
 		if(currentActorEntry==-1) // no space, we will have to overwrite the last actor !
 		{
 			currentActorEntry = NUM_MAX_OBJECT-1;
-			currentActorEntryPtr = &objectTable[NUM_MAX_OBJECT-1];
+			currentActorEntryPtr = &ListObjets[NUM_MAX_OBJECT-1];
 		}
 
 		actorIdx = currentActorEntry;
 		var_2 = 1;
 
-		currentProcessedActorPtr = &objectTable[actorIdx];
-		currentLifeActorPtr = &objectTable[actorIdx];
+		currentProcessedActorPtr = &ListObjets[actorIdx];
+		currentLifeActorPtr = &ListObjets[actorIdx];
 		currentProcessedActorIdx = actorIdx;
 		currentLifeActorIdx = actorIdx;
 
@@ -1184,7 +1184,7 @@ void LoadWorld(void)
 
 	for(i=0;i<NUM_MAX_OBJECT;i++)
 	{
-		objectTable[i].indexInWorld = -1;
+		ListObjets[i].indexInWorld = -1;
 	}
 
 	if(g_gameId == AITD1)
@@ -1662,7 +1662,7 @@ void InitViewedRoomList()
 
 void DeleteObjet(int index) // remove actor
 {
-	tObject *actorPtr = &objectTable[index];
+	tObject *actorPtr = &ListObjets[index];
 
 	if(actorPtr->indexInWorld == -2) // flow
 	{
@@ -1776,7 +1776,7 @@ void pointRotate(int x, int y, int z, int* destX, int* destY, int* destZ)
 	}
 }
 
-void copyZv(ZVStruct* source, ZVStruct* dest)
+void CopyZV(ZVStruct* source, ZVStruct* dest)
 {
 	memcpy(dest,source,sizeof(ZVStruct));
 }
@@ -1842,7 +1842,7 @@ void updateAllActorAndObjectsAITD2()
 {
     for (int i = 0; i < NUM_MAX_OBJECT; i++)
     {
-        tObject* pObject = &objectTable[i];
+        tObject* pObject = &ListObjets[i];
 
         if (pObject->indexInWorld == -1)
         {
@@ -1957,7 +1957,7 @@ void updateAllActorAndObjectsAITD2()
 
         if (currentObject->objIndex != -1)
         {
-            currentProcessedActorPtr = &objectTable[currentObject->objIndex];
+            currentProcessedActorPtr = &ListObjets[currentObject->objIndex];
             currentProcessedActorIdx = currentObject->objIndex;
 
             if (currentWorldTarget == i)
@@ -1997,7 +1997,7 @@ void GenereActiveList()
 
 	for(int i=0;i<NUM_MAX_OBJECT;i++)
 	{
-        tObject* currentActor = &objectTable[i];
+        tObject* currentActor = &ListObjets[i];
         if (currentActor->indexInWorld == -1)
             continue;
 
@@ -2095,7 +2095,7 @@ void GenereActiveList()
 
 		if(currentObject->objIndex != -1)
 		{
-			currentProcessedActorPtr = &objectTable[currentObject->objIndex];
+			currentProcessedActorPtr = &ListObjets[currentObject->objIndex];
 			currentProcessedActorIdx = currentObject->objIndex;
 
 			if(currentWorldTarget == i)
@@ -2141,9 +2141,9 @@ void GenereAffList()
 {
 	NbAffObjets = 0;
 
-	for(int i=0;i< objectTable.size();i++)
+	for(int i=0;i< ListObjets.size();i++)
 	{
-        tObject* actorPtr = &objectTable[i];
+        tObject* actorPtr = &ListObjets[i];
 		if(actorPtr->indexInWorld != -1 && actorPtr->bodyNum != -1)
 		{
 			if(checkActorInRoom(actorPtr->room))
@@ -2207,9 +2207,9 @@ void InitView()
 	{
 		if(currentCameraTargetActor != -1)
 		{
-			x = objectTable[currentCameraTargetActor].worldX + objectTable[currentCameraTargetActor].stepX;
+			x = ListObjets[currentCameraTargetActor].worldX + ListObjets[currentCameraTargetActor].stepX;
 			y = debufferVar_topCameraZoom;
-			z = objectTable[currentCameraTargetActor].worldZ + objectTable[currentCameraTargetActor].stepZ;
+			z = ListObjets[currentCameraTargetActor].worldZ + ListObjets[currentCameraTargetActor].stepZ;
 		}
 	}
 #endif
@@ -2322,7 +2322,7 @@ s16 updateActorRotation(RealValue* rotatePtr)
 
 void removeFromBGIncrust(int actorIdx)
 {
-	tObject* actorPtr = &objectTable[actorIdx];
+	tObject* actorPtr = &ListObjets[actorIdx];
 
 	actorPtr->objectType &= ~AF_BOXIFY;
 
@@ -2380,7 +2380,7 @@ void deleteObject(int objIdx)
 
 	if(actorIdx != -1)
 	{
-		actorPtr = &objectTable[actorIdx];
+		actorPtr = &ListObjets[actorIdx];
 
 		actorPtr->room = -1;
 		actorPtr->stage = -1;
@@ -2471,16 +2471,16 @@ void drawZv(tObject* actorPtr)
 {
 	ZVStruct localZv;
 
-	if( actorPtr->room != objectTable[currentCameraTargetActor].room )
+	if( actorPtr->room != ListObjets[currentCameraTargetActor].room )
 	{
-        if (objectTable[currentCameraTargetActor].room == -1) {
+        if (ListObjets[currentCameraTargetActor].room == -1) {
             return;
         }
-		getZvRelativePosition(&localZv, actorPtr->room, objectTable[currentCameraTargetActor].room);
+		AdjustZV(&localZv, actorPtr->room, ListObjets[currentCameraTargetActor].room);
 	}
 	else
 	{
-		copyZv(&actorPtr->zv,&localZv);
+		CopyZV(&actorPtr->zv,&localZv);
 	}
 
     drawZv(localZv);
@@ -2644,7 +2644,7 @@ void drawRoomZv(ZVStruct* zoneData, int color, int transparency)
 	cameraZv.ZVZ1 += translateZ;
 	cameraZv.ZVZ2 += translateZ;
 
-	if(checkZvCollision(&cameraZv,zoneData))
+	if(CubeIntersect(&cameraZv,zoneData))
 	{
 		return;
 	}
@@ -2665,7 +2665,7 @@ void drawRoomZvLine(ZVStruct* zoneData, int color)
 	cameraZv.ZVZ1 += translateZ;
 	cameraZv.ZVZ2 += translateZ;
 
-	if(checkZvCollision(&cameraZv,zoneData))
+	if(CubeIntersect(&cameraZv,zoneData))
 	{
 		return;
 	}
@@ -2728,7 +2728,7 @@ void drawZone(char* zoneData,int color)
 	tempZv.ZVZ1 = READ_LE_S16(zoneData+0x08);
 	tempZv.ZVZ2 = READ_LE_S16(zoneData+0x0A);
 
-	if(checkZvCollision(&cameraZv,&tempZv))
+	if(CubeIntersect(&cameraZv,&tempZv))
 	{
 		return;
 	}
@@ -2768,7 +2768,7 @@ void drawSceZone(int roomNumber)
 		memcpy(&dataLocal,&roomDataTable[roomNumber].sceZoneTable[i].zv,sizeof(ZVStruct));
 		if(roomNumber!=currentRoom)
 		{
-			getZvRelativePosition(&dataLocal,roomNumber,currentRoom);
+			AdjustZV(&dataLocal,roomNumber,currentRoom);
 		}
 
 //		if(roomDataTable[roomNumber].sceZoneTable[i].parameter == 4)
@@ -2788,11 +2788,11 @@ void drawHardCol(int roomNumber)
 		/*if(roomDataTable[roomNumber].hardColTable[i].type != 9)
 			continue;*/
 
-		copyZv(&roomDataTable[roomNumber].hardColTable[i].zv,&dataLocal);
+		CopyZV(&roomDataTable[roomNumber].hardColTable[i].zv,&dataLocal);
 
 		if(roomNumber!=currentRoom)
 		{
-			getZvRelativePosition(&dataLocal,roomNumber,currentRoom);
+			AdjustZV(&dataLocal,roomNumber,currentRoom);
 		}
 
 		switch(roomDataTable[roomNumber].hardColTable[i].type)
@@ -3032,7 +3032,7 @@ void AllRedraw(int flagFlip)
             osystem_CopyBlockPhys((unsigned char*)logicalScreen, 0, 0, 320, 200);
         }
         else {
-            tObject* actorPtr = &objectTable[currentDrawActor];
+            tObject* actorPtr = &ListObjets[currentDrawActor];
 
             // this is commented out to draw actors backed into the background
             //if(actorPtr->_flags & (AF_ANIMATED + AF_DRAWABLE + AF_SPECIAL))
@@ -3188,13 +3188,13 @@ void walkStep(int angle1, int angle2, int angle3)
 
 void addActorToBgInscrust(int actorIdx)
 {
-	objectTable[actorIdx].objectType |= AF_BOXIFY + AF_DRAWABLE;
-	objectTable[actorIdx].objectType &= ~AF_ANIMATED;
+	ListObjets[actorIdx].objectType |= AF_BOXIFY + AF_DRAWABLE;
+	ListObjets[actorIdx].objectType &= ~AF_ANIMATED;
 
 	//FlagRefreshAux2 = 1;
 }
 
-int checkZvCollision(ZVStruct* zvPtr1,ZVStruct* zvPtr2)
+int CubeIntersect(ZVStruct* zvPtr1,ZVStruct* zvPtr2)
 {
 	if(zvPtr1->ZVX1 >= zvPtr2->ZVX2)
 		return 0;
@@ -3217,7 +3217,7 @@ int checkZvCollision(ZVStruct* zvPtr1,ZVStruct* zvPtr2)
 	return 1;
 }
 
-void getZvRelativePosition(ZVStruct* zvPtr, int startRoom, int destRoom)
+void AdjustZV(ZVStruct* zvPtr, int startRoom, int destRoom)
 {
 	unsigned int Xdif = 10*(roomDataTable[destRoom].worldX - roomDataTable[startRoom].worldX);
 	unsigned int Ydif = 10*(roomDataTable[destRoom].worldY - roomDataTable[startRoom].worldY);
@@ -3231,11 +3231,11 @@ void getZvRelativePosition(ZVStruct* zvPtr, int startRoom, int destRoom)
 	zvPtr->ZVZ2 += Zdif;
 }
 
-int checkObjectCollisions(int actorIdx, ZVStruct* zvPtr)
+int CheckObjectCol(int actorIdx, ZVStruct* zvPtr)
 {
 	int currentCollisionSlot = 0;
-    tObject* currentActor = objectTable.data();
-	int actorRoom = objectTable[actorIdx].room;
+    
+	int actorRoom = ListObjets[actorIdx].room;
 
 	for(int i=0;i<3;i++)
 	{
@@ -3244,38 +3244,41 @@ int checkObjectCollisions(int actorIdx, ZVStruct* zvPtr)
 
 	for(int i=0;i<NUM_MAX_OBJECT;i++)
 	{
-		if(currentActor->indexInWorld != -1 && i!=actorIdx)
-		{
-			ZVStruct* currentActorZv = &currentActor->zv;
+        tObject* currentActor = &ListObjets.at(i);
 
-			if(currentActor->room != actorRoom)
-			{
-				ZVStruct localZv;
+        if (currentActor->indexInWorld == -1)
+            continue;
+        if (i == actorIdx)
+            continue;
 
-				copyZv(zvPtr,&localZv);
+        ZVStruct* currentActorZv = &currentActor->zv;
 
-				getZvRelativePosition(&localZv,actorRoom,currentActor->room);
+        if (currentActor->room != actorRoom)
+        {
+            ZVStruct localZv;
 
-				if(checkZvCollision(&localZv,currentActorZv))
-				{
-					currentProcessedActorPtr->COL[currentCollisionSlot++] = i;
+            CopyZV(zvPtr, &localZv);
 
-					if(currentCollisionSlot == 3)
-						return(3);
-				}
-			}
-			else
-			{
-				if(checkZvCollision(zvPtr,currentActorZv))
-				{
-					currentProcessedActorPtr->COL[currentCollisionSlot++] = i;
+            AdjustZV(&localZv, actorRoom, currentActor->room);
 
-					if(currentCollisionSlot == 3)
-						return(3);
-				}
-			}
-		}
-		currentActor++;
+            if (CubeIntersect(&localZv, currentActorZv))
+            {
+                currentProcessedActorPtr->COL[currentCollisionSlot++] = i;
+
+                if (currentCollisionSlot == 3)
+                    return(3);
+            }
+        }
+        else
+        {
+            if (CubeIntersect(zvPtr, currentActorZv))
+            {
+                currentProcessedActorPtr->COL[currentCollisionSlot++] = i;
+
+                if (currentCollisionSlot == 3)
+                    return(3);
+            }
+        }
 	}
 
 	return(currentCollisionSlot);
@@ -3319,7 +3322,7 @@ void take(int objIdx)
 	objPtr->stage = -1;
 }
 
-void hardColSuB1Sub1(int flag)
+void Glisser(int flag)
 {
 	switch(flag)
 	{
@@ -3342,48 +3345,54 @@ void hardColSuB1Sub1(int flag)
 	}
 }
 
-void handleCollision(ZVStruct* startZv, ZVStruct* zvPtr2, ZVStruct* zvPtr3)
+void GereCollision(ZVStruct* oldZv, ZVStruct* animatedZv, ZVStruct* fixZv)
 {
-	s32 flag = 0;
-	s32 var_8;
+	s32 oldpos = 0;
+	s32 oldtype;
 	s32 halfX;
 	s32 halfZ;
-	s32 var_A;
-	s32 var_6;
+	s32 pos;
+	s32 type;
 
-	if(startZv->ZVX2 > zvPtr3->ZVX1)
+	if(oldZv->ZVX2 > fixZv->ZVX1)
 	{
-		if(zvPtr3->ZVX2 <= startZv->ZVX1)
+		if(fixZv->ZVX2 <= oldZv->ZVX1)
 		{
-			flag = 8;
+			oldpos = 8; // right
 		}
+        else {
+            oldpos = 0; // center
+        }
 	}
 	else
 	{
-		flag = 4;
+		oldpos = 4; // left
 	}
 
-	if(startZv->ZVZ2 > zvPtr3->ZVZ1)
+	if(oldZv->ZVZ2 > fixZv->ZVZ1)
 	{
-		if(startZv->ZVZ1 >= zvPtr3->ZVZ2)
+		if(oldZv->ZVZ1 >= fixZv->ZVZ2)
 		{
-			flag |= 2;
+			oldpos |= 2;
 		}
+        else {
+            oldpos |= 0; // center
+        }
 	}
 	else
 	{
-		flag |= 1;
+		oldpos |= 1;
 	}
 
-	if( flag == 5 || flag == 9 || flag == 6 || flag == 10 )
+	if( (oldpos == 5) || (oldpos == 9) || (oldpos == 6) || (oldpos == 10) )
 	{
-		var_8 = 2;
+		oldtype = 2; // corner
 	}
 	else
 	{
-		if(!flag)
+		if(oldpos == 0)
 		{
-			var_8 = 0;
+			oldtype = 0;
 
 			hardColStepZ = 0;
 			hardColStepX = 0;
@@ -3392,99 +3401,100 @@ void handleCollision(ZVStruct* startZv, ZVStruct* zvPtr2, ZVStruct* zvPtr3)
 		}
 		else
 		{
-			var_8 = 1;
+			oldtype = 1; // corner
 		}
 	}
 
-	halfX = (zvPtr2->ZVX1 + zvPtr2->ZVX2) / 2;
-	halfZ = (zvPtr2->ZVZ1 + zvPtr2->ZVZ2) / 2;
+	halfX = (animatedZv->ZVX1 + animatedZv->ZVX2) / 2;
+	halfZ = (animatedZv->ZVZ1 + animatedZv->ZVZ2) / 2;
 
-	if(zvPtr3->ZVX1 > halfX)
+	if(fixZv->ZVX1 > halfX)
 	{
-		var_A = 4;
+		pos = 4; // left
 	}
 	else
 	{
-		if(zvPtr3->ZVX2 < halfX)
+		if(fixZv->ZVX2 < halfX)
 		{
-			var_A = 0;
+			pos = 0; // center
 		}
 		else
 		{
-			var_A = 8;
+			pos = 8; // right
 		}
 	}
 
-	if(zvPtr3->ZVZ1 > halfZ)
+	if(fixZv->ZVZ1 > halfZ)
 	{
-		var_A |= 1;
+		pos |= 1; // up
 	}
 	else
 	{
-		if(zvPtr3->ZVZ2 < halfZ)
+		if(fixZv->ZVZ2 < halfZ)
 		{
-			var_A |= 0; // once again, not that much usefull
+			pos |= 0; // center
 		}
 		else
 		{
-			var_A |= 2;
+			pos |= 2; // bellow
 		}
 	}
 
-	if( var_A == 5 || var_A == 9 || var_A == 6 || var_A == 10 )
+	if( (pos == 5) || (pos == 9) || (pos == 6) || (pos == 10) )
 	{
-		var_6 = 2;
+		type = 2; // corner
 	}
 	else
 	{
-		if(!var_A)
+		if(pos == 0)
 		{
-			var_6 = 0;
+			type = 0; // center
 		}
 		else
 		{
-			var_6 = 1;
+			type = 1; // border
 		}
 	}
 
-	if(var_8 == 1)
+	if(oldtype == 1) // border
 	{
-		hardColSuB1Sub1(flag);
-		return;
+		Glisser(oldpos);
 	}
+    else
+    {
+        if ((type == 1) && (pos & oldpos))
+        {
+            Glisser(pos);
+        }
+        else {
+            if ((pos == oldpos) || (pos+oldpos == 15))
+            {
+                int Xmod = abs(animatedZv->ZVX1 - oldZv->ZVX1); // recheck
+                int Zmod = abs(animatedZv->ZVZ1 - oldZv->ZVZ1);
 
-	if(var_6 == 1 && (var_A & flag))
-	{
-		hardColSuB1Sub1(var_A);
-		return;
-	}
-
-	if(var_A == flag || flag == 15)
-	{
-		int Xmod = abs(zvPtr2->ZVX1 - startZv->ZVX1); // recheck
-		int Zmod = abs(zvPtr2->ZVZ1 - startZv->ZVZ1);
-
-		if(Xmod > Zmod)
-		{
-			hardColStepZ = 0;
-		}
-		else
-		{
-			hardColStepX = 0;
-		}
-	}
-	else
-	{
-		if(!var_6 || (var_6 == 1 && !(var_A & flag)))
-		{
-			hardColStepZ = 0;
-			hardColStepX = 0;
-		}
-		else
-		{
-			hardColSuB1Sub1(flag&var_A);
-		}
-	}
+                if (Xmod > Zmod)
+                {
+                    hardColStepZ = 0;
+                }
+                else
+                {
+                    hardColStepX = 0;
+                }
+            }
+            else
+            {
+                if ((type == 0) || ((type == 1) && ((pos & oldpos) == 0)))
+                {
+                    hardColStepZ = 0;
+                    hardColStepX = 0;
+                }
+                else
+                {
+                    Glisser(oldpos & pos);
+                }
+            }
+        }
+    }
 }
 
 int AsmCheckListCol(ZVStruct* zvPtr, roomDataStruct* pRoomData)
@@ -3605,7 +3615,7 @@ int findBestCamera(void)
 	int foundAngle = 32000;
 	int foundCamera = -1;
 
-	tObject* actorPtr = &objectTable[currentCameraTargetActor];
+	tObject* actorPtr = &ListObjets[currentCameraTargetActor];
 
 	int x1 = actorPtr->zv.ZVX1/10;
 	int x2 = actorPtr->zv.ZVX2/10;
@@ -3658,7 +3668,7 @@ void GereSwitchCamera(void)
 		int zvz1;
 		int zvz2;
 
-		actorPtr = &objectTable[currentCameraTargetActor];
+		actorPtr = &ListObjets[currentCameraTargetActor];
 
 		zvx1 = actorPtr->zv.ZVX1/10;
 		zvx2 = actorPtr->zv.ZVX2/10;
@@ -3890,9 +3900,9 @@ int checkLineProjectionWithActors( int actorIdx, int X, int Y, int Z, int beta, 
 		}
 		else
 		{
-			for(int i=0;i<objectTable.size();i++)
+			for(int i=0;i<ListObjets.size();i++)
 			{
-                tObject* currentActorPtr = &objectTable[i];
+                tObject* currentActorPtr = &ListObjets[i];
 				if(currentActorPtr->indexInWorld != -1 && i != actorIdx && !(currentActorPtr->objectType & AF_SPECIAL))
 				{
 					ZVStruct* zvPtr = &currentActorPtr->zv;
@@ -3901,10 +3911,10 @@ int checkLineProjectionWithActors( int actorIdx, int X, int Y, int Z, int beta, 
 					{
 						ZVStruct localZv2;
 
-						copyZv(&localZv, &localZv2);
-						getZvRelativePosition(&localZv2, room, currentActorPtr->room);
+						CopyZV(&localZv, &localZv2);
+						AdjustZV(&localZv2, room, currentActorPtr->room);
 
-						if(!checkZvCollision(&localZv2,zvPtr))
+						if(!CubeIntersect(&localZv2,zvPtr))
 						{
 							currentActorPtr++;
 							continue;
@@ -3912,7 +3922,7 @@ int checkLineProjectionWithActors( int actorIdx, int X, int Y, int Z, int beta, 
 					}
 					else
 					{
-						if(!checkZvCollision(&localZv,zvPtr))
+						if(!CubeIntersect(&localZv,zvPtr))
 						{
 							currentActorPtr++;
 							continue;
@@ -3940,7 +3950,7 @@ void PutAtObjet(int objIdx, int objIdxToPutAt)
 
 	if(objPtrToPutAt->objIndex != -1)
 	{
-		tObject* actorToPutAtPtr = &objectTable[objPtrToPutAt->objIndex];
+		tObject* actorToPutAtPtr = &ListObjets[objPtrToPutAt->objIndex];
 
 		DeleteInventoryObjet(objIdx);
 
@@ -4046,7 +4056,7 @@ void throwStoppedAt(int x, int z)
 	while(!foundPosition)
 	{
 		walkStep(0,-step,currentProcessedActorPtr->beta+0x200);
-		copyZv(&zvLocal,&zvCopy);
+		CopyZV(&zvLocal,&zvCopy);
 
 		x2 = x + animMoveX;
 		z2 = z + animMoveZ;

@@ -306,7 +306,7 @@ extern char* screenSm3;
 extern char* screenSm4;
 extern char* screenSm5;
 
-extern std::array<tObject, NUM_MAX_OBJECT> objectTable;
+extern std::array<tObject, NUM_MAX_OBJECT> ListObjets;
 
 extern s16 currentWorldTarget;
 
