@@ -3071,18 +3071,6 @@ void AllRedraw(int flagFlip)
                                 getHotPoint(actorPtr->hotPointID, bodyPtr, &actorPtr->hotPoint);
                             }
                         }
-
-                        ///////////////////////////////////// DEBUG
-#ifdef FITD_DEBUGGER
-                //  if(debuggerVar_drawModelZv)
-                        {
-                            if (backgroundMode == backgroundModeEnum_3D)
-                            {
-                                drawZv(actorPtr);
-                            }
-                        }
-#endif
-                        /////////////////////////////////////
                     }
                 }
 
@@ -3128,6 +3116,20 @@ void AllRedraw(int flagFlip)
 
 #ifdef FITD_DEBUGGER
     {
+        if (backgroundMode == backgroundModeEnum_3D)
+        {
+            for (int i = 0; i < NUM_MAX_OBJECT; i++)
+            {
+                tObject* actorPtr = &ListObjets[i];
+
+                if (actorPtr->indexInWorld != -1)
+                {
+                    drawZv(actorPtr);
+                }
+            }
+        }
+
+        /////////////////////////////////////
         for (int i = 0; i < getNumberOfRoom(); i++)
         {
             if (hardColDisplayMode != displayNone) {
